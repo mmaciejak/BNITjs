@@ -101,7 +101,7 @@ STATUS = {
     "ShaderNodeUVAlongStroke": "not_planned",
     "ShaderNodeUVMap": "planned",
     "ShaderNodeValToRGB": "planned",
-    "ShaderNodeValue": "planned",
+    "ShaderNodeValue": "supported",
     "ShaderNodeVectorCurve": "planned",
     "ShaderNodeVectorDisplacement": "planned",
     "ShaderNodeVectorMath": "planned",

@@ -3,6 +3,7 @@ import { bswValue } from './bswValue.js';
 import { emission } from './emission.js';
 import { materialOutput } from './output.js';
 import { rgb } from './rgb.js';
+import { value } from './value.js';
 
 /**
  * Blender node type (bl_idname) -> TSL implementation.
@@ -15,6 +16,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeOutputMaterial: materialOutput,
   ShaderNodeEmission: emission,
   ShaderNodeRGB: rgb,
+  ShaderNodeValue: value,
 };
 
 /** The built-in registry, optionally extended or overridden with custom node implementations. */

@@ -81,7 +81,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Tangent | Input | 🚧 Not yet | 7 | UV and Radial |
 | Texture Coordinate | Input | 🚧 Not yet | 2 | Generated needs exported bounds |
 | UV Map | Input | 🚧 Not yet | 3 | |
-| Value | Input | 🚧 Not yet | 2 | |
+| Value | Input | ✅ Supported | 2 | |
 | Volume Info | Input | ❌ Not planned | — | Volumes |
 | Wireframe | Input | 🚧 Not yet | 7 | Needs a barycentric attribute |
 
