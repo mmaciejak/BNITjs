@@ -176,12 +176,18 @@ const pack = (distance: F, color: V3, position: P, dims: Dimensions) => {
 };
 
 /** voronoi_f1. */
-function f1(v: VoronoiVariant) {
-  return ([coord, randomness, exponent]: [P, F, F]) => {
+const FLT_MAX = 3.4028234663852886e38;
+const zeroVar = (dims: Dimensions) =>
+  vecN(Array.from({ length: dims }, () => float(0))).toVar() as P;
+
+type Body = (args: [P, F, F, F]) => Node<'mat3'>;
+
+function f1(v: VoronoiVariant): Body {
+  return ([coord, randomness, exponent]) => {
     const { cellF, local, cellI } = setup(v, coord);
-    const minDistance = float(3.4028234663852886e38).toVar();
-    const targetOffset = vecN(Array.from({ length: v.dims }, () => float(0))).toVar() as P;
-    const targetPosition = vecN(Array.from({ length: v.dims }, () => float(0))).toVar() as P;
+    const minDistance = float(FLT_MAX).toVar();
+    const targetOffset = zeroVar(v.dims);
+    const targetPosition = zeroVar(v.dims);
     forCells(v.dims, 1, (offset) => {
       const point = offset.add(cellHash(v, cellF, cellI, offset).mul(randomness)).toVar() as P;
       const d = metricDistance(v, point, local, exponent).toVar();
@@ -196,9 +202,40 @@ function f1(v: VoronoiVariant) {
   };
 }
 
+/** voronoi_f2: the second closest point. */
+function f2(v: VoronoiVariant): Body {
+  return ([coord, randomness, exponent]) => {
+    const { cellF, local, cellI } = setup(v, coord);
+    const distanceF1 = float(FLT_MAX).toVar();
+    const distanceF2 = float(FLT_MAX).toVar();
+    const offsetF1 = zeroVar(v.dims);
+    const positionF1 = zeroVar(v.dims);
+    const offsetF2 = zeroVar(v.dims);
+    const positionF2 = zeroVar(v.dims);
+    forCells(v.dims, 1, (offset) => {
+      const point = offset.add(cellHash(v, cellF, cellI, offset).mul(randomness)).toVar() as P;
+      const d = metricDistance(v, point, local, exponent).toVar();
+      If(d.lessThan(distanceF1), () => {
+        distanceF2.assign(distanceF1);
+        distanceF1.assign(d);
+        offsetF2.assign(offsetF1);
+        offsetF1.assign(offset);
+        positionF2.assign(positionF1);
+        positionF1.assign(point);
+      }).ElseIf(d.lessThan(distanceF2), () => {
+        distanceF2.assign(d);
+        offsetF2.assign(offset);
+        positionF2.assign(point);
+      });
+    });
+    const color = cellColor(v, cellF, cellI, offsetF2);
+    return pack(distanceF2 as F, color, positionF2.add(cellF) as P, v.dims);
+  };
+}
+
 type FeatureFn = (coord: P, randomness: F, exponent: F, smoothness: F) => Node<'mat3'>;
 
-const BODIES: Partial<Record<Feature, typeof f1>> = { F1: f1 };
+const BODIES: Partial<Record<Feature, (v: VoronoiVariant) => Body>> = { F1: f1, F2: f2 };
 
 const cache = new Map<string, FeatureFn>();
 
@@ -210,7 +247,7 @@ export function voronoiFeature(feature: Feature, v: VoronoiVariant): FeatureFn |
   let fn = cache.get(key);
   if (!fn) {
     const b = body(v);
-    fn = Fn(([coord, randomness, exponent]: [P, F, F, F]) => b([coord, randomness, exponent]), {
+    fn = Fn((args: [P, F, F, F]) => b(args), {
       coord: PTYPE[v.dims],
       randomness: 'float',
       exponent: 'float',
