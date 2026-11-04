@@ -3,6 +3,7 @@
 A variant is "<FEATURE>_<DIMS>[_<METRIC>][_<OUTPUT>][_<OPTION>...]", e.g. F1_3D_COLOR or
 F2_2D_MANHATTAN_NORMALIZE. Unlinked Vector (Generated), Scale 5, W = 0.37 (1D: W varies with x).
 Options: NORMALIZE, RAND05 (Randomness 0.5), DETAIL (Detail 2.5, Roughness 0.6, Lacunarity 2.2),
+DETAIL3 (Detail 3, integral), ROUGH0 (Detail 2.5 with Roughness 0: a single octave),
 SHARP (Smoothness 0: Smooth F1 falls back to F1), SOFT (Smoothness 0.4; default 1).
 """
 
@@ -41,9 +42,9 @@ def build(variant):
         inputs["Smoothness"].default_value = 0.0
     if "SOFT" in options:
         inputs["Smoothness"].default_value = 0.4
-    if "DETAIL" in options:
-        inputs["Detail"].default_value = 2.5
-        inputs["Roughness"].default_value = 0.6
+    if options & {"DETAIL", "DETAIL3", "ROUGH0"}:
+        inputs["Detail"].default_value = 3.0 if "DETAIL3" in options else 2.5
+        inputs["Roughness"].default_value = 0.0 if "ROUGH0" in options else 0.6
         inputs["Lacunarity"].default_value = 2.2
     if dims == "1D":
         coord = nodes.new("ShaderNodeTexCoord")

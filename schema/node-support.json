@@ -606,9 +606,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "partial",
+    "status": "supported",
     "phase": 5,
-    "notes": "Every feature and distance metric, 1D–4D, Detail 0 (fractal Detail is ignored). Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern"
+    "notes": "Every feature and distance metric, 1D–4D, fractal Detail, Normalize. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern"
   },
   {
     "name": "Wave Texture",

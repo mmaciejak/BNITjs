@@ -12,10 +12,12 @@
  * mat3(vec3(distance, position.w, 0), color, position.xyz).
  */
 import {
+  Break,
   Fn,
   If,
   Loop,
   abs,
+  ceil,
   distance as dist,
   dot,
   float,
@@ -395,3 +397,148 @@ export function voronoiFeature(feature: Feature, v: VoronoiVariant): FeatureFn |
 }
 
 export { vecN, comps };
+
+// Fractal Voronoi -------------------------------------------------------------------------------
+
+type M3 = Node<'mat3'>;
+const column = (m: M3, i: number) =>
+  (m as unknown as { element(i: Node<'int'>): Node<'vec3'> }).element(int(i));
+
+/** The packed result from a vec4 position. */
+const pack4 = (distance: F, color: V3, position: Node<'vec4'>) =>
+  mat3(vec3(distance, position.w, 0), color, position.xyz);
+
+export type FractalVoronoiFn = (
+  coord: P,
+  detail: F,
+  roughness: F,
+  lacunarity: F,
+  randomness: F,
+  exponent: F,
+  smoothness: F,
+  maxDistance: F,
+) => M3;
+
+type FractalArgs = [P, F, F, F, F, F, F, F];
+
+/**
+ * fractal_voronoi_x_fx / fractal_voronoi_distance_to_edge: octaves of the feature at growing
+ * scales, including Blender's interpolation of a fractional Detail and its normalization.
+ * Detail must be clamped to [0, 15] and roughness to [0, 1].
+ */
+function fractalBody(feature: Feature, v: VoronoiVariant, normalize: boolean) {
+  const octave = voronoiFeature(feature, v)!;
+  return ([
+    coord,
+    detail,
+    roughness,
+    lacunarity,
+    randomness,
+    exponent,
+    smoothness,
+    maxDistance,
+  ]: FractalArgs) => {
+    const amplitude = float(1).toVar();
+    const scale = float(1).toVar();
+    const zeroInput = detail.equal(0).or(roughness.equal(0));
+    const remainder = detail.sub(floor(detail)).toVar();
+    const range = { start: int(0), end: int(ceil(detail)), type: 'int', condition: '<=' } as const;
+    const run = () =>
+      octave(coord.mul(scale) as P, randomness, exponent, smoothness).toVar() as unknown as M3;
+
+    if (feature === 'DISTANCE_TO_EDGE') {
+      const maxAmplitude = maxDistance.toVar();
+      const distance = float(8).toVar();
+      Loop(range, ({ i }: { i: Node<'int'> }) => {
+        const d = column(run(), 0).x.toVar();
+        If(zeroInput, () => {
+          distance.assign(d);
+          Break();
+        })
+          .ElseIf(i.toFloat().lessThanEqual(detail), () => {
+            maxAmplitude.assign(mix(maxAmplitude, maxDistance.div(scale), amplitude));
+            distance.assign(mix(distance, min(distance, d.div(scale)), amplitude));
+            scale.mulAssign(lacunarity);
+            amplitude.mulAssign(roughness);
+          })
+          .Else(() => {
+            If(remainder.notEqual(0), () => {
+              const lerpAmplitude = mix(maxAmplitude, maxDistance.div(scale), amplitude);
+              maxAmplitude.assign(mix(maxAmplitude, lerpAmplitude, remainder));
+              const lerpDistance = mix(distance, min(distance, d.div(scale)), amplitude);
+              distance.assign(mix(distance, min(distance, lerpDistance), remainder));
+            });
+          });
+      });
+      const result = normalize ? distance.div(maxAmplitude) : distance;
+      return pack4(result as F, vec3(0), vec4(0));
+    }
+
+    const maxAmplitude = float(0).toVar();
+    const distance = float(0).toVar();
+    const color = vec3(0).toVar();
+    const position = vec4(0).toVar();
+    Loop(range, ({ i }: { i: Node<'int'> }) => {
+      const m = run();
+      const c0 = column(m, 0);
+      const d = c0.x;
+      const c = column(m, 1);
+      const p = vec4(column(m, 2), c0.y);
+      If(zeroInput, () => {
+        maxAmplitude.assign(1);
+        distance.assign(d);
+        color.assign(c);
+        position.assign(p);
+        Break();
+      })
+        .ElseIf(i.toFloat().lessThanEqual(detail), () => {
+          maxAmplitude.addAssign(amplitude);
+          distance.addAssign(d.mul(amplitude));
+          color.addAssign(c.mul(amplitude));
+          position.assign(mix(position, p.div(scale), amplitude));
+          scale.mulAssign(lacunarity);
+          amplitude.mulAssign(roughness);
+        })
+        .Else(() => {
+          If(remainder.notEqual(0), () => {
+            maxAmplitude.assign(mix(maxAmplitude, maxAmplitude.add(amplitude), remainder));
+            distance.assign(mix(distance, distance.add(d.mul(amplitude)), remainder));
+            color.assign(mix(color, color.add(c.mul(amplitude)), remainder));
+            position.assign(mix(position, mix(position, p.div(scale), amplitude), remainder));
+          });
+        });
+    });
+    if (normalize) {
+      distance.divAssign(maxAmplitude.mul(maxDistance));
+      color.divAssign(maxAmplitude);
+    }
+    return pack4(distance as F, color as V3, position as Node<'vec4'>);
+  };
+}
+
+const fractalCache = new Map<string, FractalVoronoiFn>();
+
+/** The fractal shader function of a feature (not N-Sphere Radius, which has no octaves). */
+export function voronoiFractal(
+  feature: Feature,
+  v: VoronoiVariant,
+  normalize: boolean,
+): FractalVoronoiFn {
+  const key = `${feature}/${v.dims}/${v.metric}/${v.legacy}/${normalize}`;
+  let fn = fractalCache.get(key);
+  if (!fn) {
+    fn = Fn(fractalBody(feature, v, normalize), {
+      coord: PTYPE[v.dims],
+      detail: 'float',
+      roughness: 'float',
+      lacunarity: 'float',
+      randomness: 'float',
+      exponent: 'float',
+      smoothness: 'float',
+      maxDistance: 'float',
+      return: 'mat3',
+    }) as unknown as FractalVoronoiFn;
+    fractalCache.set(key, fn);
+  }
+  return fn;
+}
