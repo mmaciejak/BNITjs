@@ -192,7 +192,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Combine XYZ | Converter | ✅ Supported | 3 | |
 | Float Curve | Converter | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
 | Map Range | Converter | 🚧 Not yet | 3 | All modes, float + vector |
-| Math | Converter | 🚧 Not yet | 3 | All operations |
+| Math | Converter | ✅ Supported | 3 | All operations and Clamp; Cycles semantics (safe divide, pow, modulo …) |
 | RGB to BW | Converter | 🚧 Not yet | 3 | |
 | Script | Converter | ❌ Not planned | — | OSL not possible in realtime |
 | Separate Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |

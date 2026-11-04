@@ -1,5 +1,20 @@
 {
   "_comment": "Per-scene limits in 8-bit levels (0-255) on sRGB-encoded pixels. mae = mean absolute error over all pixels and channels. max = largest allowed single-channel error. outliers = fraction of pixels allowed above max (default 0); only for patterns with discontinuities or poles, where Cycles' random pixel samples and the browser's 4x4 grid cover edges differently. Tighten over time.",
   "default": { "mae": 0.5, "max": 3 },
-  "scenes": {}
+  "scenes": {
+    "math_arctan2": { "outliers": 0.006 },
+    "math_compare": { "outliers": 0.006 },
+    "math_degrees": { "outliers": 0.006 },
+    "math_divide": { "outliers": 0.006 },
+    "math_floor": { "outliers": 0.006 },
+    "math_floored_modulo": { "outliers": 0.006 },
+    "math_greater_than": { "outliers": 0.006 },
+    "math_less_than": { "outliers": 0.006 },
+    "math_logarithm": { "outliers": 0.006 },
+    "math_modulo": { "outliers": 0.006 },
+    "math_round": { "outliers": 0.006 },
+    "math_snap": { "outliers": 0.006 },
+    "math_tangent": { "outliers": 0.006 },
+    "math_wrap": { "outliers": 0.006 }
+  }
 }

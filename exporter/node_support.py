@@ -54,7 +54,7 @@ STATUS = {
     "ShaderNodeLightPath": "planned",
     "ShaderNodeMapRange": "planned",
     "ShaderNodeMapping": "supported",
-    "ShaderNodeMath": "planned",
+    "ShaderNodeMath": "supported",
     "ShaderNodeMix": "planned",
     "ShaderNodeMixRGB": "planned",
     "ShaderNodeMixShader": "planned",
