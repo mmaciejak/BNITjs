@@ -11,27 +11,17 @@
  * most a fraction `outliers` (default 0) of pixels may have a channel error above max.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { load, startHarness } from './browser.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PARITY = dirname(HERE);
-const REPO = dirname(PARITY);
-const RUNTIME = join(REPO, 'runtime');
 const OUT = join(HERE, 'out');
 const REFS = join(PARITY, 'references');
 const SS = 4;
 
-// Tooling lives in runtime/node_modules.
-const require = createRequire(join(RUNTIME, 'package.json'));
-const load = async (name, key) => {
-  const mod = await import(pathToFileURL(require.resolve(name)).href);
-  return mod[key] ?? mod.default?.[key];
-};
-const chromium = await load('playwright', 'chromium');
 const PNG = await load('pngjs', 'PNG');
-const createServer = await load('vite', 'createServer');
 
 const args = process.argv.slice(2);
 const useWebGL = args.includes('--webgl');
@@ -119,34 +109,7 @@ function compare(ref, got) {
 }
 
 // --- run ---------------------------------------------------------------------------------------
-const three = join(RUNTIME, 'node_modules', 'three');
-const server = await createServer({
-  configFile: false,
-  root: HERE,
-  logLevel: 'warn',
-  server: { port: 0, fs: { allow: [REPO] } },
-  // No dependency pre-bundling: it could load a second copy of three.js.
-  optimizeDeps: { noDiscovery: true, include: [] },
-  resolve: {
-    alias: [
-      { find: /^three\/addons\/(.*)$/, replacement: `${three}/examples/jsm/$1` },
-      { find: /^three\/webgpu$/, replacement: `${three}/build/three.webgpu.js` },
-      { find: /^three\/tsl$/, replacement: `${three}/build/three.tsl.js` },
-      { find: /^three$/, replacement: `${three}/build/three.module.js` },
-    ],
-  },
-});
-await server.listen();
-const base = server.resolvedUrls.local[0];
-
-const browser = await chromium.launch({
-  headless: !headed,
-  channel: 'chromium', // full Chromium (new headless) so WebGPU is available
-  args: ['--enable-unsafe-webgpu', '--enable-features=Vulkan', '--use-angle=metal'],
-});
-const page = await browser.newPage({ viewport: { width: 512 * SS, height: 512 * SS }, deviceScaleFactor: 1 });
-const consoleLines = [];
-page.on('console', (msg) => consoleLines.push(`[${msg.type()}] ${msg.text()}`));
+const { base, page, consoleLines, close } = await startHarness({ width: 512 * SS, height: 512 * SS, headed });
 
 const results = [];
 let failed = 0;
@@ -192,8 +155,7 @@ for (const name of scenes) {
   console.log(`${status}  ${name.padEnd(28)} ${detail}`);
 }
 
-await browser.close();
-await server.close();
+await close();
 
 const rows = results.map(
   (r) => `| ${r.scene} | ${r.pass ? '✅' : '❌'} | ${r.mae ?? '—'} | ${r.max ?? '—'} | ${r.limit.mae} / ${r.limit.max} | ${r.backend ?? '—'} | ${r.error ? r.error.split('\n')[0] : (r.warnings ?? []).join('; ')} |`,

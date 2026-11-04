@@ -48,6 +48,10 @@ python3 tools/sync_node_support.py
 # Parity: render Blender references + export glTF, then compare in headless Chromium
 blender -b --factory-startup --python parity/render_refs.py [-- scene ...]
 cd runtime && npm run parity [-- scene ...] [--webgl]   # report: parity/compare/out/report.md
+
+# Performance check: frame time of Noise at several Detail values
+blender -b --factory-startup --python parity/perf_cases.py
+cd runtime && npm run perf [-- case ...] [--webgl]     # report: parity/compare/out/perf.md
 ```
 
 ### Using the runtime
@@ -76,6 +80,26 @@ params.set('Wood/Color', [0.6, 0.3, 0.1]); // linear RGB, as in Blender
 ```
 
 `examples/configurator` builds sliders and color pickers from these parameters. To run it: `cd runtime && npm run example -- configurator`.
+
+### Performance of procedural textures
+
+Procedural textures are evaluated for every pixel, every frame. Their cost grows with the number of octaves, which is ⌊Detail⌋ + 1, plus one more when Detail has a fractional part. Shading cost measured with `npm run perf` on an Apple M3 Pro (WebGPU, in ms per megapixel per frame; WebGL2 gives similar numbers):
+
+| Noise Texture | Detail 0 | Detail 2 | Detail 4 | Detail 8 | Detail 15 |
+|---|---|---|---|---|---|
+| 2D, Fac | 0.00 | 0.05 | 0.17 | 0.42 | 0.86 |
+| 3D, Fac | 0.00 | 0.27 | 0.51 | 0.99 | 1.93 |
+| 3D, Color | 0.26 | 0.99 | 1.75 | 3.47 | 5.96 |
+| 3D, Color, Distortion | 0.62 | 1.34 | 2.07 | 3.76 | 6.48 |
+| 4D, Fac | 0.19 | 0.86 | 1.51 | 2.82 | 5.15 |
+| 4D, Color | 0.85 | 2.72 | 4.57 | 8.37 | 14.87 |
+
+A full-screen 1080p view is about 2 megapixels. Rules of thumb:
+
+- Linking the **Color** output costs about 3× the Fac output, because it evaluates the noise three times. Use Fac when one channel is enough.
+- **4D** costs about 2.5× as much as 3D, and 3D costs about 3× as much as 2D. Distortion adds about one octave's cost per axis.
+- Recommended limits: Detail ≤ 8 on desktop GPUs, and **Detail ≤ 4** (3D, Fac) or **≤ 2** (Color or 4D) on phones. The phone limits are estimates: they assume a mid-range phone GPU is 5–10× slower than the M3 Pro. They have not been measured on phones.
+- Above these limits, bake the texture (planned for Phase 9).
 
 ### Using the exporter
 
