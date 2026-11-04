@@ -163,7 +163,9 @@ for (const name of scenes) {
     const state = await page.evaluate(() => window.__parity);
     if (state.error) throw new Error(state.error);
     result.backend = state.backend;
-    result.warnings = state.warnings;
+    // Shader compile errors only show up in the console: report them with the warnings.
+    const consoleErrors = consoleLines.filter((l) => l.startsWith('[error]') && !l.includes('favicon'));
+    result.warnings = [...state.warnings, ...consoleErrors];
     const shot = await page.locator('canvas').screenshot({ type: 'png' });
     const got = downsample(readPng(shot), SS);
     const { mae, max, over, diff } = compare(ref, got);
