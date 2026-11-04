@@ -1,0 +1,5 @@
+{
+  "_comment": "Per-scene limits in 8-bit levels (0-255) on sRGB-encoded pixels: mae = mean absolute error over all pixels and channels, max = largest single-channel error. Tighten over time.",
+  "default": { "mae": 0.5, "max": 3 },
+  "scenes": {}
+}

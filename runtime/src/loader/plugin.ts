@@ -55,9 +55,9 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
   /** Store per-object data (Object Info, Generated coordinates) on the objects that use it. */
   afterRoot(result: GLTF): Promise<void> | null {
     const nodes = (this.parser.json.nodes as NodeDef[] | undefined) ?? [];
-    const associations = this.parser.associations as Map<Object3D, { nodes?: number }>;
+    const associations = this.parser.associations as Map<Object3D, { nodes?: number } | undefined>;
     for (const [object, mapping] of associations) {
-      if (mapping.nodes === undefined) continue;
+      if (mapping?.nodes === undefined) continue;
       const data = nodes[mapping.nodes]?.extensions?.[EXTENSION_NAME] as
         ObjectExtension | undefined;
       if (!data) continue;

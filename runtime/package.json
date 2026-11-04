@@ -23,7 +23,9 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "parity": "node ../parity/compare/run.mjs",
+    "parity:refs": "${BLENDER:-blender} -b --factory-startup --python ../parity/render_refs.py --"
   },
   "peerDependencies": {
     "three": "0.187.0"
@@ -34,6 +36,8 @@
     "@types/three": "0.187.0",
     "ajv": "8.20.0",
     "eslint": "10.14.0",
+    "playwright": "1.63.0",
+    "pngjs": "7.0.0",
     "prettier": "3.9.10",
     "three": "0.187.0",
     "typescript": "5.9.3",

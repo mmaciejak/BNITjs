@@ -26,3 +26,6 @@ parity/references/*.png
 parity/compare/out/
 test-results/
 playwright-report/
+
+# Vite cache
+.vite/

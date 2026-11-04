@@ -50,9 +50,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "partial",
+    "status": "supported",
     "phase": 2,
-    "notes": "Named \"RGB\" in 4.2. Parity test pending"
+    "notes": "Named \"RGB\" in 4.2"
   },
   {
     "name": "Color Attribute",
@@ -255,9 +255,8 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "partial",
-    "phase": 2,
-    "notes": "Implemented; parity test pending"
+    "status": "supported",
+    "phase": 2
   },
   {
     "name": "Glass BSDF",
@@ -1053,7 +1052,7 @@
     "category": "Output",
     "status": "partial",
     "phase": 2,
-    "notes": "Surface only; parity test pending"
+    "notes": "Surface only so far (Displacement in phase 7)"
   },
   {
     "name": "Raycast",

@@ -68,7 +68,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Attribute | Input | 🚧 Not yet | 3 | Via glTF vertex attributes |
 | Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
 | Camera Data | Input | 🚧 Not yet | 3 | View vector, view Z depth, view distance |
-| Color | Input | 🟡 Partial | 2 | Named "RGB" in 4.2. Parity test pending |
+| Color | Input | ✅ Supported | 2 | Named "RGB" in 4.2 |
 | Color Attribute | Input | 🚧 Not yet | 3 | Via glTF `COLOR_n` |
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Fresnel | Input | 🚧 Not yet | 3 | |
@@ -92,7 +92,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
 | Background | Shader | 🚧 Not yet | 6 | World only |
 | Diffuse BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params |
-| Emission | Shader | 🟡 Partial | 2 | Implemented; parity test pending |
+| Emission | Shader | ✅ Supported | 2 | |
 | Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
 | Glossy BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params. RNA type is `ShaderNodeBsdfAnisotropic` |
 | Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
@@ -191,7 +191,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Light Falloff | Light | ❌ Not planned | — | Belongs to lights |
 | Light Output | Output | ❌ Not planned | — | |
 | Line Style Output | Output | ❌ Not planned | — | Freestyle only |
-| Material Output | Output | 🟡 Partial | 2 | Surface only; parity test pending |
+| Material Output | Output | 🟡 Partial | 2 | Surface only so far (Displacement in phase 7) |
 | Raycast | Input | ❌ Not planned | — | Blender 5.x. Needs scene ray tracing |
 | UV Along Stroke | Input | ❌ Not planned | — | Freestyle only |
 | World Output | Output | 🚧 Not yet | 6 | World only |

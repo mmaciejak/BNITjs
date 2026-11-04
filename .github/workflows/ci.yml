@@ -61,3 +61,44 @@ jobs:
           mkdir blender && tar -xf blender.tar.xz -C blender --strip-components=1
       - name: Run exporter tests
         run: ./blender/blender -b --factory-startup --python exporter/tests/run_tests.py
+
+  parity:
+    runs-on: ubuntu-latest
+    needs: runtime
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: runtime/package-lock.json
+      - name: Install Blender runtime libraries
+        run: sudo apt-get update && sudo apt-get install -y libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6 libgl1 libegl1
+      - name: Cache Blender
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: blender
+          key: blender-5.2.2-linux-x64
+      - name: Download Blender
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL "https://download.blender.org/release/Blender5.2/blender-5.2.2-linux-x64.tar.xz" -o blender.tar.xz
+          mkdir blender && tar -xf blender.tar.xz -C blender --strip-components=1
+      - name: Render Blender references
+        run: ./blender/blender -b --factory-startup --python parity/render_refs.py
+      - run: npm ci
+        working-directory: runtime
+      - run: npx playwright install --with-deps chromium
+        working-directory: runtime
+      - name: Compare (WebGL2; CI runners have no GPU for WebGPU)
+        run: npm run parity -- --webgl
+        working-directory: runtime
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: parity-report
+          path: |
+            parity/compare/out/**/*.png
+            parity/compare/out/report.*
+            parity/references/*.png
