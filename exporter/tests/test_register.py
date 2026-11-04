@@ -23,12 +23,11 @@ class PanelSummaryTest(unittest.TestCase):
         bpy.ops.wm.read_factory_settings(use_empty=True)
 
     def test_summary_lists_unsupported_nodes(self):
-        live, rows, warnings = ui.summarize(scenes.uv_mapping())
+        live, rows, warnings = ui.summarize(scenes.baked_node())
         self.assertEqual(warnings, [])
-        names = {name for name, _, _ in rows}
-        self.assertIn("Mapping", names)
-        self.assertIn("Principled BSDF", names)
-        self.assertEqual(live, 0)  # nothing is live before Phase 2
+        self.assertIn(("Ambient Occlusion", 1, "baked"), rows)
+        # Material Output, Principled BSDF: whatever is live now, the counts add up.
+        self.assertEqual(live + sum(n for _, n, _ in rows), 3)
 
     def test_summary_without_output(self):
         mat = scenes.new_material("empty")

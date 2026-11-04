@@ -4,7 +4,7 @@ import unittest
 import bpy
 import scenes
 
-from exporter import graph_export
+from exporter import graph_export, node_support
 
 
 def links_to(graph, node_id, socket):
@@ -122,11 +122,20 @@ class GraphExportTest(unittest.TestCase):
                 approx = lut[-1] + sampled["slopes"][1] * 0.5
                 self.assertAlmostEqual(approx, mapping.evaluate(curve, x), delta=1e-3, msg=name)
 
-    def test_report_lists_nodes_not_supported_live(self):
-        _, report = graph_export.export_material_graph(scenes.uv_mapping())
-        reported = {(u["id"], u["status"]) for u in report["unsupported"]}
-        self.assertIn(("Mapping", "planned"), reported)
-        self.assertIn(("Principled BSDF", "planned"), reported)
+    def test_report_lists_exactly_the_nodes_not_live(self):
+        for build in scenes.ALL:
+            bpy.ops.wm.read_factory_settings(use_empty=True)
+            graph, report = graph_export.export_material_graph(build())
+            expected = {
+                node_id
+                for node_id, n in graph["nodes"].items()
+                if n["type"] != graph_export.VALUE_NODE and node_support.STATUS.get(n["type"]) not in node_support.LIVE
+            }
+            self.assertEqual({u["id"] for u in report["unsupported"]}, expected, build.__name__)
+
+    def test_report_includes_status(self):
+        _, report = graph_export.export_material_graph(scenes.baked_node())
+        self.assertIn(("Ambient Occlusion", "baked"), {(u["id"], u["status"]) for u in report["unsupported"]})
 
     def test_no_empty_collections_or_none(self):
         """The glTF exporter strips them, so the graph must never depend on them."""

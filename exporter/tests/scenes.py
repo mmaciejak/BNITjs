@@ -179,4 +179,22 @@ def ramps_and_curves():
     return mat
 
 
-ALL = [uv_mapping, emission_rgb, reroutes_frames_unused, muted_node_and_link, nested_groups, ramps_and_curves]
+def baked_node():
+    """Ambient Occlusion (always baked, never live) into Base Color."""
+    mat = new_material("baked_node")
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    bsdf = _principled(mat)
+    ao = nodes.new("ShaderNodeAmbientOcclusion")
+    links.new(ao.outputs["Color"], bsdf.inputs["Base Color"])
+    return mat
+
+
+ALL = [
+    uv_mapping,
+    emission_rgb,
+    reroutes_frames_unused,
+    muted_node_and_link,
+    nested_groups,
+    ramps_and_curves,
+    baked_node,
+]
