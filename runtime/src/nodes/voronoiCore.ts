@@ -17,6 +17,7 @@ import {
   Loop,
   abs,
   distance as dist,
+  dot,
   float,
   floor,
   int,
@@ -25,7 +26,9 @@ import {
   ivec4,
   mat3,
   max,
+  min,
   mix,
+  normalize,
   pow,
   select,
   smoothstep,
@@ -276,12 +279,56 @@ function smoothF1(v: VoronoiVariant): Body {
   };
 }
 
+/** voronoi_distance_to_edge: distance to the nearest cell border (Color and Position are 0). */
+function distanceToEdge(v: VoronoiVariant): Body {
+  return ([coord, randomness]) => {
+    const { cellF, local, cellI } = setup(v, coord);
+    const zero = vecN(Array.from({ length: v.dims }, () => float(0)));
+    if (v.dims === 1) {
+      const c = cellF as unknown as F;
+      const l = local as unknown as F;
+      const mid = hashFloat(c).mul(randomness);
+      const left = float(-1).add(hashFloat(c.sub(1)).mul(randomness));
+      const right = float(1).add(hashFloat(c.add(1)).mul(randomness));
+      const toLeft = abs(mid.add(left).div(2).sub(l));
+      const toRight = abs(mid.add(right).div(2).sub(l));
+      return pack(min(toLeft, toRight) as F, vec3(0), zero, v.dims);
+    }
+    const toPoint = (offset: P) =>
+      offset
+        .add(cellHash(v, cellF, cellI, offset).mul(randomness))
+        .sub(local)
+        .toVar() as P;
+    const vectorToClosest = zeroVar(v.dims);
+    const minDistance = float(FLT_MAX).toVar();
+    forCells(v.dims, 1, (offset) => {
+      const vectorToPoint = toPoint(offset);
+      const d = dot(vectorToPoint, vectorToPoint).toVar();
+      If(d.lessThan(minDistance), () => {
+        minDistance.assign(d);
+        vectorToClosest.assign(vectorToPoint);
+      });
+    });
+    minDistance.assign(FLT_MAX);
+    forCells(v.dims, 1, (offset) => {
+      const vectorToPoint = toPoint(offset);
+      const perpendicular = vectorToPoint.sub(vectorToClosest).toVar() as P;
+      If(dot(perpendicular, perpendicular).greaterThan(0.0001), () => {
+        const toEdge = dot(vectorToClosest.add(vectorToPoint).div(2), normalize(perpendicular));
+        minDistance.assign(min(minDistance, toEdge));
+      });
+    });
+    return pack(minDistance as F, vec3(0), zero, v.dims);
+  };
+}
+
 type FeatureFn = (coord: P, randomness: F, exponent: F, smoothness: F) => Node<'mat3'>;
 
 const BODIES: Partial<Record<Feature, (v: VoronoiVariant) => Body>> = {
   F1: f1,
   F2: f2,
   SMOOTH_F1: smoothF1,
+  DISTANCE_TO_EDGE: distanceToEdge,
 };
 
 const cache = new Map<string, FeatureFn>();

@@ -61,10 +61,11 @@ export const voronoi: NodeImpl = (ctx) => {
   const color = m.element(int(1));
   const position = vec4(m.element(int(2)), c0.y);
 
+  const edge = feature === 'DISTANCE_TO_EDGE';
   if (normalize) {
     const half = float(0.5).add(randomness.mul(0.5));
     let maxDistance =
-      dims === 1
+      dims === 1 || edge
         ? half
         : metricDistance(
             variant,
@@ -79,9 +80,9 @@ export const voronoi: NodeImpl = (ctx) => {
   const scaled = select(scale.notEqual(0), position.div(scale), vec4(0)) as Node<'vec4'>;
   return {
     Distance: distance,
-    Color: color,
-    Position: dims === 1 ? vec3(0) : scaled.xyz,
-    W: dims === 1 || dims === 4 ? scaled.w : float(0),
+    Color: edge ? vec3(0) : color,
+    Position: dims === 1 || edge ? vec3(0) : scaled.xyz,
+    W: (dims === 1 || dims === 4) && !edge ? scaled.w : float(0),
     Radius: float(0),
   };
 };

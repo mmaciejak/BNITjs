@@ -186,7 +186,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Noise Texture | Texture | ✅ Supported | 4 | All types (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, distortion, normalize. Musgrave nodes from older files are converted to Noise by Blender |
 | Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |
 | Sky Texture | Texture | 🚧 Not yet | 6 | World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT |
-| Voronoi Texture | Texture | 🟡 Partial | 5 | F1, F2 and Smooth F1 with every distance metric, 1D–4D, Detail 0. Other features fall back to F1. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern |
+| Voronoi Texture | Texture | 🟡 Partial | 5 | F1, F2, Smooth F1 and Distance to Edge with every distance metric, 1D–4D, Detail 0. N-Sphere Radius falls back to F1. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern |
 | Wave Texture | Texture | 🚧 Not yet | 6 | |
 | White Noise Texture | Texture | ✅ Supported | 4 | Bit-exact Cycles hash. Since the hash depends on the exact float bits of its input, Blender and the browser only agree where the input is computed identically (e.g. snapped coordinates) |
 
