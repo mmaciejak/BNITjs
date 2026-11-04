@@ -28,6 +28,7 @@
 							1,
 							1
 						],
+						"random":0.1357643,
 						"texspace":{
 							"location":[
 								0,
@@ -64,6 +65,7 @@
 						"blender":"5.2.2 LTS"
 					},
 					"material":"emission_rgb",
+					"materialPassIndex":0,
 					"output":"Material Output",
 					"nodes":{
 						"Material Output":{

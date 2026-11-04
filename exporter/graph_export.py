@@ -27,7 +27,7 @@ GRAPH_FORMAT_VERSION = 1
 VALUE_NODE = "BSW_Value"
 
 _CURVE_KINDS = {"ShaderNodeRGBCurve": "RGB", "ShaderNodeVectorCurve": "VECTOR", "ShaderNodeFloatCurve": "FLOAT"}
-_OUTPUT_VALUE_TYPES = {"ShaderNodeValue", "ShaderNodeRGB"}
+_OUTPUT_VALUE_TYPES = {"ShaderNodeValue", "ShaderNodeRGB", "ShaderNodeNormal"}
 _LAYOUT_TYPES = {"NodeReroute", "NodeFrame", "NodeGroupInput", "NodeGroupOutput"}
 _BASE_PROPS = None
 
@@ -390,7 +390,7 @@ class GraphBuilder:
             if not _available(socket):
                 continue
             item = {"name": socket.name, "type": socket.type}
-            # Value and Color nodes store their value on the output socket.
+            # Value, Color and Normal nodes store their value on the output socket.
             if node.bl_idname in _OUTPUT_VALUE_TYPES:
                 value = socket_value(socket)
                 if value is not None:
@@ -443,6 +443,7 @@ def export_material_graph(material, include_data=True):
         "version": GRAPH_FORMAT_VERSION,
         "generator": {"name": "blender_shader_web", "version": _addon_version(), "blender": bpy.app.version_string},
         "material": material.name,
+        "materialPassIndex": material.pass_index,
         "output": output_id,
         "nodes": builder.nodes,
     }

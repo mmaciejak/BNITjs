@@ -80,6 +80,7 @@ export interface ShaderGraph {
   version: number;
   generator: { name: string; version: string; blender: string };
   material: string;
+  materialPassIndex?: number;
   output: string;
   nodes: Record<string, GraphNode>;
   links?: GraphLink[];
@@ -90,6 +91,7 @@ export interface ObjectData {
   name: string;
   passIndex: number;
   color: [number, number, number, number];
+  random: number;
   texspace?: { location: [number, number, number]; size: [number, number, number] };
 }
 

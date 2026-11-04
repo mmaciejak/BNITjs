@@ -50,6 +50,10 @@
       "items": {
         "$ref": "#/$defs/link"
       }
+    },
+    "materialPassIndex": {
+      "type": "integer",
+      "description": "Material pass index (Object Info > Material Index)."
     }
   },
   "$defs": {
@@ -160,7 +164,7 @@
         },
         "outputs": {
           "type": "object",
-          "description": "Available output sockets by identifier. value is set for nodes that store their value on the output (Value, Color).",
+          "description": "Available output sockets by identifier. value is set for nodes that store their value on the output (Value, Color, Normal).",
           "additionalProperties": {
             "type": "object",
             "required": ["name", "type"],
@@ -400,7 +404,7 @@
       "properties": {
         "object": {
           "type": "object",
-          "required": ["name", "passIndex", "color"],
+          "required": ["name", "passIndex", "color", "random"],
           "additionalProperties": false,
           "properties": {
             "name": {
@@ -440,6 +444,10 @@
                   "maxItems": 3
                 }
               }
+            },
+            "random": {
+              "type": "number",
+              "description": "Object Info > Random as Cycles computes it for a non-instanced object: hash_uint2(hash_string(name), 0) / 0xFFFFFFFF."
             }
           }
         }

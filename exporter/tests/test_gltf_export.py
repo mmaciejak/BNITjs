@@ -75,6 +75,7 @@ class GltfExportTest(unittest.TestCase):
         self.assertEqual(data["name"], "Plane")
         self.assertEqual(data["passIndex"], 7)
         self.assertEqual(data["texspace"]["size"], [1, 1, 1])
+        self.assertAlmostEqual(data["random"], 0.13576, places=4)  # measured in Cycles for "Plane"
 
     def test_every_test_scene_exports(self):
         for build in scenes.ALL:
