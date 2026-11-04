@@ -89,7 +89,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
 | Camera Data | Input | ✅ Supported | 3 | |
 | Color | Input | ✅ Supported | 2 | Named "RGB" in 4.2 |
-| Color Attribute | Input | 🚧 Not yet | 3 | Via glTF `COLOR_n` |
+| Color Attribute | Input | 🟡 Partial | 3 | By name or render-active, via the exporter's COLOR_n layout; ambiguous when the standard material also uses a color attribute and the mesh has several |
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Fresnel | Input | ✅ Supported | 3 | Front faces |
 | Geometry | Input | 🚧 Not yet | 7 | Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute |

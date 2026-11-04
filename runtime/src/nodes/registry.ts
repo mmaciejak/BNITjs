@@ -3,6 +3,7 @@ import { bswValue } from './bswValue.js';
 import { cameraData } from './cameraData.js';
 import { checker } from './checker.js';
 import { clamp } from './clamp.js';
+import { colorAttribute } from './colorAttribute.js';
 import { colorRamp } from './colorRamp.js';
 import { floatCurve } from './floatCurve.js';
 import { fresnel } from './fresnel.js';
@@ -80,6 +81,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeNormal: normal,
   ShaderNodeCameraData: cameraData,
   ShaderNodeUVMap: uvMap,
+  ShaderNodeVertexColor: colorAttribute,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
