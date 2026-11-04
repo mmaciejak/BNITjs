@@ -61,7 +61,7 @@ STATUS = {
     "ShaderNodeNewGeometry": "planned",
     "ShaderNodeNormal": "planned",
     "ShaderNodeNormalMap": "planned",
-    "ShaderNodeObjectInfo": "planned",
+    "ShaderNodeObjectInfo": "supported",
     "ShaderNodeOutputAOV": "not_planned",
     "ShaderNodeOutputLight": "not_planned",
     "ShaderNodeOutputLineStyle": "not_planned",

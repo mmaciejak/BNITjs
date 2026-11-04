@@ -127,9 +127,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
-    "notes": "Exporter writes a per-object seed"
+    "notes": "Random matches Cycles for non-instanced objects (name hash)"
   },
   {
     "name": "Particle Info",

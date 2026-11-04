@@ -95,7 +95,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Geometry | Input | 🚧 Not yet | 7 | Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute |
 | Layer Weight | Input | ✅ Supported | 3 | Front faces |
 | Light Path | Input | 🚧 Not yet | 10 | Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1) |
-| Object Info | Input | 🚧 Not yet | 3 | Exporter writes a per-object seed |
+| Object Info | Input | ✅ Supported | 3 | Random matches Cycles for non-instanced objects (name hash) |
 | Particle Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Point Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Tangent | Input | 🚧 Not yet | 7 | UV and Radial |

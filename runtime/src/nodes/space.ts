@@ -27,7 +27,7 @@ function objectData(object: Object3D | null | undefined) {
 }
 
 /** Per-object uniform read from the data the loader stored in userData (see loader/plugin.ts). */
-function perObject(
+export function perObject(
   read: (object: Object3D | null | undefined) => Vector3 | undefined,
   fallback: Vector3,
 ) {
@@ -37,6 +37,17 @@ function perObject(
     return v ? target.copy(v) : target.copy(fallback);
   });
 }
+
+/** Per-object float uniform. */
+export function perObjectFloat(
+  read: (object: Object3D | null | undefined) => number | undefined,
+  fallback: number,
+) {
+  return uniform(fallback).onObjectUpdate(({ object }) => read(object) ?? fallback);
+}
+
+/** Exported per-object data (see loader/plugin.ts), or undefined. */
+export { objectData };
 
 const fromArray = (a: number[] | undefined) => (a ? new Vector3(a[0], a[1], a[2]) : undefined);
 

@@ -18,6 +18,7 @@ export type NodeOutput = FloatNode | Vec3Node | Closure | null;
 export interface NodeContext {
   readonly id: string;
   readonly node: GraphNode;
+  readonly graph: ShaderGraph;
   /** Input as float, with Blender's implicit conversion if the link carries another type. */
   float(identifier: string, fallback?: number): FloatNode;
   /** Input as vec3 (vectors and colors). */
@@ -112,6 +113,7 @@ export class GraphEvaluator {
     return {
       id,
       node,
+      graph: this.graph,
       float: (identifier, fallback = 0) => {
         const src = this.source(id, identifier);
         if (src && src.value !== null && !isClosure(src.value)) return toFloat(src.value, src.type);
