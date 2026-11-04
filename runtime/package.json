@@ -30,7 +30,9 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/node": "22.20.5",
     "@types/three": "0.187.0",
+    "ajv": "8.20.0",
     "eslint": "10.14.0",
     "prettier": "3.9.10",
     "three": "0.187.0",
