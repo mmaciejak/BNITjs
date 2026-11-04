@@ -1,0 +1,41 @@
+{
+  "name": "blender-shader-web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rebuild Blender shader node graphs live in three.js with TSL",
+  "type": "module",
+  "main": "./dist/blender-shader-web.js",
+  "module": "./dist/blender-shader-web.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/blender-shader-web.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/three": "0.187.0",
+    "eslint": "10.14.0",
+    "prettier": "3.9.10",
+    "three": "0.187.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.1.0"
+  }
+}
