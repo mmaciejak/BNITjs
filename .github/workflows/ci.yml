@@ -94,6 +94,9 @@ jobs:
       - name: Compare (WebGL2; CI runners have no GPU for WebGPU)
         run: npm run parity -- --webgl
         working-directory: runtime
+      - name: Configurator example
+        run: npm run example:check -- --webgl
+        working-directory: runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:

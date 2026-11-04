@@ -38,5 +38,7 @@ if [[ -z "${SKIP_PARITY:-}" ]]; then
   (cd runtime && npm run parity --silent | tail -1)
   step "parity (WebGL2)"
   (cd runtime && npm run parity --silent -- --webgl | tail -1)
+  step "configurator example"
+  (cd runtime && npm run example:check --silent 2>&1 | grep -E '^(PASS|FAIL)' && npm run example:check --silent -- --webgl 2>&1 | grep -E '^(PASS|FAIL)')
 fi
 printf '\nAll checks passed.\n'
