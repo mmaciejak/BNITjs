@@ -17,7 +17,7 @@ STATUS = {
     "ShaderNodeBackground": "planned",
     "ShaderNodeBevel": "baked",
     "ShaderNodeBlackbody": "planned",
-    "ShaderNodeBrightContrast": "planned",
+    "ShaderNodeBrightContrast": "supported",
     "ShaderNodeBsdfAnisotropic": "planned",
     "ShaderNodeBsdfDiffuse": "planned",
     "ShaderNodeBsdfGlass": "planned",
