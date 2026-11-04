@@ -82,3 +82,12 @@ def show_signed(nodes, links, value_socket, color_in):
     remap.inputs["Location"].default_value = (0.5, 0.5, 0.5)
     links.new(comb.outputs["Vector"], remap.inputs["Vector"])
     links.new(remap.outputs["Vector"], color_in)
+
+
+def gradient_color(nodes, links):
+    """Generated (x, y, 0.5) scaled to [0, 1.5], so values above 1 are covered."""
+    coord = nodes.new("ShaderNodeTexCoord")
+    scale = nodes.new("ShaderNodeMapping")
+    scale.inputs["Scale"].default_value = (1.5, 1.5, 1.5)
+    links.new(coord.outputs["Generated"], scale.inputs["Vector"])
+    return scale.outputs["Vector"]

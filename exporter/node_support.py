@@ -48,7 +48,7 @@ STATUS = {
     "ShaderNodeHairInfo": "not_planned",
     "ShaderNodeHoldout": "planned",
     "ShaderNodeHueSaturation": "planned",
-    "ShaderNodeInvert": "planned",
+    "ShaderNodeInvert": "supported",
     "ShaderNodeLayerWeight": "planned",
     "ShaderNodeLightFalloff": "not_planned",
     "ShaderNodeLightPath": "planned",
