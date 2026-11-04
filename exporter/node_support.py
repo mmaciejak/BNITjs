@@ -37,7 +37,7 @@ STATUS = {
     "ShaderNodeCombineColor": "planned",
     "ShaderNodeCombineHSV": "planned",
     "ShaderNodeCombineRGB": "planned",
-    "ShaderNodeCombineXYZ": "planned",
+    "ShaderNodeCombineXYZ": "supported",
     "ShaderNodeDisplacement": "planned",
     "ShaderNodeEeveeSpecular": "planned",
     "ShaderNodeEmission": "supported",

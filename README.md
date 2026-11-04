@@ -189,7 +189,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Color Ramp | Converter | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
 | Combine Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |
 | Combine HSV / Combine RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Combine Color |
-| Combine XYZ | Converter | 🚧 Not yet | 3 | |
+| Combine XYZ | Converter | ✅ Supported | 3 | |
 | Float Curve | Converter | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
 | Map Range | Converter | 🚧 Not yet | 3 | All modes, float + vector |
 | Math | Converter | 🚧 Not yet | 3 | All operations |
