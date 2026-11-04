@@ -859,7 +859,7 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
     "notes": "Legacy, Blender 4.2 only; same code as Combine Color"
   },
