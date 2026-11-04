@@ -8,6 +8,7 @@ import { colorAttribute } from './colorAttribute.js';
 import { colorRamp } from './colorRamp.js';
 import { floatCurve } from './floatCurve.js';
 import { fresnel } from './fresnel.js';
+import { glossy } from './glossy.js';
 import { gradient } from './gradient.js';
 import { rgbCurves } from './rgbCurves.js';
 import { vectorCurves } from './vectorCurves.js';
@@ -86,6 +87,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeVertexColor: colorAttribute,
   ShaderNodeAttribute: attribute,
   ShaderNodeBsdfDiffuse: diffuse,
+  ShaderNodeBsdfAnisotropic: glossy,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

@@ -278,9 +278,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 3,
-    "notes": "Mapped to physical material params. RNA type is `ShaderNodeBsdfAnisotropic`"
+    "notes": "Fully metallic physical material with the same roughness; no parity test (lighting differs). Anisotropy in phase 8"
   },
   {
     "name": "Hair BSDF",
