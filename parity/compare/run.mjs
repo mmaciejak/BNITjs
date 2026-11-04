@@ -7,7 +7,8 @@
  * renders parity/compare/out/<scene>/scene.gltf in headless Chromium at SS× resolution,
  * box-downsamples in linear space (like Cycles' box pixel filter), and compares with the
  * Blender reference. Writes browser.png / diff.png per scene and report.{md,json}; exits 1 if a
- * scene exceeds its thresholds (parity/thresholds.json).
+ * scene exceeds its thresholds (parity/thresholds.json): the mean error must be ≤ mae, and at
+ * most a fraction `outliers` (default 0) of pixels may have a channel error above max.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -41,7 +42,7 @@ const thresholds = JSON.parse(readFileSync(join(PARITY, 'thresholds.json'), 'utf
 const scenes = readdirSync(REFS)
   .filter((f) => f.endsWith('.png'))
   .map((f) => f.slice(0, -4))
-  .filter((name) => wanted.length === 0 || wanted.includes(name))
+  .filter((name) => wanted.length === 0 || wanted.some((w) => name === w || name.startsWith(`${w}_`)))
   .sort();
 if (scenes.length === 0) {
   console.error('No references. Run: blender -b --factory-startup --python parity/render_refs.py');
@@ -101,6 +102,7 @@ function compare(ref, got) {
     throw new Error(`size mismatch: reference ${ref.width}×${ref.height}, browser ${got.width}×${got.height}`);
   }
   const diff = new Float64Array(ref.rgb.length);
+  const pixelMax = new Float64Array(ref.width * ref.height);
   let sum = 0;
   let max = 0;
   for (let i = 0; i < ref.rgb.length; i++) {
@@ -108,8 +110,12 @@ function compare(ref, got) {
     diff[i] = d;
     sum += d;
     if (d > max) max = d;
+    const p = (i / 3) | 0;
+    if (d > pixelMax[p]) pixelMax[p] = d;
   }
-  return { mae: sum / ref.rgb.length, max, diff: { width: ref.width, height: ref.height, rgb: diff } };
+  /** Fraction of pixels whose worst channel exceeds `level`. */
+  const over = (level) => pixelMax.reduce((n, d) => n + (d > level ? 1 : 0), 0) / pixelMax.length;
+  return { mae: sum / ref.rgb.length, max, over, diff: { width: ref.width, height: ref.height, rgb: diff } };
 }
 
 // --- run ---------------------------------------------------------------------------------------
@@ -160,10 +166,12 @@ for (const name of scenes) {
     result.warnings = state.warnings;
     const shot = await page.locator('canvas').screenshot({ type: 'png' });
     const got = downsample(readPng(shot), SS);
-    const { mae, max, diff } = compare(ref, got);
+    const { mae, max, over, diff } = compare(ref, got);
+    const outliers = over(limit.max);
     result.mae = Number(mae.toFixed(3));
     result.max = Number(max.toFixed(2));
-    result.pass = mae <= limit.mae && max <= limit.max;
+    result.outliers = Number(outliers.toFixed(5));
+    result.pass = mae <= limit.mae && outliers <= (limit.outliers ?? 0);
     mkdirSync(dir, { recursive: true });
     writePng(join(dir, 'browser.png'), got);
     writePng(join(dir, 'diff.png'), diff, (d) => Math.min(1, (d * 10) / 255)); // 10× amplified
@@ -175,7 +183,10 @@ for (const name of scenes) {
   if (!result.pass) failed++;
   results.push(result);
   const status = result.pass ? 'PASS' : 'FAIL';
-  const detail = result.error ? result.error.split('\n')[0] : `mae ${result.mae} (≤${limit.mae}) max ${result.max} (≤${limit.max}) [${result.backend}]`;
+  const outlierNote = limit.outliers ? `, ${(result.outliers * 100).toFixed(2)}% over (≤${limit.outliers * 100}%)` : '';
+  const detail = result.error
+    ? result.error.split('\n')[0]
+    : `mae ${result.mae} (≤${limit.mae}) max ${result.max} (≤${limit.max}${outlierNote}) [${result.backend}]`;
   console.log(`${status}  ${name.padEnd(28)} ${detail}`);
 }
 
