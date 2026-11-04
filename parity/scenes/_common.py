@@ -91,3 +91,37 @@ def gradient_color(nodes, links):
     scale.inputs["Scale"].default_value = (1.5, 1.5, 1.5)
     links.new(coord.outputs["Generated"], scale.inputs["Vector"])
     return scale.outputs["Vector"]
+
+
+def two_colors(nodes, links):
+    """Two colorful gradients over the plane (values up to ~1.2) as vector sockets: (A, B)."""
+    coord = nodes.new("ShaderNodeTexCoord")
+    a = nodes.new("ShaderNodeMapping")
+    a.inputs["Rotation"].default_value = (0.0, 0.0, 0.6)
+    a.inputs["Scale"].default_value = (1.2, 1.1, 0.4)
+    a.inputs["Location"].default_value = (0.0, -0.1, 0.1)
+    b = nodes.new("ShaderNodeMapping")
+    b.inputs["Rotation"].default_value = (0.0, 0.0, -1.1)
+    b.inputs["Scale"].default_value = (0.9, 1.3, 1.6)
+    b.inputs["Location"].default_value = (0.3, 0.4, -0.2)
+    links.new(coord.outputs["Generated"], a.inputs["Vector"])
+    links.new(coord.outputs["Generated"], b.inputs["Vector"])
+    return a.outputs["Vector"], b.outputs["Vector"]
+
+
+def x_factor(nodes, links, lo=-0.25, hi=1.25):
+    """Generated x remapped to [lo, hi] as a float socket."""
+    coord = nodes.new("ShaderNodeTexCoord")
+    sep = nodes.new("ShaderNodeSeparateXYZ")
+    links.new(coord.outputs["Generated"], sep.inputs["Vector"])
+    node = nodes.new("ShaderNodeMath")
+    node.operation = "MULTIPLY_ADD"
+    links.new(sep.outputs["X"], node.inputs[0])
+    node.inputs[1].default_value = hi - lo
+    node.inputs[2].default_value = lo
+    return node.outputs[0]
+
+
+def by_id(sockets):
+    """Sockets by identifier (Blender 5.x hides unused sockets from name lookup)."""
+    return {s.identifier: s for s in sockets}

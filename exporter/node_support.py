@@ -75,7 +75,7 @@ STATUS = {
     "ShaderNodeRadialTiling": "planned",
     "ShaderNodeRaycast": "not_planned",
     "ShaderNodeScript": "not_planned",
-    "ShaderNodeSeparateColor": "planned",
+    "ShaderNodeSeparateColor": "supported",
     "ShaderNodeSeparateHSV": "planned",
     "ShaderNodeSeparateRGB": "planned",
     "ShaderNodeSeparateXYZ": "supported",

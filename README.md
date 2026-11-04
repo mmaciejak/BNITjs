@@ -195,7 +195,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Math | Converter | ✅ Supported | 3 | All operations and Clamp; Cycles semantics (safe divide, pow, modulo …) |
 | RGB to BW | Converter | ✅ Supported | 3 | |
 | Script | Converter | ❌ Not planned | — | OSL not possible in realtime |
-| Separate Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |
+| Separate Color | Converter | ✅ Supported | 3 | RGB, HSV, HSL |
 | Separate HSV / Separate RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Separate Color |
 | Separate XYZ | Converter | ✅ Supported | 3 | |
 | Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
