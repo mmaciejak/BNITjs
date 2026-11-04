@@ -66,6 +66,20 @@ class GraphExportTest(unittest.TestCase):
         self.assertEqual(graph["nodes"][grain["node"]]["type"], graph_export.VALUE_NODE)
         self.assertEqual(report["warnings"], [])
 
+    def test_texture_mapping_only_when_changed(self):
+        mat = scenes.new_material("tm")
+        nodes, links = mat.node_tree.nodes, mat.node_tree.links
+        checker = nodes.new("ShaderNodeTexChecker")
+        emission = nodes.new("ShaderNodeEmission")
+        links.new(checker.outputs["Color"], emission.inputs["Color"])
+        links.new(emission.outputs[0], nodes["Material Output"].inputs["Surface"])
+        graph, _ = graph_export.export_material_graph(mat)
+        self.assertNotIn("textureMapping", graph["nodes"]["Checker Texture"].get("properties", {}))
+        self.assertNotIn("colorMapping", graph["nodes"]["Checker Texture"].get("properties", {}))
+        checker.texture_mapping.scale = (2.0, 1.0, 1.0)
+        graph, _ = graph_export.export_material_graph(mat)
+        self.assertEqual(graph["nodes"]["Checker Texture"]["properties"]["textureMapping"]["scale"], [2.0, 1.0, 1.0])
+
     def test_reroutes_frames_and_unused_nodes_are_removed(self):
         graph, _ = graph_export.export_material_graph(scenes.reroutes_frames_unused())
         self.assertNotIn("NodeReroute", types(graph))

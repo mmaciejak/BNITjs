@@ -95,30 +95,42 @@ def _rna_value(owner, prop):
     return None
 
 
-def _rna_is_default(owner, prop):
-    value = getattr(owner, prop.identifier)
-    if prop.type == "ENUM":
-        return (set(value) == set(prop.default_flag)) if prop.is_enum_flag else value == prop.default
-    if getattr(prop, "is_array", False) and prop.array_length > 0:
-        return all(abs(a - b) < 1e-7 for a, b in zip(value, prop.default_array, strict=False))
-    if prop.type in {"BOOLEAN", "INT", "FLOAT"}:
-        return value == prop.default
-    if prop.type == "STRING":
-        return value == prop.default
-    return True
+# The sidebar Texture Mapping / Color Mapping panels of texture nodes. Their RNA defaults don't
+# match the real defaults, so changes are detected against these identity settings.
+_TEXTURE_MAPPING_IDENTITY = {
+    "vector_type": "POINT",
+    "translation": (0.0, 0.0, 0.0),
+    "rotation": (0.0, 0.0, 0.0),
+    "scale": (1.0, 1.0, 1.0),
+    "use_min": False,
+    "use_max": False,
+    "mapping_x": "X",
+    "mapping_y": "Y",
+    "mapping_z": "Z",
+    "mapping": "FLAT",
+}
+_COLOR_MAPPING_IDENTITY = {
+    "use_color_ramp": False,
+    "brightness": 1.0,
+    "contrast": 1.0,
+    "saturation": 1.0,
+    "blend_factor": 0.0,
+}
 
 
-def _non_default_struct(struct_value, skip=()):
-    """Plain properties of an RNA struct that differ from their defaults, or None."""
-    out = {}
-    for prop in struct_value.bl_rna.properties:
-        if prop.identifier in skip or prop.identifier == "rna_type" or prop.type in {"POINTER", "COLLECTION"}:
-            continue
-        if not _rna_is_default(struct_value, prop):
-            value = _rna_value(struct_value, prop)
-            if value is not None:
-                out[prop.identifier] = value
-    return out or None
+def _changed(struct_value, identity):
+    """Settings of struct_value that differ from identity (all of them, if any differs)."""
+
+    def same(a, b):
+        if isinstance(b, tuple):
+            return all(abs(x - y) < 1e-6 for x, y in zip(a, b, strict=True))
+        if isinstance(b, float):
+            return abs(a - b) < 1e-6
+        return a == b
+
+    if all(same(getattr(struct_value, k), v) for k, v in identity.items()):
+        return None
+    return {k: to_json_value(getattr(struct_value, k)) for k in identity}
 
 
 def _image_ref(image):
@@ -156,11 +168,11 @@ def node_properties(node, include_data):
             elif ident == "image":
                 props["image"] = _image_ref(value)
             elif ident == "texture_mapping":
-                tm = _non_default_struct(value)
+                tm = _changed(value, _TEXTURE_MAPPING_IDENTITY)
                 if tm:
                     props["textureMapping"] = tm
             elif ident == "color_mapping":
-                cm = _non_default_struct(value, skip={"color_ramp"})
+                cm = _changed(value, _COLOR_MAPPING_IDENTITY)
                 if cm:
                     props["colorMapping"] = cm
             elif isinstance(value, bpy.types.ID):
