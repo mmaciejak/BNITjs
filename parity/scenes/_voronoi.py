@@ -2,7 +2,8 @@
 
 A variant is "<FEATURE>_<DIMS>[_<METRIC>][_<OUTPUT>][_<OPTION>...]", e.g. F1_3D_COLOR or
 F2_2D_MANHATTAN_NORMALIZE. Unlinked Vector (Generated), Scale 5, W = 0.37 (1D: W varies with x).
-Options: NORMALIZE, RAND05 (Randomness 0.5), DETAIL (Detail 2.5, Roughness 0.6, Lacunarity 2.2).
+Options: NORMALIZE, RAND05 (Randomness 0.5), DETAIL (Detail 2.5, Roughness 0.6, Lacunarity 2.2),
+SHARP (Smoothness 0: Smooth F1 falls back to F1), SOFT (Smoothness 0.4; default 1).
 """
 
 from _common import by_id, emission_material
@@ -36,6 +37,10 @@ def build(variant):
     inputs["Exponent"].default_value = 1.5
     if "RAND05" in options:
         inputs["Randomness"].default_value = 0.5
+    if "SHARP" in options:
+        inputs["Smoothness"].default_value = 0.0
+    if "SOFT" in options:
+        inputs["Smoothness"].default_value = 0.4
     if "DETAIL" in options:
         inputs["Detail"].default_value = 2.5
         inputs["Roughness"].default_value = 0.6

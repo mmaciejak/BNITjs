@@ -25,7 +25,10 @@ import {
   ivec4,
   mat3,
   max,
+  mix,
   pow,
+  select,
+  smoothstep,
   vec2,
   vec3,
   vec4,
@@ -233,9 +236,53 @@ function f2(v: VoronoiVariant): Body {
   };
 }
 
+/**
+ * voronoi_smooth_f1 over the 5^dims neighbourhood. Smoothness is already halved and clamped;
+ * with Smoothness 0, Blender uses plain F1.
+ */
+function smoothF1(v: VoronoiVariant): Body {
+  return ([coord, randomness, exponent, smoothness]) => {
+    const result = mat3().toVar();
+    If(smoothness.equal(0), () => {
+      result.assign(voronoiFeature('F1', v)!(coord, randomness, exponent, smoothness));
+    }).Else(() => {
+      const { cellF, local, cellI } = setup(v, coord);
+      const smoothDistance = float(0).toVar();
+      const smoothColor = vec3(0).toVar();
+      const smoothPosition = zeroVar(v.dims);
+      const h = float(-1).toVar();
+      forCells(v.dims, 2, (offset) => {
+        const point = offset.add(cellHash(v, cellF, cellI, offset).mul(randomness)).toVar() as P;
+        const d = metricDistance(v, point, local, exponent).toVar();
+        h.assign(
+          select(
+            h.equal(-1),
+            float(1),
+            smoothstep(0, 1, float(0.5).add(smoothDistance.sub(d).mul(0.5).div(smoothness))),
+          ),
+        );
+        const correction = smoothness.mul(h).mul(float(1).sub(h)).toVar();
+        smoothDistance.assign(mix(smoothDistance, d, h).sub(correction));
+        correction.assign(correction.div(float(1).add(smoothness.mul(3))));
+        const cellCol = cellColor(v, cellF, cellI, offset);
+        smoothColor.assign(mix(smoothColor, cellCol, h).sub(correction));
+        smoothPosition.assign(mix(smoothPosition, point, h).sub(correction));
+      });
+      result.assign(
+        pack(smoothDistance as F, smoothColor as V3, cellF.add(smoothPosition) as P, v.dims),
+      );
+    });
+    return result as unknown as Node<'mat3'>;
+  };
+}
+
 type FeatureFn = (coord: P, randomness: F, exponent: F, smoothness: F) => Node<'mat3'>;
 
-const BODIES: Partial<Record<Feature, (v: VoronoiVariant) => Body>> = { F1: f1, F2: f2 };
+const BODIES: Partial<Record<Feature, (v: VoronoiVariant) => Body>> = {
+  F1: f1,
+  F2: f2,
+  SMOOTH_F1: smoothF1,
+};
 
 const cache = new Map<string, FeatureFn>();
 

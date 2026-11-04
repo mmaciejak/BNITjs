@@ -67,6 +67,8 @@
     "voronoi_legacy_f1_3d_color": { "outliers": 0.015 },
     "voronoi_legacy_f1_4d_color": { "outliers": 0.015 },
     "voronoi_legacy_f2_3d_color": { "outliers": 0.03 },
+    "voronoi_smooth_f1_1d": { "outliers": 0.006 },
+    "voronoi_smooth_f1_2d_position": { "outliers": 0.006 },
     "white_noise_1d": { "outliers": 0.006 },
     "white_noise_2d": { "outliers": 0.006 },
     "white_noise_3d": { "outliers": 0.006 },
