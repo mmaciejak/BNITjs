@@ -2,6 +2,14 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-5: Voronoi
+
+- Voronoi Texture (✅): every feature (F1, F2, Smooth F1, Distance to Edge, N-Sphere Radius) and distance metric, 1D–4D, fractal Detail with fractional interpolation, and Normalize. It is ported from Blender's GLSL, which matches Cycles. Octaves run in real shader loops, so Detail can be a live parameter.
+- Blender 5 hashes Voronoi cells as integers (PCG), while Blender 4.x hashes them as floats, so the same material gives a different pattern in each. The runtime picks the variant from the Blender version recorded in the export. `voronoi_legacy` scenes are rendered with 4.2 to cover the 4.x variant. The switch is assumed to be at 5.0: only 4.2 and 5.2 were tested.
+- Parity: 90 Voronoi scenes. Borders between cells are discontinuous, so for outputs that jump at borders (Color, Position, W, Radius), Cycles' random pixel samples and the browser's sample grid disagree on border pixels. Those scenes allow a share of outlier pixels, up to 8% for 2D F2 Color with fractal Detail. All 374 scenes pass on WebGPU and WebGL2.
+- Noise and White Noise were checked against Blender 4.2 renders as well: the output is identical.
+- The performance check covers Voronoi. The README table was re-measured in a single run.
+
 ## phase-4: Noise
 
 - White Noise Texture (✅, 1D–4D): a bit-exact port of Cycles' lookup3 hashes, emitted as shared shader functions. JS versions of the hashes compute constants on the CPU.
