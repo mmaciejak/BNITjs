@@ -3,6 +3,7 @@ import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
 import { colorRamp } from './colorRamp.js';
 import { rgbCurves } from './rgbCurves.js';
+import { vectorCurves } from './vectorCurves.js';
 import { combineColor } from './combineColor.js';
 import { combineHSV, combineRGB } from './combineLegacy.js';
 import { hueSaturation } from './hueSaturation.js';
@@ -60,6 +61,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeMixRGB: mixRGB,
   ShaderNodeValToRGB: colorRamp,
   ShaderNodeRGBCurve: rgbCurves,
+  ShaderNodeVectorCurve: vectorCurves,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

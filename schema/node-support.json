@@ -772,9 +772,9 @@
     ],
     "section": "Vector",
     "category": "Vector",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
-    "notes": "Sampled in Blender → 1D LUT"
+    "notes": "Cycles table incl. extrapolation"
   },
   {
     "name": "Vector Displacement",

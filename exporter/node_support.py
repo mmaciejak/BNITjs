@@ -102,7 +102,7 @@ STATUS = {
     "ShaderNodeUVMap": "planned",
     "ShaderNodeValToRGB": "supported",
     "ShaderNodeValue": "supported",
-    "ShaderNodeVectorCurve": "planned",
+    "ShaderNodeVectorCurve": "supported",
     "ShaderNodeVectorDisplacement": "planned",
     "ShaderNodeVectorMath": "supported",
     "ShaderNodeVectorRotate": "supported",
