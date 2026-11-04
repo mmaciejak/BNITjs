@@ -77,6 +77,19 @@ class GltfExportTest(unittest.TestCase):
         self.assertEqual(data["texspace"]["size"], [1, 1, 1])
         self.assertAlmostEqual(data["random"], 0.13576, places=4)  # measured in Cycles for "Plane"
 
+    def test_image_texture_is_embedded(self):
+        plane_with(scenes.image_texture())
+        gltf = export_gltf(os.path.join(self.tmp, "image.gltf"))
+        graph = gltf["materials"][0]["extensions"][EXTENSION_NAME]
+        (node,) = (n for n in graph["nodes"].values() if n["type"] == "ShaderNodeTexImage")
+        ref = node["properties"]["image"]
+        self.assertEqual(ref["name"], "Swatch")
+        texture = gltf["textures"][ref["texture"]]
+        image = gltf["images"][texture["source"]]
+        self.assertEqual(image["mimeType"], "image/png")
+        self.assertIn("bufferView", image)
+        self.assertEqual(node["properties"]["interpolation"], "Closest")
+
     def test_every_test_scene_exports(self):
         for build in scenes.ALL:
             bpy.ops.wm.read_factory_settings(use_empty=True)

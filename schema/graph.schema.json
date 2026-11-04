@@ -255,6 +255,11 @@
         },
         "filepath": {
           "type": "string"
+        },
+        "texture": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index into the glTF textures array: the embedded image (PNG or JPEG)."
         }
       }
     },

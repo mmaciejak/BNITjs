@@ -179,6 +179,22 @@ def ramps_and_curves():
     return mat
 
 
+def image_texture():
+    """A packed 4×4 generated image → Image Texture → Emission."""
+    mat = new_material("image_texture")
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    image = bpy.data.images.new("Swatch", 4, 4)
+    image.pixels = [v for i in range(16) for v in (i / 15, 1 - i / 15, 0.5, 1.0)]
+    image.pack()
+    tex = nodes.new("ShaderNodeTexImage")
+    tex.image = image
+    tex.interpolation = "Closest"
+    emission = nodes.new("ShaderNodeEmission")
+    links.new(tex.outputs["Color"], emission.inputs["Color"])
+    links.new(emission.outputs["Emission"], _out(mat).inputs["Surface"])
+    return mat
+
+
 def baked_node():
     """Ambient Occlusion (always baked, never live) into Base Color."""
     mat = new_material("baked_node")
@@ -197,4 +213,5 @@ ALL = [
     nested_groups,
     ramps_and_curves,
     baked_node,
+    image_texture,
 ]

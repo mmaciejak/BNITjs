@@ -10,6 +10,9 @@ calls its hooks during export. This module adds:
   inputs need (Object Info, Generated texture coordinates).
 """
 
+import os
+import tempfile
+
 import bpy
 
 from .graph_export import export_material_graph
@@ -60,6 +63,18 @@ def object_random(name):
     return hash_uint2(hash_string(name), 0) / _M32
 
 
+def _all_nodes(tree, seen=None):
+    """Nodes of a tree and of the node groups inside it."""
+    seen = seen if seen is not None else set()
+    if tree is None or tree.name_full in seen:
+        return
+    seen.add(tree.name_full)
+    for node in tree.nodes:
+        yield node
+        if node.bl_idname == "ShaderNodeGroup":
+            yield from _all_nodes(node.node_tree, seen)
+
+
 def _vec(values):
     return [f32(v) for v in values]
 
@@ -79,12 +94,89 @@ def object_data(blender_object):
     return data
 
 
+_MIME = {"PNG": "image/png", "JPEG": "image/jpeg"}
+
+
+def image_bytes(image):
+    """(bytes, mime type) of a Blender image as PNG or JPEG, without color management.
+
+    Packed or on-disk PNG/JPEG files are used as they are; anything else (generated, float,
+    other formats) is saved to a temporary PNG copy (8-bit: float images are clamped).
+    """
+    fmt = image.file_format
+    if fmt in _MIME:
+        if image.packed_file is not None:
+            return bytes(image.packed_file.data), _MIME[fmt]
+        path = bpy.path.abspath(image.filepath_raw or image.filepath)
+        if image.source == "FILE" and os.path.isfile(path):
+            with open(path, "rb") as f:
+                return f.read(), _MIME[fmt]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "image.png")
+        copy = image.copy()
+        try:
+            copy.filepath_raw = path
+            copy.file_format = "PNG"
+            copy.save()
+            with open(path, "rb") as f:
+                return f.read(), "image/png"
+        finally:
+            bpy.data.images.remove(copy)
+
+
 class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
     def __init__(self):
+        from io_scene_gltf2.io.com import gltf2_io
         from io_scene_gltf2.io.com.gltf2_io_extensions import Extension
 
+        try:  # Blender 5.x
+            from io_scene_gltf2.io.exp.binary_data import BinaryData
+        except ImportError:  # Blender 4.2
+            from io_scene_gltf2.io.exp.gltf2_io_binary_data import BinaryData
+
         self.Extension = Extension
+        self.gltf2_io = gltf2_io
+        self.BinaryData = BinaryData
         self._graphs = {}
+        self._textures = {}
+
+    def _texture(self, image, export_settings):
+        """A glTF texture embedding the image (shared between materials); None if it fails."""
+        key = image.name_full
+        if key not in self._textures:
+            try:
+                data, mime = image_bytes(image)
+            except Exception as error:  # noqa: BLE001  (report and continue the export)
+                self._log(export_settings, "warning", f"{EXTENSION_NAME}: cannot embed image '{image.name}': {error}")
+                self._textures[key] = None
+                return None
+            io = self.gltf2_io
+            gltf_image = io.Image(
+                buffer_view=self.BinaryData(data),
+                extensions=None,
+                extras=None,
+                mime_type=mime,
+                name=image.name,
+                uri=None,
+            )
+            self._textures[key] = io.Texture(
+                extensions=None, extras=None, name=image.name, sampler=None, source=gltf_image
+            )
+        return self._textures[key]
+
+    def _embed_images(self, graph, blender_material, export_settings):
+        """Point every Image Texture node at an embedded glTF texture (replaced by its index)."""
+        images = {}
+        for tree_node in _all_nodes(blender_material.node_tree):
+            if tree_node.bl_idname == "ShaderNodeTexImage" and tree_node.image is not None:
+                images[tree_node.image.name] = tree_node.image
+        for node in graph["nodes"].values():
+            ref = node.get("properties", {}).get("image")
+            if node["type"] != "ShaderNodeTexImage" or not ref or ref["name"] not in images:
+                continue
+            texture = self._texture(images[ref["name"]], export_settings)
+            if texture is not None:
+                ref["texture"] = texture
 
     def _log(self, export_settings, level, message):
         log = export_settings.get("log")
@@ -113,6 +205,7 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
         graph = self._graphs[key]
         if graph is None:
             return
+        self._embed_images(graph, blender_material, export_settings)
         if gltf2_material.extensions is None:
             gltf2_material.extensions = {}
         gltf2_material.extensions[EXTENSION_NAME] = self.Extension(name=EXTENSION_NAME, extension=graph, required=False)
