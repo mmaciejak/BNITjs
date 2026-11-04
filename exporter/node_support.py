@@ -56,7 +56,7 @@ STATUS = {
     "ShaderNodeMapping": "supported",
     "ShaderNodeMath": "supported",
     "ShaderNodeMix": "supported",
-    "ShaderNodeMixRGB": "planned",
+    "ShaderNodeMixRGB": "supported",
     "ShaderNodeMixShader": "planned",
     "ShaderNodeNewGeometry": "planned",
     "ShaderNodeNormal": "planned",

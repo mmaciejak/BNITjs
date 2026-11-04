@@ -5,6 +5,7 @@ import { combineColor } from './combineColor.js';
 import { combineHSV, combineRGB } from './combineLegacy.js';
 import { hueSaturation } from './hueSaturation.js';
 import { mix } from './mix.js';
+import { mixRGB } from './mixRGB.js';
 import { separateColor } from './separateColor.js';
 import { separateHSV, separateRGB } from './separateLegacy.js';
 import { brightContrast } from './brightContrast.js';
@@ -54,6 +55,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeCombineHSV: combineHSV,
   ShaderNodeHueSaturation: hueSaturation,
   ShaderNodeMix: mix,
+  ShaderNodeMixRGB: mixRGB,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

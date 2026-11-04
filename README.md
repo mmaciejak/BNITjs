@@ -162,7 +162,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Hue/Saturation/Value | Color | ✅ Supported | 3 | |
 | Invert Color | Color | ✅ Supported | 3 | |
 | Mix | Color | ✅ Supported | 3 | Float, Vector (uniform and non-uniform), Color with all blend modes; clamp factor/result |
-| Mix (Legacy) | Color | 🚧 Not yet | 3 | `MixRGB`; same blend code as Mix |
+| Mix (Legacy) | Color | ✅ Supported | 3 | `MixRGB`; same blend code as Mix |
 | RGB Curves | Color | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
 
 ### Vector
