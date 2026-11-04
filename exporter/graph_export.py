@@ -26,6 +26,7 @@ GRAPH_FORMAT_VERSION = 1
 # Synthetic node type for constants produced by flattening (unlinked group inputs, muted outputs).
 VALUE_NODE = "BSW_Value"
 
+_CURVE_KINDS = {"ShaderNodeRGBCurve": "RGB", "ShaderNodeVectorCurve": "VECTOR", "ShaderNodeFloatCurve": "FLOAT"}
 _OUTPUT_VALUE_TYPES = {"ShaderNodeValue", "ShaderNodeRGB"}
 _LAYOUT_TYPES = {"NodeReroute", "NodeFrame", "NodeGroupInput", "NodeGroupOutput"}
 _BASE_PROPS = None
@@ -145,8 +146,9 @@ def node_properties(node, include_data):
                 if include_data:
                     data["colorRamp"] = sampling.color_ramp(value)
             elif ident == "mapping" and isinstance(value, bpy.types.CurveMapping):
-                if include_data:
-                    data["curveMapping"] = sampling.curve_mapping(value)
+                kind = _CURVE_KINDS.get(node.bl_idname)
+                if include_data and kind:
+                    data["curveMapping"] = sampling.curve_mapping(value, kind)
             elif ident == "image":
                 props["image"] = _image_ref(value)
             elif ident == "texture_mapping":

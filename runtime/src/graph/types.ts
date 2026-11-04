@@ -38,20 +38,26 @@ export interface ColorRampData {
 
 export interface CurveData {
   points: { location: [number, number]; handle: string }[];
+}
+
+/** The lookup table Cycles builds for a curve node (see schema/graph.schema.json). */
+export interface CurveTable {
+  /** RGB: R(C(t)), G(C(t)), B(C(t)). VECTOR: X(t), Y(t), Z(t). FLOAT: one value. */
+  kind: 'RGB' | 'VECTOR' | 'FLOAT';
   range: [number, number];
-  slopes: [number, number];
-  lut: number[];
+  size: number;
+  values: number[];
 }
 
 export interface CurveMappingData {
   extend: 'HORIZONTAL' | 'EXTRAPOLATED';
   useClip: boolean;
   clip: [number, number, number, number];
-  size: number;
   blackLevel?: [number, number, number];
   whiteLevel?: [number, number, number];
   tone?: 'STANDARD' | 'FILMLIKE';
   curves: CurveData[];
+  table: CurveTable;
 }
 
 export interface GraphNode {

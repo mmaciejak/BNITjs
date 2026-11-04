@@ -24,30 +24,72 @@ class SamplingTest(unittest.TestCase):
             for a, b in zip(got, expected, strict=True):
                 self.assertAlmostEqual(a, b, places=6)
 
-    def test_curve_mapping_range_and_slopes(self):
-        node = self.tree.nodes.new("ShaderNodeVectorCurve")
-        data = sampling.curve_mapping(node.mapping)
-        self.assertEqual(len(data["curves"]), 3)
-        for curve in data["curves"]:
-            self.assertEqual(curve["range"], [-1.0, 1.0])
-            self.assertEqual(len(curve["lut"]), sampling.LUT_SIZE)
-            # Default vector curves are the identity, extrapolated linearly.
-            self.assertAlmostEqual(curve["lut"][0], -1.0, places=5)
-            self.assertAlmostEqual(curve["lut"][-1], 1.0, places=5)
-            self.assertAlmostEqual(curve["slopes"][1], 1.0, places=4)
+    def _lookup(self, table, x, extrapolate):
+        """Cycles' rgb_ramp_lookup on one channel of the exported table."""
+        lo, hi = table["range"]
+        n, k = table["size"], len(table["values"]) // table["size"]
+        vals = table["values"]
 
-    def test_horizontal_extend_has_zero_slopes(self):
+        def entry(i, c):
+            return vals[i * k + c]
+
+        f = (x - lo) / (hi - lo)
+        out = []
+        for c in range(k):
+            if extrapolate and (f < 0 or f > 1):
+                if f < 0:
+                    t0, dy, g = entry(0, c), entry(0, c) - entry(1, c), -f
+                else:
+                    t0, dy, g = entry(n - 1, c), entry(n - 1, c) - entry(n - 2, c), f - 1
+                out.append(t0 + dy * g * (n - 1))
+                continue
+            g = min(max(f, 0.0), 1.0) * (n - 1)
+            i = min(int(g), n - 1)
+            frac = g - i
+            v = entry(i, c)
+            if frac > 0:
+                v = v + (entry(i + 1, c) - v) * frac
+            out.append(v)
+        return out
+
+    def test_vector_curves_table(self):
+        node = self.tree.nodes.new("ShaderNodeVectorCurve")
+        node.mapping.curves[0].points.new(0.2, -0.6)
+        data = sampling.curve_mapping(node.mapping, "VECTOR")
+        table = data["table"]
+        self.assertEqual(table["range"], [-1.0, 1.0])
+        self.assertEqual(len(table["values"]), sampling.LUT_SIZE * 3)
+        mapping = node.mapping
+        for x in (-0.9, -0.3, 0.11, 0.55, 0.97):
+            got = self._lookup(table, x, extrapolate=True)
+            for c in range(3):
+                self.assertAlmostEqual(got[c], mapping.evaluate(mapping.curves[c], x), delta=2e-3)
+
+    def test_rgb_curves_table_composes_combined_curve(self):
+        node = self.tree.nodes.new("ShaderNodeRGBCurve")
+        node.mapping.curves[3].points.new(0.3, 0.7)  # C (combined)
+        node.mapping.curves[0].points.new(0.6, 0.4)  # R
+        data = sampling.curve_mapping(node.mapping, "RGB")
+        mapping = node.mapping
+        mapping.initialize()
+        for x in (0.1, 0.45, 0.8):
+            got = self._lookup(data["table"], x, extrapolate=True)
+            c = mapping.evaluate(mapping.curves[3], x)
+            for k in range(3):
+                self.assertAlmostEqual(got[k], mapping.evaluate(mapping.curves[k], c), delta=3e-3)
+
+    def test_float_curve_extrapolates_from_table_ends(self):
         node = self.tree.nodes.new("ShaderNodeFloatCurve")
-        node.mapping.extend = "HORIZONTAL"
-        data = sampling.curve_mapping(node.mapping)
-        self.assertEqual(data["extend"], "HORIZONTAL")
-        self.assertEqual(data["curves"][0]["slopes"], [0.0, 0.0])
+        data = sampling.curve_mapping(node.mapping, "FLOAT")
+        self.assertEqual(data["extend"], "EXTRAPOLATED")
+        got = self._lookup(data["table"], 1.5, extrapolate=True)
+        self.assertAlmostEqual(got[0], 1.5, places=4)  # default curve is the identity
 
     def test_rgb_curve_levels_only_when_changed(self):
         node = self.tree.nodes.new("ShaderNodeRGBCurve")
-        self.assertNotIn("blackLevel", sampling.curve_mapping(node.mapping))
+        self.assertNotIn("blackLevel", sampling.curve_mapping(node.mapping, "RGB"))
         node.mapping.black_level = (0.1, 0.1, 0.1)
-        self.assertEqual(sampling.curve_mapping(node.mapping)["blackLevel"], [0.1, 0.1, 0.1])
+        self.assertEqual(sampling.curve_mapping(node.mapping, "RGB")["blackLevel"], [0.1, 0.1, 0.1])
 
 
 if __name__ == "__main__":

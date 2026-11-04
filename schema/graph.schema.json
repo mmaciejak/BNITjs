@@ -7,18 +7,32 @@
   "required": ["version", "generator", "material", "output", "nodes"],
   "additionalProperties": false,
   "properties": {
-    "version": { "const": 1, "description": "Graph format version." },
+    "version": {
+      "const": 1,
+      "description": "Graph format version."
+    },
     "generator": {
       "type": "object",
       "required": ["name", "version", "blender"],
       "additionalProperties": false,
       "properties": {
-        "name": { "type": "string" },
-        "version": { "type": "string", "description": "Exporter add-on version." },
-        "blender": { "type": "string", "description": "Blender version string, e.g. \"5.2.2 LTS\"." }
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "description": "Exporter add-on version."
+        },
+        "blender": {
+          "type": "string",
+          "description": "Blender version string, e.g. \"5.2.2 LTS\"."
+        }
       }
     },
-    "material": { "type": "string", "description": "Blender material name." },
+    "material": {
+      "type": "string",
+      "description": "Blender material name."
+    },
     "output": {
       "type": "string",
       "description": "Id of the active Material Output node; evaluation starts here."
@@ -27,11 +41,15 @@
       "type": "object",
       "minProperties": 1,
       "description": "Nodes by id. Ids are paths: node name, prefixed with the names of the group nodes it was inlined from (\"Wood/Noise Texture\").",
-      "additionalProperties": { "$ref": "#/$defs/node" }
+      "additionalProperties": {
+        "$ref": "#/$defs/node"
+      }
     },
     "links": {
       "type": "array",
-      "items": { "$ref": "#/$defs/link" }
+      "items": {
+        "$ref": "#/$defs/link"
+      }
     }
   },
   "$defs": {
@@ -52,12 +70,22 @@
         "CUSTOM"
       ]
     },
-    "scalar": { "type": ["number", "boolean", "string"] },
+    "scalar": {
+      "type": ["number", "boolean", "string"]
+    },
     "value": {
       "description": "Socket or property value: number, bool, string, or a number array (vector, color, Euler).",
       "anyOf": [
-        { "$ref": "#/$defs/scalar" },
-        { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/scalar" } }
+        {
+          "$ref": "#/$defs/scalar"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/scalar"
+          }
+        }
       ]
     },
     "node": {
@@ -70,8 +98,12 @@
           "pattern": "^(ShaderNode|BSW_)",
           "description": "Blender node bl_idname (e.g. ShaderNodeTexNoise), or a synthetic BSW_* node."
         },
-        "name": { "type": "string" },
-        "label": { "type": "string" },
+        "name": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
         "group": {
           "type": "string",
           "description": "Path of the group node(s) this node was inlined from."
@@ -80,18 +112,30 @@
           "type": "object",
           "description": "Node settings by RNA identifier (operation, noise_type, …). Special keys: image, textureMapping, colorMapping. For BSW_Value: value.",
           "properties": {
-            "image": { "$ref": "#/$defs/imageRef" },
-            "textureMapping": { "type": "object" },
-            "colorMapping": { "type": "object" }
+            "image": {
+              "$ref": "#/$defs/imageRef"
+            },
+            "textureMapping": {
+              "type": "object"
+            },
+            "colorMapping": {
+              "type": "object"
+            }
           },
-          "additionalProperties": { "$ref": "#/$defs/value" }
+          "additionalProperties": {
+            "$ref": "#/$defs/value"
+          }
         },
         "data": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "colorRamp": { "$ref": "#/$defs/colorRamp" },
-            "curveMapping": { "$ref": "#/$defs/curveMapping" }
+            "colorRamp": {
+              "$ref": "#/$defs/colorRamp"
+            },
+            "curveMapping": {
+              "$ref": "#/$defs/curveMapping"
+            }
           }
         },
         "inputs": {
@@ -102,9 +146,15 @@
             "required": ["name", "type"],
             "additionalProperties": false,
             "properties": {
-              "name": { "type": "string" },
-              "type": { "$ref": "#/$defs/socketType" },
-              "value": { "$ref": "#/$defs/value" }
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "$ref": "#/$defs/socketType"
+              },
+              "value": {
+                "$ref": "#/$defs/value"
+              }
             }
           }
         },
@@ -116,9 +166,15 @@
             "required": ["name", "type"],
             "additionalProperties": false,
             "properties": {
-              "name": { "type": "string" },
-              "type": { "$ref": "#/$defs/socketType" },
-              "value": { "$ref": "#/$defs/value" }
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "$ref": "#/$defs/socketType"
+              },
+              "value": {
+                "$ref": "#/$defs/value"
+              }
             }
           }
         }
@@ -127,8 +183,14 @@
     "socketRef": {
       "type": "array",
       "prefixItems": [
-        { "type": "string", "description": "node id" },
-        { "type": "string", "description": "socket identifier" }
+        {
+          "type": "string",
+          "description": "node id"
+        },
+        {
+          "type": "string",
+          "description": "socket identifier"
+        }
       ],
       "minItems": 2,
       "maxItems": 2
@@ -139,8 +201,12 @@
       "additionalProperties": false,
       "description": "from = output socket, to = input socket. Socket types may differ; the runtime applies Blender's implicit conversion.",
       "properties": {
-        "from": { "$ref": "#/$defs/socketRef" },
-        "to": { "$ref": "#/$defs/socketRef" }
+        "from": {
+          "$ref": "#/$defs/socketRef"
+        },
+        "to": {
+          "$ref": "#/$defs/socketRef"
+        }
       }
     },
     "imageRef": {
@@ -148,21 +214,44 @@
       "required": ["name", "source", "colorspace", "alphaMode"],
       "additionalProperties": false,
       "properties": {
-        "name": { "type": "string" },
-        "source": { "type": "string" },
-        "colorspace": { "type": "string" },
-        "alphaMode": { "type": "string" },
-        "filepath": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "colorspace": {
+          "type": "string"
+        },
+        "alphaMode": {
+          "type": "string"
+        },
+        "filepath": {
+          "type": "string"
+        }
       }
     },
     "colorRamp": {
       "type": "object",
-      "required": ["interpolation", "colorMode", "hueInterpolation", "elements", "size", "lut"],
+      "required": [
+        "interpolation",
+        "colorMode",
+        "hueInterpolation",
+        "elements",
+        "size",
+        "lut"
+      ],
       "additionalProperties": false,
       "properties": {
-        "interpolation": { "enum": ["EASE", "CARDINAL", "LINEAR", "B_SPLINE", "CONSTANT"] },
-        "colorMode": { "enum": ["RGB", "HSV", "HSL"] },
-        "hueInterpolation": { "enum": ["NEAR", "FAR", "CW", "CCW"] },
+        "interpolation": {
+          "enum": ["EASE", "CARDINAL", "LINEAR", "B_SPLINE", "CONSTANT"]
+        },
+        "colorMode": {
+          "enum": ["RGB", "HSV", "HSL"]
+        },
+        "hueInterpolation": {
+          "enum": ["NEAR", "FAR", "CW", "CCW"]
+        },
         "elements": {
           "type": "array",
           "minItems": 1,
@@ -171,44 +260,79 @@
             "required": ["position", "color"],
             "additionalProperties": false,
             "properties": {
-              "position": { "type": "number" },
-              "color": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 }
+              "position": {
+                "type": "number"
+              },
+              "color": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 4,
+                "maxItems": 4
+              }
             }
           }
         },
-        "size": { "type": "integer", "minimum": 2 },
+        "size": {
+          "type": "integer",
+          "minimum": 2
+        },
         "lut": {
           "type": "array",
-          "items": { "type": "number" },
+          "items": {
+            "type": "number"
+          },
           "description": "size × RGBA, sampled at i / (size - 1)."
         }
       }
     },
     "curveMapping": {
       "type": "object",
-      "required": ["extend", "useClip", "clip", "size", "curves"],
+      "required": ["extend", "useClip", "clip", "curves", "table"],
       "additionalProperties": false,
       "properties": {
-        "extend": { "enum": ["HORIZONTAL", "EXTRAPOLATED"] },
-        "useClip": { "type": "boolean" },
+        "extend": {
+          "enum": ["HORIZONTAL", "EXTRAPOLATED"]
+        },
+        "useClip": {
+          "type": "boolean"
+        },
         "clip": {
           "type": "array",
-          "items": { "type": "number" },
+          "items": {
+            "type": "number"
+          },
           "minItems": 4,
           "maxItems": 4,
           "description": "min x, min y, max x, max y"
         },
-        "size": { "type": "integer", "minimum": 2 },
-        "blackLevel": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-        "whiteLevel": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-        "tone": { "enum": ["STANDARD", "FILMLIKE"] },
+        "blackLevel": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "whiteLevel": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "tone": {
+          "enum": ["STANDARD", "FILMLIKE"]
+        },
         "curves": {
           "type": "array",
           "minItems": 1,
-          "description": "Float Curve: [curve]. Vector Curves: [X, Y, Z]. RGB Curves: [R, G, B, C (combined)].",
+          "description": "Raw curves. Float Curve: [curve]. Vector Curves: [X, Y, Z]. RGB Curves: [R, G, B, C (combined)].",
           "items": {
             "type": "object",
-            "required": ["points", "range", "slopes", "lut"],
+            "required": ["points"],
             "additionalProperties": false,
             "properties": {
               "points": {
@@ -220,29 +344,49 @@
                   "properties": {
                     "location": {
                       "type": "array",
-                      "items": { "type": "number" },
+                      "items": {
+                        "type": "number"
+                      },
                       "minItems": 2,
                       "maxItems": 2
                     },
-                    "handle": { "type": "string" }
+                    "handle": {
+                      "type": "string"
+                    }
                   }
                 }
+              }
+            }
+          }
+        },
+        "table": {
+          "type": "object",
+          "required": ["kind", "range", "size", "values"],
+          "additionalProperties": false,
+          "description": "The lookup table Cycles builds: entries at t = lo + i·(hi − lo)/(size − 1), looked up like Cycles' rgb_ramp_lookup (linear extrapolation from the end entries when extend is EXTRAPOLATED).",
+          "properties": {
+            "kind": {
+              "enum": ["RGB", "VECTOR", "FLOAT"],
+              "description": "RGB: R(C(t)), G(C(t)), B(C(t)). VECTOR: X(t), Y(t), Z(t). FLOAT: one value."
+            },
+            "range": {
+              "type": "array",
+              "items": {
+                "type": "number"
               },
-              "range": {
-                "type": "array",
-                "items": { "type": "number" },
-                "minItems": 2,
-                "maxItems": 2,
-                "description": "x range [lo, hi] the lut is sampled over (lut[i] at lo + i·(hi−lo)/(size−1))."
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "size": {
+              "type": "integer",
+              "minimum": 2
+            },
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "number"
               },
-              "slopes": {
-                "type": "array",
-                "items": { "type": "number" },
-                "minItems": 2,
-                "maxItems": 2,
-                "description": "Linear extension slope below lo and above hi."
-              },
-              "lut": { "type": "array", "items": { "type": "number" } }
+              "description": "size × (3 for RGB/VECTOR, 1 for FLOAT)"
             }
           }
         }
@@ -259,17 +403,42 @@
           "required": ["name", "passIndex", "color"],
           "additionalProperties": false,
           "properties": {
-            "name": { "type": "string" },
-            "passIndex": { "type": "integer" },
-            "color": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+            "name": {
+              "type": "string"
+            },
+            "passIndex": {
+              "type": "integer"
+            },
+            "color": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
             "texspace": {
               "description": "Blender texture space in object-local Blender coordinates (Z-up). Generated = (p − (location − size)) / (2·size), with p the vertex position converted back from glTF Y-up (x, y, z)_blender = (x, −z, y)_gltf.",
               "type": "object",
               "required": ["location", "size"],
               "additionalProperties": false,
               "properties": {
-                "location": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-                "size": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+                "location": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "size": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
               }
             }
           }

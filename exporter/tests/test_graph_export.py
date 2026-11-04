@@ -1,4 +1,3 @@
-import random
 import unittest
 
 import bpy
@@ -100,27 +99,13 @@ class GraphExportTest(unittest.TestCase):
             for c in range(4):
                 self.assertAlmostEqual(data["lut"][i * 4 + c], expected[c], places=6)
 
-    def test_curves_are_sampled_and_interpolate_back(self):
-        mat = scenes.ramps_and_curves()
-        graph, _ = graph_export.export_material_graph(mat)
-        rng = random.Random(1)
-        for name in ("Float Curve", "RGB Curves", "Vector Curves"):
-            data = graph["nodes"][name]["data"]["curveMapping"]
-            mapping = mat.node_tree.nodes[name].mapping
-            mapping.initialize()
-            for curve, sampled in zip(mapping.curves, data["curves"], strict=True):
-                lo, hi = sampled["range"]
-                lut = sampled["lut"]
-                for _ in range(50):
-                    x = rng.uniform(lo, hi)
-                    t = (x - lo) / (hi - lo) * (len(lut) - 1)
-                    i = min(int(t), len(lut) - 2)
-                    approx = lut[i] + (lut[i + 1] - lut[i]) * (t - i)
-                    self.assertAlmostEqual(approx, mapping.evaluate(curve, x), delta=2e-3, msg=name)
-                # Linear extension outside the range.
-                x = hi + 0.5
-                approx = lut[-1] + sampled["slopes"][1] * 0.5
-                self.assertAlmostEqual(approx, mapping.evaluate(curve, x), delta=1e-3, msg=name)
+    def test_curve_nodes_export_tables(self):
+        graph, _ = graph_export.export_material_graph(scenes.ramps_and_curves())
+        kinds = {
+            name: graph["nodes"][name]["data"]["curveMapping"]["table"]["kind"]
+            for name in ("Float Curve", "RGB Curves", "Vector Curves")
+        }
+        self.assertEqual(kinds, {"Float Curve": "FLOAT", "RGB Curves": "RGB", "Vector Curves": "VECTOR"})
 
     def test_report_lists_exactly_the_nodes_not_live(self):
         for build in scenes.ALL:

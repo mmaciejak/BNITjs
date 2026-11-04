@@ -24,44 +24,40 @@ def color_ramp(ramp, size=LUT_SIZE):
     }
 
 
-def _curve_range(mapping, curve):
-    xs = [p.location[0] for p in curve.points]
-    lo, hi = min(xs), max(xs)
-    if mapping.use_clip:
-        lo, hi = min(lo, mapping.clip_min_x), max(hi, mapping.clip_max_x)
-    else:
-        lo, hi = min(lo, 0.0), max(hi, 1.0)
+def _table_range(mapping, curve_count):
+    """Cycles' curvemapping_minmax: first/last point x over the curves that build the table."""
+    lo = min(mapping.curves[i].points[0].location[0] for i in range(curve_count))
+    hi = max(mapping.curves[i].points[-1].location[0] for i in range(curve_count))
     if hi - lo < 1e-6:
         hi = lo + 1.0
     return lo, hi
 
 
-def curve_mapping(mapping, size=LUT_SIZE):
-    """Sample every curve of a CurveMapping over its x range.
+def curve_mapping(mapping, kind, size=LUT_SIZE):
+    """Raw curves plus the lookup table Cycles builds for the node.
 
-    Outside ``range`` the runtime extends each curve linearly with ``slopes`` (start, end). The
-    slopes are measured numerically, so they are 0 for ``extend == 'HORIZONTAL'``.
+    ``kind`` is "RGB" (RGB Curves: entries are R(C(t)), G(C(t)), B(C(t))), "VECTOR" (Vector
+    Curves: X(t), Y(t), Z(t)) or "FLOAT" (Float Curve: one value). As in Cycles'
+    curvemapping_color_to_array / curvemapping_float_to_array, the table covers ``range``
+    (first to last point x over those curves) at t = lo + i·(hi − lo)/(size − 1). The runtime
+    looks it up like Cycles' rgb_ramp_lookup, extrapolating linearly from the end entries when
+    ``extend == "EXTRAPOLATED"``.
     """
     mapping.initialize()
-    curves = []
-    for curve in mapping.curves:
-        lo, hi = _curve_range(mapping, curve)
-        step = (hi - lo) / (size - 1)
-        lut = [_f32(mapping.evaluate(curve, lo + i * step)) for i in range(size)]
-        d = 1.0
-        slope_start = (mapping.evaluate(curve, lo) - mapping.evaluate(curve, lo - d)) / d
-        slope_end = (mapping.evaluate(curve, hi + d) - mapping.evaluate(curve, hi)) / d
-        curves.append(
-            {
-                "points": [
-                    {"location": [_f32(p.location[0]), _f32(p.location[1])], "handle": p.handle_type}
-                    for p in curve.points
-                ],
-                "range": [_f32(lo), _f32(hi)],
-                "slopes": [_f32(slope_start), _f32(slope_end)],
-                "lut": lut,
-            }
-        )
+    curves = mapping.curves
+    count = {"RGB": 4, "VECTOR": 3, "FLOAT": 1}[kind]
+    lo, hi = _table_range(mapping, count)
+    values = []
+    for i in range(size):
+        x = lo + i / (size - 1) * (hi - lo)
+        if kind == "RGB":
+            c = mapping.evaluate(curves[3], x)
+            entry = [mapping.evaluate(curves[k], c) for k in range(3)]
+        elif kind == "VECTOR":
+            entry = [mapping.evaluate(curves[k], x) for k in range(3)]
+        else:
+            entry = [mapping.evaluate(curves[0], x)]
+        values.extend(_f32(v) for v in entry)
     out = {
         "extend": mapping.extend,
         "useClip": mapping.use_clip,
@@ -71,8 +67,16 @@ def curve_mapping(mapping, size=LUT_SIZE):
             _f32(mapping.clip_max_x),
             _f32(mapping.clip_max_y),
         ],
-        "size": size,
-        "curves": curves,
+        "curves": [
+            {
+                "points": [
+                    {"location": [_f32(p.location[0]), _f32(p.location[1])], "handle": p.handle_type}
+                    for p in curve.points
+                ]
+            }
+            for curve in curves
+        ],
+        "table": {"kind": kind, "range": [_f32(lo), _f32(hi)], "size": size, "values": values},
     }
     black = [_f32(c) for c in mapping.black_level]
     white = [_f32(c) for c in mapping.white_level]
