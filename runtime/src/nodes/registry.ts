@@ -3,6 +3,7 @@ import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
 import { combineColor } from './combineColor.js';
 import { separateColor } from './separateColor.js';
+import { separateHSV, separateRGB } from './separateLegacy.js';
 import { brightContrast } from './brightContrast.js';
 import { gamma } from './gamma.js';
 import { invertColor } from './invert.js';
@@ -44,6 +45,8 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeSqueeze: squeeze,
   ShaderNodeSeparateColor: separateColor,
   ShaderNodeCombineColor: combineColor,
+  ShaderNodeSeparateRGB: separateRGB,
+  ShaderNodeSeparateHSV: separateHSV,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

@@ -196,7 +196,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | RGB to BW | Converter | ✅ Supported | 3 | |
 | Script | Converter | ❌ Not planned | — | OSL not possible in realtime |
 | Separate Color | Converter | ✅ Supported | 3 | RGB, HSV, HSL |
-| Separate HSV / Separate RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Separate Color |
+| Separate HSV / Separate RGB | Converter | ✅ Supported | 3 | Legacy, Blender 4.2 only; same code as Separate Color |
 | Separate XYZ | Converter | ✅ Supported | 3 | |
 | Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
 | Squeeze Value (Legacy) | Converter | 🟡 Partial | 3 | EEVEE formula. Cycles doesn't implement this node, so there is no parity test |
