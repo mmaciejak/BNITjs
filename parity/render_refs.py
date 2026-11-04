@@ -5,7 +5,7 @@
 For each parity/scenes/<name>.py (files starting with "_" are helpers), which defines build() ->
 material, and optionally setup(plane) to change the plane mesh or object and
 CAMERA = "PERSP" for a perspective camera (default orthographic). A module with
-VARIANTS = [...] defines build(variant) and yields one scene per variant, named
+VARIANTS = [...] defines build(variant) (and setup(plane, variant)) and yields one scene per variant, named
 <module>_<variant lowercased> (e.g. math_add):
 
 - parity/references/<name>.png: Cycles render, 512×512, 16-bit, Standard view transform, box pixel
@@ -137,7 +137,10 @@ def main():
         enable_addon()
         material = module.build() if variant is None else module.build(variant)
         material.name = name
-        build_scene(material, getattr(module, "setup", None), getattr(module, "CAMERA", "ORTHO"))
+        setup = getattr(module, "setup", None)
+        if setup is not None and variant is not None:
+            setup = (lambda s, v: lambda plane: s(plane, v))(setup, variant)
+        build_scene(material, setup, getattr(module, "CAMERA", "ORTHO"))
 
         scene = bpy.context.scene
         scene.render.filepath = os.path.join(REFS_DIR, f"{name}.png")
