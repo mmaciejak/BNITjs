@@ -1,0 +1,26 @@
+schema_version = "1.0.0"
+
+id = "blender_shader_web"
+version = "0.0.0"
+name = "Blender Shader Web"
+tagline = "Export procedural shader node graphs for live three.js materials"
+maintainer = "Maciej <maciejak28@gmail.com>"
+type = "add-on"
+
+blender_version_min = "4.2.0"
+
+# Blender add-ons link against bpy and are distributed under the GPL.
+license = ["SPDX:GPL-3.0-or-later"]
+
+tags = ["Import-Export", "Material"]
+
+[permissions]
+files = "Write glTF files and baked textures to disk"
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "*.pyc",
+  ".DS_Store",
+  "/tests/",
+]

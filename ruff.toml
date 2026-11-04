@@ -1,0 +1,7 @@
+# Blender 4.2 LTS and 5.x bundle Python 3.11.
+target-version = "py311"
+line-length = 120
+extend-exclude = ["runtime/node_modules"]
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP"]
