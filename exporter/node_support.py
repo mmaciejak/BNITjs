@@ -69,7 +69,7 @@ STATUS = {
     "ShaderNodeOutputWorld": "planned",
     "ShaderNodeParticleInfo": "not_planned",
     "ShaderNodePointInfo": "not_planned",
-    "ShaderNodeRGB": "planned",
+    "ShaderNodeRGB": "partial",
     "ShaderNodeRGBCurve": "planned",
     "ShaderNodeRGBToBW": "planned",
     "ShaderNodeRadialTiling": "planned",

@@ -68,7 +68,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Attribute | Input | 🚧 Not yet | 3 | Via glTF vertex attributes |
 | Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
 | Camera Data | Input | 🚧 Not yet | 3 | View vector, view Z depth, view distance |
-| Color | Input | 🚧 Not yet | 2 | Named "RGB" in 4.2 |
+| Color | Input | 🟡 Partial | 2 | Named "RGB" in 4.2. Parity test pending |
 | Color Attribute | Input | 🚧 Not yet | 3 | Via glTF `COLOR_n` |
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Fresnel | Input | 🚧 Not yet | 3 | |

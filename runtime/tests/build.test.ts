@@ -51,3 +51,12 @@ describe('buildMaterial', () => {
     );
   });
 });
+
+describe('input nodes', () => {
+  it('Color reads its output value', () => {
+    const graph = fixtureGraph('emission_rgb');
+    const warnings: string[] = [];
+    buildMaterial(graph, { onWarning: (w) => warnings.push(w) });
+    expect(warnings).toEqual([]);
+  });
+});

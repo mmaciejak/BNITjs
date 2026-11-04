@@ -2,6 +2,7 @@ import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { emission } from './emission.js';
 import { materialOutput } from './output.js';
+import { rgb } from './rgb.js';
 
 /**
  * Blender node type (bl_idname) -> TSL implementation.
@@ -13,6 +14,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   BSW_Value: bswValue,
   ShaderNodeOutputMaterial: materialOutput,
   ShaderNodeEmission: emission,
+  ShaderNodeRGB: rgb,
 };
 
 /** The built-in registry, optionally extended or overridden with custom node implementations. */
