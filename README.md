@@ -99,7 +99,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Holdout | Shader | 🚧 Not yet | 10 | Alpha handling, scene-dependent |
 | Metallic BSDF | Shader | 🚧 Not yet | 8 | Blender 4.3+. Maps onto metalness/specular color |
 | Mix Shader | Shader | 🚧 Not yet | 8 | Principled+Principled → mix params; otherwise approximation |
-| Principled BSDF | Shader | 🚧 Not yet | 2 | Base color, metallic, roughness, normal, alpha, emission in phase 2. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8 |
+| Principled BSDF | Shader | 🟡 Partial | 2 | Base color, metallic, roughness, alpha and emission (base color parity-tested). Normal in phase 7; coat, sheen, transmission, IOR, thin film, anisotropy in phase 8 |
 | Principled Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
 | Principled Volume | Shader | ❌ Not planned | — | Volumes |
 | Ray Portal BSDF | Shader | ❌ Not planned | — | Path-tracing only |

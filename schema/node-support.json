@@ -331,9 +331,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 2,
-    "notes": "Base color, metallic, roughness, normal, alpha, emission in phase 2. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8"
+    "notes": "Base color, metallic, roughness, alpha and emission (base color parity-tested). Normal in phase 7; coat, sheen, transmission, IOR, thin film, anisotropy in phase 8"
   },
   {
     "name": "Principled Hair BSDF",

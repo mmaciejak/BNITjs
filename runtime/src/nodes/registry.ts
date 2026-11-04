@@ -3,6 +3,7 @@ import { bswValue } from './bswValue.js';
 import { emission } from './emission.js';
 import { mapping } from './mapping.js';
 import { materialOutput } from './output.js';
+import { principled } from './principled.js';
 import { rgb } from './rgb.js';
 import { texCoord } from './texCoord.js';
 import { value } from './value.js';
@@ -18,6 +19,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeOutputMaterial: materialOutput,
   ShaderNodeEmission: emission,
   ShaderNodeMapping: mapping,
+  ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
   ShaderNodeValue: value,

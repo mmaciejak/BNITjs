@@ -60,3 +60,22 @@ describe('input nodes', () => {
     expect(warnings).toEqual([]);
   });
 });
+
+describe('Principled BSDF', () => {
+  it('builds a lit MeshPhysicalNodeMaterial with its base inputs', async () => {
+    const { MeshPhysicalNodeMaterial } = await import('three/webgpu');
+    const { material, warnings } = buildMaterial(fixtureGraph('uv_mapping'));
+    expect(material).toBeInstanceOf(MeshPhysicalNodeMaterial);
+    const physical = material as InstanceType<typeof MeshPhysicalNodeMaterial>;
+    expect(physical.colorNode).toBeTruthy();
+    expect(physical.metalnessNode).toBeTruthy();
+    expect(physical.roughnessNode).toBeTruthy();
+    expect(physical.transparent).toBe(false);
+    expect(warnings).toEqual([]);
+  });
+
+  it('renders the base color in unlit mode', () => {
+    const { material } = buildMaterial(fixtureGraph('uv_mapping'), { unlit: true });
+    expect(material).toBeInstanceOf(MeshBasicNodeMaterial);
+  });
+});

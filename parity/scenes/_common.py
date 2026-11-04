@@ -7,14 +7,21 @@ with strength 1, which feeds the Material Output.
 import bpy
 
 
-def emission_material(name):
-    """Return (material, nodes, links, color_input): link the pattern into color_input."""
+def new_material(name):
+    """An empty node material with only a Material Output."""
     mat = bpy.data.materials.new(name)
     if bpy.app.version < (5, 0, 0):
         mat.use_nodes = True
+    mat.node_tree.nodes.clear()
+    mat.node_tree.nodes.new("ShaderNodeOutputMaterial")
+    return mat
+
+
+def emission_material(name):
+    """Return (material, nodes, links, color_input): link the pattern into color_input."""
+    mat = new_material(name)
     nodes, links = mat.node_tree.nodes, mat.node_tree.links
-    nodes.clear()
-    output = nodes.new("ShaderNodeOutputMaterial")
+    output = nodes["Material Output"]
     emission = nodes.new("ShaderNodeEmission")
     emission.inputs["Strength"].default_value = 1.0
     links.new(emission.outputs["Emission"], output.inputs["Surface"])

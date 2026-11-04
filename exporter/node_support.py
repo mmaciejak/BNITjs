@@ -24,7 +24,7 @@ STATUS = {
     "ShaderNodeBsdfHair": "planned",
     "ShaderNodeBsdfHairPrincipled": "planned",
     "ShaderNodeBsdfMetallic": "planned",
-    "ShaderNodeBsdfPrincipled": "planned",
+    "ShaderNodeBsdfPrincipled": "partial",
     "ShaderNodeBsdfRayPortal": "not_planned",
     "ShaderNodeBsdfRefraction": "planned",
     "ShaderNodeBsdfSheen": "planned",
