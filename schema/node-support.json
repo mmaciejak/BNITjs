@@ -674,9 +674,9 @@
     ],
     "section": "Color",
     "category": "Color",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
-    "notes": "Float, Vector, Color + all blend modes"
+    "notes": "Float, Vector (uniform and non-uniform), Color with all blend modes; clamp factor/result"
   },
   {
     "name": "Mix (Legacy)",
