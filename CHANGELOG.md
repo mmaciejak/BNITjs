@@ -2,6 +2,13 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-4: Noise
+
+- White Noise Texture (✅, 1D–4D): a bit-exact port of Cycles' lookup3 hashes, emitted as shared shader functions. JS versions of the hashes compute constants on the CPU.
+- Noise Texture (✅): every type (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, Distortion and Normalize, ported from Cycles. Octaves run in real shader loops, so Detail can be a live parameter.
+- Parity: 40 new scenes. They cover every type in each dimension, plus sweeps of Detail (0, 4, 15, fractional), Roughness, Lacunarity, Normalize, Scale and Distortion, and coordinates past 100000 and 1e6. All 284 scenes pass on WebGPU and WebGL2.
+- Performance check (`parity/perf_cases.py`, `npm run perf`). The README lists the measured costs and recommended Detail limits.
+
 ## phase-3: Easy tier and live parameters
 
 - Every easy-tier node from SPEC §8 is live. Supported (✅, parity-tested): Math and Vector Math (all operations), Clamp, Map Range, Vector Rotate, Separate/Combine XYZ, Separate/Combine Color (RGB/HSV/HSL) and the legacy RGB/HSV nodes, Mix (all 19 blend modes) and legacy Mix, Invert, Brightness/Contrast, Gamma, Hue/Saturation/Value, RGB to BW, Color Ramp, RGB/Float/Vector Curves, Checker, Gradient, Fresnel, Layer Weight, UV Map, Object Info, Camera Data, Normal.
