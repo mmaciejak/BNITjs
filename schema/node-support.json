@@ -608,7 +608,7 @@
     "category": "Texture",
     "status": "partial",
     "phase": 5,
-    "notes": "F1 with Euclidean distance, 1D–4D, Detail 0. Other features fall back to F1. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern"
+    "notes": "F1 with every distance metric, 1D–4D, Detail 0. Other features fall back to F1. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern"
   },
   {
     "name": "Wave Texture",

@@ -55,6 +55,7 @@
     "voronoi_f1_2d_color": { "outliers": 0.015 },
     "voronoi_f1_2d_position": { "outliers": 0.015 },
     "voronoi_f1_3d_color": { "outliers": 0.015 },
+    "voronoi_f1_3d_minkowski_color": { "outliers": 0.015 },
     "voronoi_f1_3d_position": { "outliers": 0.015 },
     "voronoi_f1_4d_color": { "outliers": 0.015 },
     "voronoi_f1_4d_w": { "outliers": 0.015 },
