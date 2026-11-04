@@ -4,6 +4,7 @@ import { clamp } from './clamp.js';
 import { brightContrast } from './brightContrast.js';
 import { gamma } from './gamma.js';
 import { invertColor } from './invert.js';
+import { rgbToBW } from './rgbToBw.js';
 import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
 import { emission } from './emission.js';
@@ -36,6 +37,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeInvert: invertColor,
   ShaderNodeGamma: gamma,
   ShaderNodeBrightContrast: brightContrast,
+  ShaderNodeRGBToBW: rgbToBW,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
