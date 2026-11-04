@@ -8,6 +8,7 @@ import { principled } from './principled.js';
 import { rgb } from './rgb.js';
 import { texCoord } from './texCoord.js';
 import { value } from './value.js';
+import { vectorMath } from './vectorMath.js';
 import { combineXYZ, separateXYZ } from './xyz.js';
 
 /**
@@ -22,6 +23,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeEmission: emission,
   ShaderNodeMapping: mapping,
   ShaderNodeMath: math,
+  ShaderNodeVectorMath: vectorMath,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

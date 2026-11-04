@@ -987,9 +987,9 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
-    "notes": "All operations"
+    "notes": "All operations (Power, Sign, Round need Blender 4.3+/5.x); Cycles semantics"
   },
   {
     "name": "Wavelength",

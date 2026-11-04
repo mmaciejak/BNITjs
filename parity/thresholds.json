@@ -15,6 +15,14 @@
     "math_round": { "outliers": 0.006 },
     "math_snap": { "outliers": 0.006 },
     "math_tangent": { "outliers": 0.006 },
-    "math_wrap": { "outliers": 0.006 }
+    "math_wrap": { "outliers": 0.006 },
+    "vector_math_divide": { "outliers": 0.006 },
+    "vector_math_floor": { "outliers": 0.006 },
+    "vector_math_modulo": { "outliers": 0.006 },
+    "vector_math_power": { "outliers": 0.006 },
+    "vector_math_round": { "outliers": 0.006 },
+    "vector_math_snap": { "outliers": 0.006 },
+    "vector_math_tangent": { "outliers": 0.006 },
+    "vector_math_wrap": { "outliers": 0.006 }
   }
 }

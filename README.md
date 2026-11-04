@@ -200,7 +200,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Separate XYZ | Converter | ✅ Supported | 3 | |
 | Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
 | Squeeze Value (Legacy) | Converter | 🚧 Not yet | 3 | |
-| Vector Math | Converter | 🚧 Not yet | 3 | All operations |
+| Vector Math | Converter | ✅ Supported | 3 | All operations (Power, Sign, Round need Blender 4.3+/5.x); Cycles semantics |
 | Wavelength | Converter | 🚧 Not yet | 7 | |
 
 ### Output, light and other

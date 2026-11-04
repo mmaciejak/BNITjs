@@ -58,3 +58,27 @@ def mapping_material(name, vector_type, location=(0.0, 0.0, 0.0), rotation=(0.0,
     links.new(coord.outputs["Generated"], node.inputs["Vector"])
     links.new(node.outputs["Vector"], color_in)
     return mat
+
+
+def signed_inputs(nodes, links, lo=-2.0, hi=2.0):
+    """Separate XYZ of Generated remapped to [lo, hi]."""
+    coord = nodes.new("ShaderNodeTexCoord")
+    scale = nodes.new("ShaderNodeMapping")
+    scale.inputs["Scale"].default_value = (hi - lo, hi - lo, 1.0)
+    scale.inputs["Location"].default_value = (lo, lo, 0.0)
+    sep = nodes.new("ShaderNodeSeparateXYZ")
+    links.new(coord.outputs["Generated"], scale.inputs["Vector"])
+    links.new(scale.outputs["Vector"], sep.inputs["Vector"])
+    return sep
+
+
+def show_signed(nodes, links, value_socket, color_in):
+    """(v, v, v) × 0.25 + 0.5 into the emission color."""
+    comb = nodes.new("ShaderNodeCombineXYZ")
+    for axis in "XYZ":
+        links.new(value_socket, comb.inputs[axis])
+    remap = nodes.new("ShaderNodeMapping")
+    remap.inputs["Scale"].default_value = (0.25, 0.25, 0.25)
+    remap.inputs["Location"].default_value = (0.5, 0.5, 0.5)
+    links.new(comb.outputs["Vector"], remap.inputs["Vector"])
+    links.new(remap.outputs["Vector"], color_in)
