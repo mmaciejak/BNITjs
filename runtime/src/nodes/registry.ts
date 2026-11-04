@@ -28,6 +28,7 @@ import { rgbToBW } from './rgbToBw.js';
 import { squeeze } from './squeeze.js';
 import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
+import { diffuse } from './diffuse.js';
 import { emission } from './emission.js';
 import { mapping } from './mapping.js';
 import { math } from './math.js';
@@ -84,6 +85,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeUVMap: uvMap,
   ShaderNodeVertexColor: colorAttribute,
   ShaderNodeAttribute: attribute,
+  ShaderNodeBsdfDiffuse: diffuse,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

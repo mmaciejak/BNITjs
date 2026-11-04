@@ -19,7 +19,7 @@ STATUS = {
     "ShaderNodeBlackbody": "planned",
     "ShaderNodeBrightContrast": "supported",
     "ShaderNodeBsdfAnisotropic": "planned",
-    "ShaderNodeBsdfDiffuse": "planned",
+    "ShaderNodeBsdfDiffuse": "partial",
     "ShaderNodeBsdfGlass": "planned",
     "ShaderNodeBsdfHair": "planned",
     "ShaderNodeBsdfHairPrincipled": "planned",

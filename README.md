@@ -111,7 +111,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 |---|---|---|---|---|
 | Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
 | Background | Shader | 🚧 Not yet | 6 | World only |
-| Diffuse BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params |
+| Diffuse BSDF | Shader | 🟡 Partial | 3 | Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped; Normal in phase 7 |
 | Emission | Shader | ✅ Supported | 2 | |
 | Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
 | Glossy BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params. RNA type is `ShaderNodeBsdfAnisotropic` |

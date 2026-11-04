@@ -39,6 +39,7 @@ export function materialFromClosure(
   material.metalnessNode = surface.metallic;
   material.roughnessNode = surface.roughness;
   material.emissiveNode = surface.emission;
+  if (surface.specular) material.specularIntensityNode = surface.specular;
   if (surface.transparent) {
     material.transparent = true;
     material.opacityNode = surface.alpha;

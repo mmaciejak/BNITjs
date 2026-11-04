@@ -246,9 +246,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 3,
-    "notes": "Mapped to physical material params"
+    "notes": "Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped; Normal in phase 7"
   },
   {
     "name": "Emission",

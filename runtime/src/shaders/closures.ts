@@ -16,6 +16,8 @@ export interface PrincipledClosure {
   transparent: boolean;
   /** Emission color × strength. */
   emission: Vec3Node;
+  /** Specular intensity multiplier (three.js specularIntensity); 0 for a pure diffuse BSDF. */
+  specular?: FloatNode;
 }
 
 export interface EmissionClosure {
