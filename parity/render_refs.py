@@ -2,7 +2,9 @@
 
     blender -b --factory-startup --python parity/render_refs.py [-- scene_name ...]
 
-For each parity/scenes/<name>.py (files starting with "_" are helpers):
+For each parity/scenes/<name>.py (files starting with "_" are helpers), which defines build() ->
+material, and optionally setup(plane) to change the plane mesh or object and
+CAMERA = "PERSP" for a perspective camera (default orthographic):
 
 - parity/references/<name>.png: Cycles render, 512×512, 16-bit, Standard view transform, box pixel
   filter of width 1 (each pixel is the average over its area), 64 samples, no dither.
@@ -15,6 +17,7 @@ exactly, so UV (0, 0) is at the bottom left of the image.
 
 import importlib.util
 import json
+import math
 import os
 import sys
 
@@ -68,16 +71,24 @@ def setup_render(scene):
     image.compression = 15
 
 
-def build_scene(material):
+def build_scene(material, setup=None, camera_type="ORTHO"):
     scene = bpy.context.scene
     bpy.ops.mesh.primitive_plane_add(size=2.0, location=(0.0, 0.0, 0.0))
     plane = bpy.context.active_object
     plane.name = "Plane"
     plane.data.materials.append(material)
+    if setup is not None:
+        setup(plane)
 
     cam_data = bpy.data.cameras.new("Camera")
-    cam_data.type = "ORTHO"
-    cam_data.ortho_scale = 2.0
+    if camera_type == "PERSP":
+        # Field of view that frames the 2×2 plane exactly from a distance of 2.
+        cam_data.type = "PERSP"
+        cam_data.sensor_fit = "HORIZONTAL"
+        cam_data.angle = 2.0 * math.atan(0.5)
+    else:
+        cam_data.type = "ORTHO"
+        cam_data.ortho_scale = 2.0
     cam_data.clip_start = 0.1
     cam_data.clip_end = 10.0
     camera = bpy.data.objects.new("Camera", cam_data)
@@ -99,7 +110,7 @@ def main():
         bpy.ops.wm.read_factory_settings(use_empty=True)
         enable_addon()
         module = load_scene_module(name)
-        build_scene(module.build())
+        build_scene(module.build(), getattr(module, "setup", None), getattr(module, "CAMERA", "ORTHO"))
 
         scene = bpy.context.scene
         scene.render.filepath = os.path.join(REFS_DIR, f"{name}.png")

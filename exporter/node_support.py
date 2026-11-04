@@ -85,7 +85,7 @@ STATUS = {
     "ShaderNodeTangent": "planned",
     "ShaderNodeTexBrick": "planned",
     "ShaderNodeTexChecker": "planned",
-    "ShaderNodeTexCoord": "planned",
+    "ShaderNodeTexCoord": "partial",
     "ShaderNodeTexEnvironment": "planned",
     "ShaderNodeTexGabor": "planned",
     "ShaderNodeTexGradient": "planned",

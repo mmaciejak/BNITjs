@@ -19,3 +19,20 @@ def emission_material(name):
     emission.inputs["Strength"].default_value = 1.0
     links.new(emission.outputs["Emission"], output.inputs["Surface"])
     return mat, nodes, links, emission.inputs["Color"]
+
+
+def texcoord_material(name, output):
+    """Texture Coordinate.<output> → Emission color."""
+    mat, nodes, links, color_in = emission_material(name)
+    coord = nodes.new("ShaderNodeTexCoord")
+    links.new(coord.outputs[output], color_in)
+    return mat
+
+
+def enlarge_and_offset(plane):
+    """Scale the mesh ×2 and shift it, so Generated/Object differ from UV in the visible area."""
+    mesh = plane.data
+    for v in mesh.vertices:
+        v.co.x = v.co.x * 2.0 + 0.5
+        v.co.y = v.co.y * 2.0 - 0.25
+    mesh.update()

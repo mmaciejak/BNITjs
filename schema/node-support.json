@@ -169,9 +169,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "planned",
+    "status": "partial",
     "phase": 2,
-    "notes": "Generated needs exported bounds"
+    "notes": "All outputs pass parity (ortho and perspective). Not supported yet: the Object setting (another object's space) and From Instancer"
   },
   {
     "name": "UV Map",
