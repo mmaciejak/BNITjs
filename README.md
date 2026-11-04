@@ -8,7 +8,7 @@ Take a Blender material built from shader nodes, export it with a Blender add-on
 
 See [SPEC.md](SPEC.md) for the full design and roadmap.
 
-> **Status:** Phase 0 (repository and foundations). Nothing is usable yet.
+> **Status:** Phase 1 done. The exporter writes node graphs into glTF files; the three.js runtime is next (Phase 2).
 
 ## License
 
@@ -36,7 +36,19 @@ npm run lint && npm run typecheck && npm test && npm run build
 ruff check . && ruff format --check .
 blender -b --factory-startup --python exporter/tests/run_tests.py
 blender --command extension build --source-dir exporter --output-dir dist
+
+# Regenerate the exported fixtures in schema/fixtures/ (with Blender 5.2) after changing the format
+blender -b --factory-startup --python exporter/tests/make_fixtures.py
+
+# After editing schema/node-support.json
+python3 tools/sync_node_support.py
 ```
+
+### Using the exporter
+
+1. Install the extension zip: Edit › Preferences › Get Extensions › ⌄ › Install from Disk…
+2. Export with File › Export › glTF 2.0 as usual. Every material gets its node graph in the `EXT_blender_shader_graph` extension; the normal PBR material stays in the file as a fallback.
+3. Material Properties › **Shader Web (three.js)** lists the nodes that the runtime can't evaluate live yet.
 
 Workflow rules (SPEC §4): one commit per feature, using the `type(scope): message` style. Every commit that changes node support also updates the table below. Each phase ends with a `phase-N` tag and a `CHANGELOG.md` entry.
 
