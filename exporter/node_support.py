@@ -100,7 +100,7 @@ STATUS = {
     "ShaderNodeTexWhiteNoise": "planned",
     "ShaderNodeUVAlongStroke": "not_planned",
     "ShaderNodeUVMap": "planned",
-    "ShaderNodeValToRGB": "planned",
+    "ShaderNodeValToRGB": "supported",
     "ShaderNodeValue": "supported",
     "ShaderNodeVectorCurve": "planned",
     "ShaderNodeVectorDisplacement": "planned",

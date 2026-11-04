@@ -1,6 +1,7 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
+import { colorRamp } from './colorRamp.js';
 import { combineColor } from './combineColor.js';
 import { combineHSV, combineRGB } from './combineLegacy.js';
 import { hueSaturation } from './hueSaturation.js';
@@ -56,6 +57,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeHueSaturation: hueSaturation,
   ShaderNodeMix: mix,
   ShaderNodeMixRGB: mixRGB,
+  ShaderNodeValToRGB: colorRamp,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
