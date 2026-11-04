@@ -1,6 +1,7 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { emission } from './emission.js';
+import { mapping } from './mapping.js';
 import { materialOutput } from './output.js';
 import { rgb } from './rgb.js';
 import { texCoord } from './texCoord.js';
@@ -16,6 +17,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   BSW_Value: bswValue,
   ShaderNodeOutputMaterial: materialOutput,
   ShaderNodeEmission: emission,
+  ShaderNodeMapping: mapping,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
   ShaderNodeValue: value,

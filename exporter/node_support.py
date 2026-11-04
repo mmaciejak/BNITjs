@@ -53,7 +53,7 @@ STATUS = {
     "ShaderNodeLightFalloff": "not_planned",
     "ShaderNodeLightPath": "planned",
     "ShaderNodeMapRange": "planned",
-    "ShaderNodeMapping": "planned",
+    "ShaderNodeMapping": "supported",
     "ShaderNodeMath": "planned",
     "ShaderNodeMix": "planned",
     "ShaderNodeMixRGB": "planned",

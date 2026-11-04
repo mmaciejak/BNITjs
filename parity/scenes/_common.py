@@ -36,3 +36,18 @@ def enlarge_and_offset(plane):
         v.co.x = v.co.x * 2.0 + 0.5
         v.co.y = v.co.y * 2.0 - 0.25
     mesh.update()
+
+
+def mapping_material(name, vector_type, location=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0)):
+    """Generated coordinates → Mapping(<vector_type>) → Emission color."""
+    mat, nodes, links, color_in = emission_material(name)
+    coord = nodes.new("ShaderNodeTexCoord")
+    node = nodes.new("ShaderNodeMapping")
+    node.vector_type = vector_type
+    if "Location" in node.inputs and node.inputs["Location"].enabled:
+        node.inputs["Location"].default_value = location
+    node.inputs["Rotation"].default_value = rotation
+    node.inputs["Scale"].default_value = scale
+    links.new(coord.outputs["Generated"], node.inputs["Vector"])
+    links.new(node.outputs["Vector"], color_in)
+    return mat
