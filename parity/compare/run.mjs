@@ -120,16 +120,28 @@ for (const name of scenes) {
   try {
     if (!existsSync(join(dir, 'scene.gltf'))) throw new Error('missing out/<scene>/scene.gltf; rerun render_refs.py');
     const ref = readPng(readFileSync(join(REFS, `${name}.png`)));
-    consoleLines.length = 0;
-    await page.goto(`${base}index.html?scene=${encodeURIComponent(name)}&size=${ref.width}&ss=${SS}${useWebGL ? '&webgl' : ''}`);
-    await page.waitForFunction(() => window.__parity?.done, null, { timeout: 120_000 });
-    const state = await page.evaluate(() => window.__parity);
-    if (state.error) throw new Error(state.error);
+    // A stalled browser (e.g. an idle Mac throttling it) shows up as a timeout: retry once.
+    let state;
+    let shot;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        consoleLines.length = 0;
+        await page.goto(`${base}index.html?scene=${encodeURIComponent(name)}&size=${ref.width}&ss=${SS}${useWebGL ? '&webgl' : ''}`);
+        await page.waitForFunction(() => window.__parity?.done, null, { timeout: 60_000 });
+        state = await page.evaluate(() => window.__parity);
+        if (state.error) throw new Error(state.error);
+        shot = await page.locator('canvas').screenshot({ type: 'png', timeout: 30_000 });
+        break;
+      } catch (error) {
+        if (attempt >= 2 || !/Timeout/i.test(String(error.message))) throw error;
+        result.retried = true;
+        console.log(`RETRY ${name}: ${String(error.message).split('\n')[0]}`);
+      }
+    }
     result.backend = state.backend;
     // Shader compile errors only show up in the console: report them with the warnings.
     const consoleErrors = consoleLines.filter((l) => l.startsWith('[error]') && !l.includes('favicon'));
     result.warnings = [...state.warnings, ...consoleErrors];
-    const shot = await page.locator('canvas').screenshot({ type: 'png' });
     const got = downsample(readPng(shot), SS);
     const { mae, max, over, diff } = compare(ref, got);
     const outliers = over(limit.max);
