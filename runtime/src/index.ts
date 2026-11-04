@@ -22,4 +22,10 @@ export {
   registerBlenderShaderGraph,
 } from './loader/plugin.js';
 export { builtinNodes, createRegistry } from './nodes/registry.js';
+export {
+  type BlenderShaderMaterial,
+  getParams,
+  MaterialParams,
+  type ParamInfo,
+} from './params/params.js';
 export type { Closure } from './shaders/closures.js';

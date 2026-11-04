@@ -88,6 +88,14 @@ export interface ShaderGraph {
   output: string;
   nodes: Record<string, GraphNode>;
   links?: GraphLink[];
+  params?: {
+    name: string;
+    node: string;
+    type: SocketType;
+    default?: Value;
+    min?: number;
+    max?: number;
+  }[];
 }
 
 /** Per-object data stored on glTF nodes (nodes[i].extensions.EXT_blender_shader_graph). */

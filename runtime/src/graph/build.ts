@@ -1,5 +1,6 @@
-import type { NodeMaterial, Texture } from 'three/webgpu';
+import type { Texture } from 'three/webgpu';
 import { createRegistry } from '../nodes/registry.js';
+import { type BlenderShaderMaterial, MaterialParams } from '../params/params.js';
 import { isClosure } from '../shaders/closures.js';
 import { materialFromClosure, type MaterialOptions } from '../shaders/material.js';
 import { GraphEvaluator, type NodeImpl } from './evaluate.js';
@@ -14,23 +15,30 @@ export interface BuildOptions extends MaterialOptions {
 }
 
 export interface BuildResult {
-  material: NodeMaterial;
+  material: BlenderShaderMaterial;
+  params: MaterialParams;
   warnings: string[];
 }
 
 /** Build a three.js node material from an EXT_blender_shader_graph payload. */
 export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): BuildResult {
   const graph = parseGraph(graphJson);
+  const params = new MaterialParams(graph);
   const evaluator = new GraphEvaluator(graph, {
     registry: createRegistry(options.nodes),
     textures: options.textures,
+    params,
     onWarning: options.onWarning,
   });
   const surface = evaluator.outputs(graph.output).Surface ?? null;
-  const material = materialFromClosure(isClosure(surface) ? surface : null, options);
+  const material = materialFromClosure(
+    isClosure(surface) ? surface : null,
+    options,
+  ) as BlenderShaderMaterial;
   material.name = graph.material;
+  material.params = params;
   material.userData.blenderShaderGraph = { warnings: evaluator.warnings };
-  return { material, warnings: evaluator.warnings };
+  return { material, params, warnings: evaluator.warnings };
 }
 
 /** glTF texture indices referenced by Image Texture nodes of a graph. */

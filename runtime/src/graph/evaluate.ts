@@ -1,5 +1,6 @@
 import { float, vec3 } from 'three/tsl';
 import type { Texture } from 'three/webgpu';
+import type { MaterialParams } from '../params/params.js';
 import { type Closure, isClosure } from '../shaders/closures.js';
 import {
   constFloat,
@@ -32,6 +33,8 @@ export interface NodeContext {
   /** Unlinked value of an input from the graph. */
   inputValue(identifier: string): unknown;
   prop<T>(name: string, fallback: T): T;
+  /** The live-parameter uniform driving this node's output, if the node is a parameter. */
+  param(): FloatNode | Vec3Node | undefined;
   /** A glTF texture the loader resolved (by index into the glTF textures array). */
   texture(index: number): Texture | undefined;
   warn(message: string): void;
@@ -45,6 +48,7 @@ export type NodeRegistry = ReadonlyMap<string, NodeImpl>;
 export interface EvaluateOptions {
   registry: NodeRegistry;
   textures?: ReadonlyMap<number, Texture>;
+  params?: MaterialParams;
   onWarning?: (message: string) => void;
 }
 
@@ -147,6 +151,7 @@ export class GraphEvaluator {
         const value = node.properties?.[name];
         return value === undefined ? fallback : (value as T);
       },
+      param: () => this.options.params?.nodeFor(id),
       texture: (index) => this.options.textures?.get(index),
       warn: (message) => this.warn(`${node.type} ("${id}"): ${message}`),
     };

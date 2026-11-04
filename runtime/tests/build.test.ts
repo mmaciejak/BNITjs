@@ -42,7 +42,7 @@ describe('buildMaterial', () => {
   it('builds an Emission material', () => {
     const { material } = buildMaterial(fixtureGraph('emission_rgb'), { unlit: true });
     expect(material).toBeInstanceOf(MeshBasicNodeMaterial);
-    expect((material as MeshBasicNodeMaterial).colorNode).toBeTruthy();
+    expect((material as unknown as MeshBasicNodeMaterial).colorNode).toBeTruthy();
   });
 
   it('rejects other format versions', () => {
@@ -66,7 +66,7 @@ describe('Principled BSDF', () => {
     const { MeshPhysicalNodeMaterial } = await import('three/webgpu');
     const { material, warnings } = buildMaterial(fixtureGraph('uv_mapping'));
     expect(material).toBeInstanceOf(MeshPhysicalNodeMaterial);
-    const physical = material as InstanceType<typeof MeshPhysicalNodeMaterial>;
+    const physical = material as unknown as InstanceType<typeof MeshPhysicalNodeMaterial>;
     expect(physical.colorNode).toBeTruthy();
     expect(physical.metalnessNode).toBeTruthy();
     expect(physical.roughnessNode).toBeTruthy();
