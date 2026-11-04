@@ -73,6 +73,10 @@
           "minimum": 0
         }
       }
+    },
+    "colorAttributes": {
+      "$ref": "#/$defs/objectExtension/properties/object/properties/colorAttributes",
+      "description": "Set by the runtime loader from the objects using the material (not written by the exporter)."
     }
   },
   "$defs": {
@@ -467,6 +471,34 @@
             "random": {
               "type": "number",
               "description": "Object Info > Random as Cycles computes it for a non-instanced object: hash_uint2(hash_string(name), 0) / 0xFFFFFFFF."
+            },
+            "colorAttributes": {
+              "type": "object",
+              "required": ["layers"],
+              "additionalProperties": false,
+              "description": "Which glTF COLOR_n each Blender color attribute became; render is the render-active color attribute.",
+              "properties": {
+                "layers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["name", "index"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "index": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                },
+                "render": {
+                  "type": "string"
+                }
+              }
             }
           }
         }

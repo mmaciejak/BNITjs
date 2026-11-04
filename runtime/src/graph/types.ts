@@ -83,6 +83,8 @@ export interface ShaderGraph {
   materialPassIndex?: number;
   /** glTF TEXCOORD_i = names[i]; activeRender is the active render UV map. */
   uvMaps?: { names: string[]; activeRender: number };
+  /** Filled in by the loader from the objects that use the material. */
+  colorAttributes?: ColorAttributes;
   output: string;
   nodes: Record<string, GraphNode>;
   links?: GraphLink[];
@@ -94,7 +96,14 @@ export interface ObjectData {
   passIndex: number;
   color: [number, number, number, number];
   random: number;
+  colorAttributes?: ColorAttributes;
   texspace?: { location: [number, number, number]; size: [number, number, number] };
+}
+
+/** Which glTF COLOR_n each Blender color attribute became (three.js: color, color_1, ...). */
+export interface ColorAttributes {
+  layers: { name: string; index: number }[];
+  render?: string;
 }
 
 export interface ObjectExtension {

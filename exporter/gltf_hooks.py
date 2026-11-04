@@ -122,8 +122,47 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
             return
         if blender_object.type not in {"MESH", "CURVE", "SURFACE", "META", "FONT"}:
             return
+        data = object_data(blender_object)
+        colors = self._color_attributes(gltf2_node, blender_object, export_settings)
+        if colors:
+            data["colorAttributes"] = colors
         if gltf2_node.extensions is None:
             gltf2_node.extensions = {}
         gltf2_node.extensions[EXTENSION_NAME] = self.Extension(
-            name=EXTENSION_NAME, extension={"object": object_data(blender_object)}, required=False
+            name=EXTENSION_NAME, extension={"object": data}, required=False
         )
+
+    def _color_attributes(self, gltf2_node, blender_object, export_settings):
+        """Which glTF COLOR_n each Blender color attribute became.
+
+        Blender's glTF exporter writes the color attribute the standard material uses as COLOR_0,
+        or, when it sees none (as for procedural graphs), a placeholder white COLOR_0, then the
+        remaining attributes in order. Counting the exported COLOR_n tells the two cases apart.
+        """
+        mesh = getattr(blender_object, "data", None)
+        names = [a.name for a in getattr(mesh, "color_attributes", [])]
+        gltf_mesh = getattr(gltf2_node, "mesh", None)
+        if not names or gltf_mesh is None:
+            return None
+        exported = set()
+        for prim in gltf_mesh.primitives or []:
+            exported |= {k for k in (prim.attributes or {}) if k.startswith("COLOR_")}
+        count = len(exported)
+        if count == 0:
+            return None
+        if count == len(names) + 1:
+            indices = list(range(1, len(names) + 1))
+        else:
+            indices = list(range(len(names)))
+            if len(names) > 1:
+                self._log(
+                    export_settings,
+                    "warning",
+                    f"{EXTENSION_NAME}: '{blender_object.name}': cannot tell which color attribute "
+                    "the glTF exporter wrote first; assuming their order",
+                )
+        render_index = getattr(mesh.color_attributes, "render_color_index", -1)
+        result = {"layers": [{"name": n, "index": i} for n, i in zip(names, indices, strict=True) if i < count]}
+        if 0 <= render_index < len(names):
+            result["render"] = names[render_index]
+        return result

@@ -6,7 +6,12 @@ import type {
   GLTFParser,
 } from 'three/addons/loaders/GLTFLoader.js';
 import { buildMaterial, type BuildOptions } from '../graph/build.js';
-import { EXTENSION_NAME, type ObjectExtension, USERDATA_KEY } from '../graph/types.js';
+import {
+  type ColorAttributes,
+  EXTENSION_NAME,
+  type ObjectExtension,
+  USERDATA_KEY,
+} from '../graph/types.js';
 
 export type LoaderOptions = BuildOptions;
 
@@ -42,7 +47,9 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
       else console.warn(text);
     };
     try {
-      const { material } = buildMaterial(graph, { ...this.options, onWarning: warn });
+      const colorAttributes = this.colorAttributesFor(materialIndex);
+      const input = colorAttributes ? { ...(graph as object), colorAttributes } : graph;
+      const { material } = buildMaterial(input, { ...this.options, onWarning: warn });
       if (def.name) material.name = def.name;
       if (def.doubleSided) material.side = DoubleSide;
       return Promise.resolve(material);
@@ -50,6 +57,23 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
       warn(`falling back to the standard glTF material: ${(error as Error).message}`);
       return null;
     }
+  }
+
+  /** Color attribute layout of the first object that uses the material (see exporter). */
+  private colorAttributesFor(materialIndex: number): ColorAttributes | undefined {
+    const json = this.parser.json as {
+      nodes?: (NodeDef & { mesh?: number })[];
+      meshes?: { primitives: { material?: number }[] }[];
+    };
+    for (const node of json.nodes ?? []) {
+      if (node.mesh === undefined) continue;
+      const usesMaterial = json.meshes?.[node.mesh]?.primitives.some(
+        (p) => p.material === materialIndex,
+      );
+      const data = node.extensions?.[EXTENSION_NAME] as ObjectExtension | undefined;
+      if (usesMaterial && data?.object.colorAttributes) return data.object.colorAttributes;
+    }
+    return undefined;
   }
 
   /** Store per-object data (Object Info, Generated coordinates) on the objects that use it. */
