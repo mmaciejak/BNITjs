@@ -18,6 +18,7 @@ import { hueSaturation } from './hueSaturation.js';
 import { imageTexture } from './imageTexture.js';
 import { layerWeight } from './layerWeight.js';
 import { mix } from './mix.js';
+import { noise } from './noise.js';
 import { mixRGB } from './mixRGB.js';
 import { normal } from './normal.js';
 import { objectInfo } from './objectInfo.js';
@@ -81,6 +82,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexChecker: checker,
   ShaderNodeTexGradient: gradient,
   ShaderNodeTexWhiteNoise: whiteNoise,
+  ShaderNodeTexNoise: noise,
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,

@@ -92,7 +92,7 @@ STATUS = {
     "ShaderNodeTexIES": "not_planned",
     "ShaderNodeTexImage": "partial",
     "ShaderNodeTexMagic": "planned",
-    "ShaderNodeTexNoise": "planned",
+    "ShaderNodeTexNoise": "supported",
     "ShaderNodeTexPointDensity": "baked",
     "ShaderNodeTexSky": "planned",
     "ShaderNodeTexVoronoi": "planned",

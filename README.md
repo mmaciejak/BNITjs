@@ -159,7 +159,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | IES Texture | Texture | ❌ Not planned | — | Belongs to lights |
 | Image Texture | Texture | 🟡 Partial | 3 | Flat/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Box projection, Cubic/Smart (rendered Linear), float/HDR images, mipmaps |
 | Magic Texture | Texture | 🚧 Not yet | 6 | |
-| Noise Texture | Texture | 🚧 Not yet | 4 | fBm, multifractal, ridged, hybrid, hetero terrain; 1D–4D. Musgrave merged in since 4.1 |
+| Noise Texture | Texture | ✅ Supported | 4 | All types (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, distortion, normalize. Musgrave nodes from older files are converted to Noise by Blender |
 | Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |
 | Sky Texture | Texture | 🚧 Not yet | 6 | World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT |
 | Voronoi Texture | Texture | 🚧 Not yet | 5 | F1 first, then F2, Smooth F1, Distance to Edge, N-Sphere Radius |

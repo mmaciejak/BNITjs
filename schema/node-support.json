@@ -573,9 +573,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
+    "status": "supported",
     "phase": 4,
-    "notes": "fBm, multifractal, ridged, hybrid, hetero terrain; 1D–4D. Musgrave merged in since 4.1"
+    "notes": "All types (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, distortion, normalize. Musgrave nodes from older files are converted to Noise by Blender"
   },
   {
     "name": "Point Density",
