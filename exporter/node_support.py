@@ -84,7 +84,7 @@ STATUS = {
     "ShaderNodeSubsurfaceScattering": "planned",
     "ShaderNodeTangent": "planned",
     "ShaderNodeTexBrick": "planned",
-    "ShaderNodeTexChecker": "planned",
+    "ShaderNodeTexChecker": "supported",
     "ShaderNodeTexCoord": "partial",
     "ShaderNodeTexEnvironment": "planned",
     "ShaderNodeTexGabor": "planned",

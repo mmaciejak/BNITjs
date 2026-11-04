@@ -1,5 +1,6 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
+import { checker } from './checker.js';
 import { clamp } from './clamp.js';
 import { colorRamp } from './colorRamp.js';
 import { floatCurve } from './floatCurve.js';
@@ -64,6 +65,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeRGBCurve: rgbCurves,
   ShaderNodeVectorCurve: vectorCurves,
   ShaderNodeFloatCurve: floatCurve,
+  ShaderNodeTexChecker: checker,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
