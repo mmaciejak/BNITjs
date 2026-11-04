@@ -319,7 +319,8 @@
 							"outputs":{
 								"Value":{
 									"name":"Value",
-									"type":"VALUE"
+									"type":"VALUE",
+									"value":0.42
 								}
 							}
 						}

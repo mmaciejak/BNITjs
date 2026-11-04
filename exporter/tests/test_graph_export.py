@@ -37,6 +37,14 @@ class GraphExportTest(unittest.TestCase):
         self.assertEqual(mapping["outputs"]["Vector"]["type"], "VECTOR")
         self.assertEqual(report["warnings"], [])
 
+    def test_value_and_color_nodes_export_their_output_value(self):
+        graph, _ = graph_export.export_material_graph(scenes.emission_rgb())
+        # The node is named "RGB" in 4.2 and "Color" in 5.x: find it by type.
+        (rgb,) = (n for n in graph["nodes"].values() if n["type"] == "ShaderNodeRGB")
+        self.assertEqual(rgb["outputs"]["Color"]["value"], [0.8, 0.2, 0.1, 1.0])
+        graph, _ = graph_export.export_material_graph(scenes.reroutes_frames_unused())
+        self.assertEqual(graph["nodes"]["Value"]["outputs"]["Value"]["value"], 0.42)
+
     def test_reroutes_frames_and_unused_nodes_are_removed(self):
         graph, _ = graph_export.export_material_graph(scenes.reroutes_frames_unused())
         self.assertNotIn("NodeReroute", types(graph))

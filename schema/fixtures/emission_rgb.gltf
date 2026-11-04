@@ -131,7 +131,13 @@
 							"outputs":{
 								"Color":{
 									"name":"Color",
-									"type":"RGBA"
+									"type":"RGBA",
+									"value":[
+										0.8,
+										0.2,
+										0.1,
+										1
+									]
 								}
 							}
 						}

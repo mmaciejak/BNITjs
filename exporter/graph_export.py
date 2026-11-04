@@ -26,6 +26,7 @@ GRAPH_FORMAT_VERSION = 1
 # Synthetic node type for constants produced by flattening (unlinked group inputs, muted outputs).
 VALUE_NODE = "BSW_Value"
 
+_OUTPUT_VALUE_TYPES = {"ShaderNodeValue", "ShaderNodeRGB"}
 _LAYOUT_TYPES = {"NodeReroute", "NodeFrame", "NodeGroupInput", "NodeGroupOutput"}
 _BASE_PROPS = None
 
@@ -382,7 +383,17 @@ class GraphBuilder:
             source = self.resolve_input(socket, ctx)
             if source is not None:
                 self.links.append({"from": list(source), "to": [node_id, socket.identifier]})
-        outputs = {s.identifier: {"name": s.name, "type": s.type} for s in node.outputs if _available(s)}
+        outputs = {}
+        for socket in node.outputs:
+            if not _available(socket):
+                continue
+            item = {"name": socket.name, "type": socket.type}
+            # Value and Color nodes store their value on the output socket.
+            if node.bl_idname in _OUTPUT_VALUE_TYPES:
+                value = socket_value(socket)
+                if value is not None:
+                    item["value"] = value
+            outputs[socket.identifier] = item
         if inputs:
             entry["inputs"] = inputs
         if outputs:

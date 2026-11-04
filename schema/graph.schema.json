@@ -110,14 +110,15 @@
         },
         "outputs": {
           "type": "object",
-          "description": "Available output sockets by identifier.",
+          "description": "Available output sockets by identifier. value is set for nodes that store their value on the output (Value, Color).",
           "additionalProperties": {
             "type": "object",
             "required": ["name", "type"],
             "additionalProperties": false,
             "properties": {
               "name": { "type": "string" },
-              "type": { "$ref": "#/$defs/socketType" }
+              "type": { "$ref": "#/$defs/socketType" },
+              "value": { "$ref": "#/$defs/value" }
             }
           }
         }
