@@ -29,6 +29,16 @@ The plan is in [SPEC.md](SPEC.md). Read it before starting a phase.
 
 ## Facts
 
+- Parity references come from Cycles, so match Cycles' SVM code (`intern/cycles/kernel/svm/*`) rather than EEVEE's GLSL where they differ.
+- Ramp and curve tables have 257 entries sampled at i/256 (measured from Cycles' CONSTANT ramp steps).
+- Image Texture: Cycles associates (premultiplies) alpha per texel for color images unless the Alpha output is linked, and interpolates the sRGB-encoded bytes before decoding.
+- Never wrap `clamp()` with constant bounds in `select()`: the branch not taken can have low > high, which is a WGSL shader-creation error and blacks out the material.
+- TSL method form `a.mix(b, t)` means `mix(b, t, a)`. Use the function form.
+- Blender 5.x hides sockets the current mode doesn't use from name lookup (`node.inputs["Steps"]`). Look them up by identifier.
+- Blender's glTF exporter writes a placeholder white COLOR_0 when the standard material uses no color attribute.
+- GLTFLoader clones most materials, and `Material.clone()` drops custom properties: keep state in `userData`.
+- three r187: cloning `MeshPhysicalNodeMaterial` triggers three's own `iridescenceThicknessRange` deprecation warning.
+
 - Glossy BSDF's RNA type is `ShaderNodeBsdfAnisotropic`.
 - Point Density was removed in Blender 5.x.
 - The Sky Texture models differ between Blender 4.2 and 5.x.

@@ -2,6 +2,18 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-3: Easy tier and live parameters
+
+- Every easy-tier node from SPEC §8 is live. Supported (✅, parity-tested): Math and Vector Math (all operations), Clamp, Map Range, Vector Rotate, Separate/Combine XYZ, Separate/Combine Color (RGB/HSV/HSL) and the legacy RGB/HSV nodes, Mix (all 19 blend modes) and legacy Mix, Invert, Brightness/Contrast, Gamma, Hue/Saturation/Value, RGB to BW, Color Ramp, RGB/Float/Vector Curves, Checker, Gradient, Fresnel, Layer Weight, UV Map, Object Info, Camera Data, Normal.
+- Partial (🟡, limits listed in the README): Attribute, Color Attribute, Texture Coordinate, Diffuse BSDF, Glossy BSDF, Principled BSDF, Image Texture, Squeeze Value (Legacy), Material Output.
+- Live parameters: label a Value or Color node `$Name`, or a group node `$Group` (which exposes its unlinked inputs as `Group/Input`). Then use `material.params.set(...)`; the change takes effect without a rebuild. The parameters survive GLTFLoader's material cloning.
+- `examples/configurator` builds its controls from the parameters, with an automated check that runs in `check.sh` and CI.
+- Exporter additions:
+  - Images are embedded in the glTF.
+  - UV map names, the color attribute → COLOR_n layout, object Random (Cycles' name hash), the material pass index and the Normal node direction are exported.
+  - Ramps and curves use Cycles' 257-entry tables (measured), and RGB Curves bake the combined curve like Cycles.
+- Parity harness additions: scene variants, `setup(plane, variant)`, perspective cameras, scenes limited to older Blender versions (`BLENDER_MAX`), and an outlier allowance for edges and poles. 244 scenes pass on WebGPU and WebGL2.
+
 ## phase-2: Runtime core and parity harness
 
 - Runtime: `registerBlenderShaderGraph(loader)` / `BlenderShaderGraphPlugin` for GLTFLoader. It rebuilds materials from `EXT_blender_shader_graph` (falling back to the standard glTF material on error) and stores per-object data in `userData`.

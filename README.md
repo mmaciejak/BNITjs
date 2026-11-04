@@ -8,7 +8,7 @@ Take a Blender material built from shader nodes, export it with a Blender add-on
 
 See [SPEC.md](SPEC.md) for the full design and roadmap.
 
-> **Status:** Phase 2 done. Graphs built from Value, Color, Texture Coordinate, Mapping, Emission and Principled BSDF (base inputs) load in three.js and match Blender in the parity harness. Phase 3 (the rest of the easy nodes, live parameters) is next.
+> **Status:** Phase 3 done. Every easy-tier node is live, and 244 parity scenes match Blender on WebGPU and WebGL2. Live parameters and a configurator example work. Phase 4 (Noise) is next.
 
 ## License
 
@@ -63,6 +63,19 @@ const gltf = await loader.loadAsync('model.gltf'); // materials rebuilt from the
 ```
 
 Nodes that aren't supported yet log a warning and use a default value; a material that fails to build falls back to the standard glTF material in the same file.
+
+### Live parameters
+
+In Blender, label a Value or Color node `$Grain Scale`, or a group node `$Wood`. A labelled group exposes its unlinked inputs as `Wood/<input>`, with the group's min and max. In three.js:
+
+```js
+const params = getParams(mesh.material); // or mesh.material.params
+params.names();                          // ['Grain Scale', 'Wood/Color', ...]
+params.set('Grain Scale', 4);            // takes effect on the next frame
+params.set('Wood/Color', [0.6, 0.3, 0.1]); // linear RGB, as in Blender
+```
+
+`examples/configurator` builds sliders and color pickers from these parameters. To run it: `cd runtime && npm run example -- configurator`.
 
 ### Using the exporter
 
