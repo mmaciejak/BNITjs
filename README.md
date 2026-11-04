@@ -87,7 +87,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Ambient Occlusion | Input | 🧊 Baked | 9 | Bake in exporter or rely on scene SSAO |
 | Attribute | Input | 🚧 Not yet | 3 | Via glTF vertex attributes |
 | Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
-| Camera Data | Input | 🚧 Not yet | 3 | View vector, view Z depth, view distance |
+| Camera Data | Input | ✅ Supported | 3 | |
 | Color | Input | ✅ Supported | 2 | Named "RGB" in 4.2 |
 | Color Attribute | Input | 🚧 Not yet | 3 | Via glTF `COLOR_n` |
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
