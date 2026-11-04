@@ -100,7 +100,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Point Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Tangent | Input | 🚧 Not yet | 7 | UV and Radial |
 | Texture Coordinate | Input | 🟡 Partial | 2 | All outputs pass parity (ortho and perspective). Not supported yet: the Object setting (another object's space) and From Instancer |
-| UV Map | Input | 🚧 Not yet | 3 | |
+| UV Map | Input | ✅ Supported | 3 | Resolves names via the exported UV map list; From Instancer not supported |
 | Value | Input | ✅ Supported | 2 | |
 | Volume Info | Input | ❌ Not planned | — | Volumes |
 | Wireframe | Input | 🚧 Not yet | 7 | Needs a barycentric attribute |

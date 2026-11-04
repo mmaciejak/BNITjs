@@ -7,17 +7,16 @@ import {
   positionLocal,
   positionView,
   uniform,
-  uv,
   vec3,
   vec4,
 } from 'three/tsl';
 import type { NodeImpl } from '../graph/evaluate.js';
-import { texspaceUniforms, toBlender } from './space.js';
+import { blenderUV, texspaceUniforms, toBlender } from './space.js';
 
 /**
  * Texture Coordinate. All outputs are in Blender's conventions:
  *
- * - UV: first UV map, V flipped back (glTF puts the UV origin at the top left).
+ * - UV: the active render UV map, V flipped back (glTF puts the UV origin at the top left).
  * - Generated: object-space position normalised to the mesh texture space,
  *   (p − (location − size)) / (2·size), using the texture space the exporter writes per object.
  * - Object: object-space position (Blender axes). Normal: object-space normal.
@@ -34,7 +33,6 @@ export const texCoord: NodeImpl = (ctx) => {
   }
   if (ctx.prop('from_instancer', false)) ctx.warn('From Instancer is not supported');
 
-  const uv0 = uv(0);
   const space = texspaceUniforms();
   const objectPos = toBlender(positionLocal);
   const generated = objectPos.sub(space.location.sub(space.size)).div(space.size.mul(2));
@@ -54,7 +52,7 @@ export const texCoord: NodeImpl = (ctx) => {
   return {
     Generated: generated,
     Normal: toBlender(normalLocal).normalize(),
-    UV: vec3(uv0.x, uv0.y.oneMinus(), 0),
+    UV: blenderUV(ctx.graph.uvMaps?.activeRender ?? 0),
     Object: objectPos,
     Camera: vec3(positionView.x, positionView.y, positionView.z.negate()),
     Window: window,

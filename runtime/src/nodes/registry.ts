@@ -33,6 +33,7 @@ import { materialOutput } from './output.js';
 import { principled } from './principled.js';
 import { rgb } from './rgb.js';
 import { texCoord } from './texCoord.js';
+import { uvMap } from './uvMap.js';
 import { value } from './value.js';
 import { vectorMath } from './vectorMath.js';
 import { combineXYZ, separateXYZ } from './xyz.js';
@@ -78,6 +79,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeObjectInfo: objectInfo,
   ShaderNodeNormal: normal,
   ShaderNodeCameraData: cameraData,
+  ShaderNodeUVMap: uvMap,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

@@ -181,8 +181,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "planned",
-    "phase": 3
+    "status": "supported",
+    "phase": 3,
+    "notes": "Resolves names via the exported UV map list; From Instancer not supported"
   },
   {
     "name": "Value",

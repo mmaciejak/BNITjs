@@ -7,6 +7,7 @@ import {
   positionLocal,
   positionWorld,
   uniform,
+  uv,
   vec3,
   vec4,
 } from 'three/tsl';
@@ -86,4 +87,10 @@ export function viewDirBlender(): Vec3Node {
 /** Shading normal (Cycles' sd->N) in Blender world axes. */
 export function shadingNormalBlender(): Vec3Node {
   return toBlender(normalWorld);
+}
+
+/** UV map `index` (glTF TEXCOORD_index) as Blender's (u, v, 0): V flipped back from glTF. */
+export function blenderUV(index: number): Vec3Node {
+  const coords = uv(index);
+  return vec3(coords.x, coords.y.oneMinus(), 0);
 }
