@@ -61,6 +61,9 @@ export const voronoi: NodeImpl = (ctx) => {
   const color = m.element(int(1));
   const position = vec4(m.element(int(2)), c0.y);
 
+  if (feature === 'N_SPHERE_RADIUS') {
+    return { Distance: float(0), Color: vec3(0), Position: vec3(0), W: float(0), Radius: distance };
+  }
   const edge = feature === 'DISTANCE_TO_EDGE';
   if (normalize) {
     const half = float(0.5).add(randomness.mul(0.5));

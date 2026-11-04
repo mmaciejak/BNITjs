@@ -608,7 +608,7 @@
     "category": "Texture",
     "status": "partial",
     "phase": 5,
-    "notes": "F1, F2, Smooth F1 and Distance to Edge with every distance metric, 1D–4D, Detail 0. N-Sphere Radius falls back to F1. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern"
+    "notes": "Every feature and distance metric, 1D–4D, Detail 0 (fractal Detail is ignored). Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern"
   },
   {
     "name": "Wave Texture",

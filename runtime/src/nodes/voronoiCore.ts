@@ -322,6 +322,46 @@ function distanceToEdge(v: VoronoiVariant): Body {
   };
 }
 
+/**
+ * voronoi_n_sphere_radius: half the distance from the closest point to its own closest point
+ * (always Euclidean). Returned in the distance slot.
+ */
+function nSphereRadius(v: VoronoiVariant): Body {
+  return ([coord, randomness]) => {
+    const { cellF, local, cellI } = setup(v, coord);
+    const euclid = (a: P, b: P) => (v.dims === 1 ? abs(a.sub(b)) : dist(a, b)) as unknown as F;
+    const pointAt = (offset: P) =>
+      offset.add(cellHash(v, cellF, cellI, offset).mul(randomness)).toVar() as P;
+    const closestPoint = zeroVar(v.dims);
+    const closestPointOffset = zeroVar(v.dims);
+    const minDistance = float(FLT_MAX).toVar();
+    forCells(v.dims, 1, (offset) => {
+      const point = pointAt(offset);
+      const d = euclid(point, local).toVar();
+      If(d.lessThan(minDistance), () => {
+        minDistance.assign(d);
+        closestPoint.assign(point);
+        closestPointOffset.assign(offset);
+      });
+    });
+    minDistance.assign(FLT_MAX);
+    const closestToClosest = zeroVar(v.dims);
+    forCells(v.dims, 1, (offset) => {
+      const isCenter = v.dims === 1 ? offset.equal(0) : dot(offset, offset).equal(0);
+      If(isCenter.not(), () => {
+        const point = pointAt(offset.add(closestPointOffset) as P);
+        const d = euclid(closestPoint, point).toVar();
+        If(d.lessThan(minDistance), () => {
+          minDistance.assign(d);
+          closestToClosest.assign(point);
+        });
+      });
+    });
+    const radius = euclid(closestToClosest, closestPoint).div(2) as F;
+    return pack(radius, vec3(0), vecN(Array.from({ length: v.dims }, () => float(0))), v.dims);
+  };
+}
+
 type FeatureFn = (coord: P, randomness: F, exponent: F, smoothness: F) => Node<'mat3'>;
 
 const BODIES: Partial<Record<Feature, (v: VoronoiVariant) => Body>> = {
@@ -329,6 +369,7 @@ const BODIES: Partial<Record<Feature, (v: VoronoiVariant) => Body>> = {
   F2: f2,
   SMOOTH_F1: smoothF1,
   DISTANCE_TO_EDGE: distanceToEdge,
+  N_SPHERE_RADIUS: nSphereRadius,
 };
 
 const cache = new Map<string, FeatureFn>();
