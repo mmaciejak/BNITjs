@@ -101,13 +101,24 @@ def build_scene(material, setup=None, camera_type="ORTHO"):
 
 
 def scene_jobs(argv):
-    """(scene name, module, variant) for every scene; a module with VARIANTS gives one scene each."""
-    wanted = argv[argv.index("--") + 1 :] if "--" in argv else []
+    """(scene name, module, variant) for every scene; a module with VARIANTS gives one scene each.
+
+    Modules with BLENDER_MAX = (major, minor) (nodes removed in later versions) are skipped on
+    newer Blender. --version-limited renders only those modules (check.sh runs it with 4.2).
+    """
+    args = argv[argv.index("--") + 1 :] if "--" in argv else []
+    version_limited = "--version-limited" in args
+    wanted = [a for a in args if not a.startswith("--")]
     jobs = []
     for module_name in sorted(f[:-3] for f in os.listdir(SCENES_DIR) if f.endswith(".py") and not f.startswith("_")):
         if wanted and not any(w == module_name or w.startswith(module_name + "_") for w in wanted):
             continue
         module = load_scene_module(module_name)
+        limit = getattr(module, "BLENDER_MAX", None)
+        if limit is not None and bpy.app.version[:2] > tuple(limit):
+            continue
+        if version_limited and limit is None:
+            continue
         variants = getattr(module, "VARIANTS", None)
         if variants is None:
             jobs.append((module_name, module, None))

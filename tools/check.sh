@@ -32,6 +32,8 @@ step "runtime"
 if [[ -z "${SKIP_PARITY:-}" ]]; then
   step "parity references"
   "$BLENDER_LATEST" -b --factory-startup --python parity/render_refs.py 2>&1 | grep -E '^parity:' | wc -l | xargs echo "rendered"
+  # Scenes for nodes that only exist in older versions (BLENDER_MAX), rendered with 4.2.
+  "$BLENDER_42" -b --factory-startup --python parity/render_refs.py -- --version-limited 2>&1 | grep -E '^parity:' | wc -l | xargs echo "rendered with 4.2"
   step "parity (WebGPU)"
   (cd runtime && npm run parity --silent | tail -1)
   step "parity (WebGL2)"
