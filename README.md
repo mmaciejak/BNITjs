@@ -1,0 +1,190 @@
+# Blender Shader Web
+
+Take a Blender material built from shader nodes, export it with a Blender add-on, and evaluate the procedural material **live in the browser** with three.js TSL. No baked textures are needed for supported nodes.
+
+- **`exporter/`**: Blender add-on (4.2 LTS+). It writes the material node graph into the glTF file under a vendor extension (`EXT_blender_shader_graph`), with a standard PBR material as the fallback.
+- **`runtime/`**: TypeScript npm package. A GLTFLoader plugin rebuilds the graph as TSL on `MeshPhysicalNodeMaterial` (rendered with `WebGPURenderer`, which falls back to WebGL2).
+- **`parity/`**: a visual parity harness that compares Blender reference renders with browser renders, pixel by pixel.
+
+See [SPEC.md](SPEC.md) for the full design and roadmap.
+
+> **Status:** Phase 0 (repository and foundations). Nothing is usable yet.
+
+## License
+
+**Not decided yet.** It must be decided before Phase 1 (SPEC §5).
+
+- `exporter/` is a Blender add-on, so it is GPL-3.0-or-later in any case.
+- `runtime/` will be either MIT, implemented clean-room with no Blender source ported, or GPL, ported from Blender's GLSL.
+
+## Compatibility
+
+| Component | Versions |
+|---|---|
+| Blender | 4.2 LTS (minimum), 5.2 LTS (primary target) |
+| three.js | 0.187.0 (pinned) |
+
+## Development
+
+```sh
+# Runtime
+cd runtime && npm install
+npm run lint && npm run typecheck && npm test && npm run build
+
+# Exporter: lint, tests in background Blender, build the extension zip
+ruff check . && ruff format --check .
+blender -b --factory-startup --python exporter/tests/run_tests.py
+blender --command extension build --source-dir exporter --output-dir dist
+```
+
+Workflow rules (SPEC §4): one commit per feature, using the `type(scope): message` style. Every commit that changes node support also updates the table below. Each phase ends with a `phase-N` tag and a `CHANGELOG.md` entry.
+
+## Node support
+
+✅ Supported · 🟡 Partial · 🚧 Not yet · 🧊 Baked · ❌ Not planned
+
+This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that exist in only one of those versions are marked in Notes.
+
+### Input
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Ambient Occlusion | Input | 🧊 Baked | 9 | Bake in exporter or rely on scene SSAO |
+| Attribute | Input | 🚧 Not yet | 3 | Via glTF vertex attributes |
+| Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
+| Camera Data | Input | 🚧 Not yet | 3 | View vector, view Z depth, view distance |
+| Color | Input | 🚧 Not yet | 2 | Named "RGB" in 4.2 |
+| Color Attribute | Input | 🚧 Not yet | 3 | Via glTF `COLOR_n` |
+| Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
+| Fresnel | Input | 🚧 Not yet | 3 | |
+| Geometry | Input | 🚧 Not yet | 7 | Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute |
+| Layer Weight | Input | 🚧 Not yet | 3 | |
+| Light Path | Input | 🚧 Not yet | 10 | Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1) |
+| Object Info | Input | 🚧 Not yet | 3 | Exporter writes a per-object seed |
+| Particle Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
+| Point Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
+| Tangent | Input | 🚧 Not yet | 7 | UV and Radial |
+| Texture Coordinate | Input | 🚧 Not yet | 2 | Generated needs exported bounds |
+| UV Map | Input | 🚧 Not yet | 3 | |
+| Value | Input | 🚧 Not yet | 2 | |
+| Volume Info | Input | ❌ Not planned | — | Volumes |
+| Wireframe | Input | 🚧 Not yet | 7 | Needs a barycentric attribute |
+
+### Shader
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
+| Background | Shader | 🚧 Not yet | 6 | World only |
+| Diffuse BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params |
+| Emission | Shader | 🚧 Not yet | 2 | |
+| Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
+| Glossy BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params. RNA type is `ShaderNodeBsdfAnisotropic` |
+| Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
+| Holdout | Shader | 🚧 Not yet | 10 | Alpha handling, scene-dependent |
+| Metallic BSDF | Shader | 🚧 Not yet | 8 | Blender 4.3+. Maps onto metalness/specular color |
+| Mix Shader | Shader | 🚧 Not yet | 8 | Principled+Principled → mix params; otherwise approximation |
+| Principled BSDF | Shader | 🚧 Not yet | 2 | Base color, metallic, roughness, normal, alpha, emission in phase 2. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8 |
+| Principled Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
+| Principled Volume | Shader | ❌ Not planned | — | Volumes |
+| Ray Portal BSDF | Shader | ❌ Not planned | — | Path-tracing only |
+| Refraction BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
+| Sheen BSDF | Shader | 🚧 Not yet | 10 | Maps onto physical sheen |
+| Specular BSDF | Shader | 🚧 Not yet | 8 | Eevee-only node; maps onto physical params |
+| Subsurface Scattering | Shader | 🚧 Not yet | 10 | Thickness/translucency fake |
+| Toon BSDF | Shader | 🚧 Not yet | 10 | Custom lighting |
+| Translucent BSDF | Shader | 🚧 Not yet | 10 | Fake |
+| Transparent BSDF | Shader | 🚧 Not yet | 8 | Alpha blending |
+| Volume Absorption | Shader | ❌ Not planned | — | Volumes |
+| Volume Coefficients | Shader | ❌ Not planned | — | Volumes. Blender 5.x |
+| Volume Scatter | Shader | ❌ Not planned | — | Volumes |
+
+### Texture
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Brick Texture | Texture | 🚧 Not yet | 6 | |
+| Checker Texture | Texture | 🚧 Not yet | 3 | |
+| Environment Texture | Texture | 🚧 Not yet | 6 | World/background |
+| Gabor Texture | Texture | 🚧 Not yet | 6 | Blender 4.3+. Expensive on mobile; recommend bake |
+| Gradient Texture | Texture | 🚧 Not yet | 3 | |
+| IES Texture | Texture | ❌ Not planned | — | Belongs to lights |
+| Image Texture | Texture | 🚧 Not yet | 3 | Box projection 🟡 at first |
+| Magic Texture | Texture | 🚧 Not yet | 6 | |
+| Noise Texture | Texture | 🚧 Not yet | 4 | fBm, multifractal, ridged, hybrid, hetero terrain; 1D–4D. Musgrave merged in since 4.1 |
+| Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |
+| Sky Texture | Texture | 🚧 Not yet | 6 | World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT |
+| Voronoi Texture | Texture | 🚧 Not yet | 5 | F1 first, then F2, Smooth F1, Distance to Edge, N-Sphere Radius |
+| Wave Texture | Texture | 🚧 Not yet | 6 | |
+| White Noise Texture | Texture | 🚧 Not yet | 4 | Hash must match exactly |
+
+### Color
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Brightness/Contrast | Color | 🚧 Not yet | 3 | |
+| Gamma | Color | 🚧 Not yet | 3 | |
+| Hue/Saturation/Value | Color | 🚧 Not yet | 3 | |
+| Invert Color | Color | 🚧 Not yet | 3 | |
+| Mix | Color | 🚧 Not yet | 3 | Float, Vector, Color + all blend modes |
+| Mix (Legacy) | Color | 🚧 Not yet | 3 | `MixRGB`; same blend code as Mix |
+| RGB Curves | Color | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
+
+### Vector
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Bump | Vector | 🚧 Not yet | 7 | Screen-space derivatives |
+| Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
+| Mapping | Vector | 🚧 Not yet | 2 | Point, Texture, Vector, Normal |
+| Normal | Vector | 🚧 Not yet | 3 | |
+| Normal Map | Vector | 🚧 Not yet | 7 | Tangent / object / world; needs glTF tangents |
+| Radial Tiling | Vector | 🚧 Not yet | 6 | Blender 5.x |
+| Vector Curves | Vector | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
+| Vector Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
+| Vector Rotate | Vector | 🚧 Not yet | 3 | |
+| Vector Transform | Vector | 🚧 Not yet | 7 | |
+
+### Converter
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Blackbody | Converter | 🚧 Not yet | 7 | Fitted formula |
+| Clamp | Converter | 🚧 Not yet | 3 | |
+| Color Ramp | Converter | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
+| Combine Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |
+| Combine HSV / Combine RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Combine Color |
+| Combine XYZ | Converter | 🚧 Not yet | 3 | |
+| Float Curve | Converter | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
+| Map Range | Converter | 🚧 Not yet | 3 | All modes, float + vector |
+| Math | Converter | 🚧 Not yet | 3 | All operations |
+| RGB to BW | Converter | 🚧 Not yet | 3 | |
+| Script | Converter | ❌ Not planned | — | OSL not possible in realtime |
+| Separate Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |
+| Separate HSV / Separate RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Separate Color |
+| Separate XYZ | Converter | 🚧 Not yet | 3 | |
+| Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
+| Squeeze Value (Legacy) | Converter | 🚧 Not yet | 3 | |
+| Vector Math | Converter | 🚧 Not yet | 3 | All operations |
+| Wavelength | Converter | 🚧 Not yet | 7 | |
+
+### Output, light and other
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| AOV Output | Output | ❌ Not planned | — | |
+| Light Falloff | Light | ❌ Not planned | — | Belongs to lights |
+| Light Output | Output | ❌ Not planned | — | |
+| Line Style Output | Output | ❌ Not planned | — | Freestyle only |
+| Material Output | Output | 🚧 Not yet | 2 | |
+| Raycast | Input | ❌ Not planned | — | Blender 5.x. Needs scene ray tracing |
+| UV Along Stroke | Input | ❌ Not planned | — | Freestyle only |
+| World Output | Output | 🚧 Not yet | 6 | World only |
+
+### Layout
+
+| Node | Category | Status | Phase | Notes |
+|---|---|---|---|---|
+| Frame | Layout | 🚧 Not yet | 1 | Removed by exporter |
+| Group / Group Input / Group Output | Layout | 🚧 Not yet | 1 | Flattened by exporter |
+| Reroute | Layout | 🚧 Not yet | 1 | Removed by exporter |
