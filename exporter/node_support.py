@@ -43,7 +43,7 @@ STATUS = {
     "ShaderNodeEmission": "supported",
     "ShaderNodeFloatCurve": "planned",
     "ShaderNodeFresnel": "planned",
-    "ShaderNodeGamma": "planned",
+    "ShaderNodeGamma": "supported",
     "ShaderNodeGroup": "supported",
     "ShaderNodeHairInfo": "not_planned",
     "ShaderNodeHoldout": "planned",

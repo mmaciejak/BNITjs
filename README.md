@@ -158,7 +158,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
 | Brightness/Contrast | Color | 🚧 Not yet | 3 | |
-| Gamma | Color | 🚧 Not yet | 3 | |
+| Gamma | Color | ✅ Supported | 3 | |
 | Hue/Saturation/Value | Color | 🚧 Not yet | 3 | |
 | Invert Color | Color | ✅ Supported | 3 | |
 | Mix | Color | 🚧 Not yet | 3 | Float, Vector, Color + all blend modes |

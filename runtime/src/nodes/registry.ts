@@ -1,6 +1,7 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
+import { gamma } from './gamma.js';
 import { invertColor } from './invert.js';
 import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
@@ -32,6 +33,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeMapRange: mapRange,
   ShaderNodeVectorRotate: vectorRotate,
   ShaderNodeInvert: invertColor,
+  ShaderNodeGamma: gamma,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
