@@ -185,7 +185,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
 | Blackbody | Converter | 🚧 Not yet | 7 | Fitted formula |
-| Clamp | Converter | 🚧 Not yet | 3 | |
+| Clamp | Converter | ✅ Supported | 3 | Min Max and Range |
 | Color Ramp | Converter | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
 | Combine Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |
 | Combine HSV / Combine RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Combine Color |

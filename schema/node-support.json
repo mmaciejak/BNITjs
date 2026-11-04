@@ -825,8 +825,9 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
-    "phase": 3
+    "status": "supported",
+    "phase": 3,
+    "notes": "Min Max and Range"
   },
   {
     "name": "Color Ramp",
