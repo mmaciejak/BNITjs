@@ -49,7 +49,7 @@ STATUS = {
     "ShaderNodeHoldout": "planned",
     "ShaderNodeHueSaturation": "supported",
     "ShaderNodeInvert": "supported",
-    "ShaderNodeLayerWeight": "planned",
+    "ShaderNodeLayerWeight": "supported",
     "ShaderNodeLightFalloff": "not_planned",
     "ShaderNodeLightPath": "planned",
     "ShaderNodeMapRange": "supported",

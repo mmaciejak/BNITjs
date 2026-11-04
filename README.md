@@ -93,7 +93,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Fresnel | Input | ✅ Supported | 3 | Front faces |
 | Geometry | Input | 🚧 Not yet | 7 | Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute |
-| Layer Weight | Input | 🚧 Not yet | 3 | |
+| Layer Weight | Input | ✅ Supported | 3 | Front faces |
 | Light Path | Input | 🚧 Not yet | 10 | Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1) |
 | Object Info | Input | 🚧 Not yet | 3 | Exporter writes a per-object seed |
 | Particle Info | Input | ❌ Not planned | — | Out of scope for mesh materials |

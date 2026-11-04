@@ -11,6 +11,7 @@ import { vectorCurves } from './vectorCurves.js';
 import { combineColor } from './combineColor.js';
 import { combineHSV, combineRGB } from './combineLegacy.js';
 import { hueSaturation } from './hueSaturation.js';
+import { layerWeight } from './layerWeight.js';
 import { mix } from './mix.js';
 import { mixRGB } from './mixRGB.js';
 import { separateColor } from './separateColor.js';
@@ -70,6 +71,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexChecker: checker,
   ShaderNodeTexGradient: gradient,
   ShaderNodeFresnel: fresnel,
+  ShaderNodeLayerWeight: layerWeight,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
