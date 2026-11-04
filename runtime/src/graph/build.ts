@@ -1,4 +1,4 @@
-import type { NodeMaterial } from 'three/webgpu';
+import type { NodeMaterial, Texture } from 'three/webgpu';
 import { createRegistry } from '../nodes/registry.js';
 import { isClosure } from '../shaders/closures.js';
 import { materialFromClosure, type MaterialOptions } from '../shaders/material.js';
@@ -8,6 +8,8 @@ import { parseGraph } from './parse.js';
 export interface BuildOptions extends MaterialOptions {
   /** Extra or overriding node implementations, keyed by Blender node type. */
   nodes?: Record<string, NodeImpl>;
+  /** glTF textures referenced by Image Texture nodes, by glTF texture index (the loader fills this). */
+  textures?: ReadonlyMap<number, Texture>;
   onWarning?: (message: string) => void;
 }
 
@@ -21,6 +23,7 @@ export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): B
   const graph = parseGraph(graphJson);
   const evaluator = new GraphEvaluator(graph, {
     registry: createRegistry(options.nodes),
+    textures: options.textures,
     onWarning: options.onWarning,
   });
   const surface = evaluator.outputs(graph.output).Surface ?? null;
@@ -28,4 +31,17 @@ export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): B
   material.name = graph.material;
   material.userData.blenderShaderGraph = { warnings: evaluator.warnings };
   return { material, warnings: evaluator.warnings };
+}
+
+/** glTF texture indices referenced by Image Texture nodes of a graph. */
+export function textureIndices(graphJson: unknown): number[] {
+  const graph = graphJson as {
+    nodes?: Record<string, { properties?: { image?: { texture?: number } } }>;
+  };
+  const indices = new Set<number>();
+  for (const node of Object.values(graph.nodes ?? {})) {
+    const index = node.properties?.image?.texture;
+    if (typeof index === 'number') indices.add(index);
+  }
+  return [...indices];
 }

@@ -552,9 +552,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
+    "status": "partial",
     "phase": 3,
-    "notes": "Box projection 🟡 at first"
+    "notes": "Flat/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Box projection, Cubic/Smart (rendered Linear), float/HDR images, mipmaps"
   },
   {
     "name": "Magic Texture",

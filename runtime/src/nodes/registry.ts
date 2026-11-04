@@ -15,6 +15,7 @@ import { vectorCurves } from './vectorCurves.js';
 import { combineColor } from './combineColor.js';
 import { combineHSV, combineRGB } from './combineLegacy.js';
 import { hueSaturation } from './hueSaturation.js';
+import { imageTexture } from './imageTexture.js';
 import { layerWeight } from './layerWeight.js';
 import { mix } from './mix.js';
 import { mixRGB } from './mixRGB.js';
@@ -88,6 +89,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeAttribute: attribute,
   ShaderNodeBsdfDiffuse: diffuse,
   ShaderNodeBsdfAnisotropic: glossy,
+  ShaderNodeTexImage: imageTexture,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

@@ -144,7 +144,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Gabor Texture | Texture | 🚧 Not yet | 6 | Blender 4.3+. Expensive on mobile; recommend bake |
 | Gradient Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
 | IES Texture | Texture | ❌ Not planned | — | Belongs to lights |
-| Image Texture | Texture | 🚧 Not yet | 3 | Box projection 🟡 at first |
+| Image Texture | Texture | 🟡 Partial | 3 | Flat/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Box projection, Cubic/Smart (rendered Linear), float/HDR images, mipmaps |
 | Magic Texture | Texture | 🚧 Not yet | 6 | |
 | Noise Texture | Texture | 🚧 Not yet | 4 | fBm, multifractal, ridged, hybrid, hetero terrain; 1D–4D. Musgrave merged in since 4.1 |
 | Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |

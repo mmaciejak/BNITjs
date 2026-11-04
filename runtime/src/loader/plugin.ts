@@ -1,11 +1,11 @@
-import { DoubleSide, type Material, type Object3D } from 'three/webgpu';
+import { DoubleSide, type Material, type Object3D, type Texture } from 'three/webgpu';
 import type {
   GLTF,
   GLTFLoader,
   GLTFLoaderPlugin,
   GLTFParser,
 } from 'three/addons/loaders/GLTFLoader.js';
-import { buildMaterial, type BuildOptions } from '../graph/build.js';
+import { buildMaterial, type BuildOptions, textureIndices } from '../graph/build.js';
 import {
   type ColorAttributes,
   EXTENSION_NAME,
@@ -41,21 +41,33 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
     const def = (this.parser.json.materials as MaterialDef[] | undefined)?.[materialIndex];
     const graph = def?.extensions?.[EXTENSION_NAME];
     if (!def || !graph) return null;
+    return this.buildMaterial(materialIndex, def, graph);
+  }
+
+  private async buildMaterial(
+    materialIndex: number,
+    def: MaterialDef,
+    graph: unknown,
+  ): Promise<Material> {
     const warn = (message: string) => {
       const text = `[${EXTENSION_NAME}] ${def.name ?? `material ${materialIndex}`}: ${message}`;
       if (this.options.onWarning) this.options.onWarning(text);
       else console.warn(text);
     };
     try {
+      const textures = new Map<number, Texture>();
+      for (const index of textureIndices(graph)) {
+        textures.set(index, (await this.parser.getDependency('texture', index)) as Texture);
+      }
       const colorAttributes = this.colorAttributesFor(materialIndex);
       const input = colorAttributes ? { ...(graph as object), colorAttributes } : graph;
-      const { material } = buildMaterial(input, { ...this.options, onWarning: warn });
+      const { material } = buildMaterial(input, { ...this.options, textures, onWarning: warn });
       if (def.name) material.name = def.name;
       if (def.doubleSided) material.side = DoubleSide;
-      return Promise.resolve(material);
+      return material;
     } catch (error) {
       warn(`falling back to the standard glTF material: ${(error as Error).message}`);
-      return null;
+      return (await this.parser.loadMaterial(materialIndex)) as Material;
     }
   }
 

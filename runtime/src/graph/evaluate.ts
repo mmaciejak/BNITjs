@@ -1,4 +1,5 @@
 import { float, vec3 } from 'three/tsl';
+import type { Texture } from 'three/webgpu';
 import { type Closure, isClosure } from '../shaders/closures.js';
 import {
   constFloat,
@@ -26,9 +27,13 @@ export interface NodeContext {
   /** Shader input, or null when unlinked. */
   shader(identifier: string): Closure | null;
   isLinked(identifier: string): boolean;
+  /** Whether any link starts at this node's output `identifier`. */
+  isOutputLinked(identifier: string): boolean;
   /** Unlinked value of an input from the graph. */
   inputValue(identifier: string): unknown;
   prop<T>(name: string, fallback: T): T;
+  /** A glTF texture the loader resolved (by index into the glTF textures array). */
+  texture(index: number): Texture | undefined;
   warn(message: string): void;
 }
 
@@ -39,6 +44,7 @@ export type NodeRegistry = ReadonlyMap<string, NodeImpl>;
 
 export interface EvaluateOptions {
   registry: NodeRegistry;
+  textures?: ReadonlyMap<number, Texture>;
   onWarning?: (message: string) => void;
 }
 
@@ -134,11 +140,14 @@ export class GraphEvaluator {
         return null;
       },
       isLinked: (identifier) => this.links.has(socketKey(id, identifier)),
+      isOutputLinked: (identifier) =>
+        (this.graph.links ?? []).some((l) => l.from[0] === id && l.from[1] === identifier),
       inputValue,
       prop: <T>(name: string, fallback: T): T => {
         const value = node.properties?.[name];
         return value === undefined ? fallback : (value as T);
       },
+      texture: (index) => this.options.textures?.get(index),
       warn: (message) => this.warn(`${node.type} ("${id}"): ${message}`),
     };
   }
