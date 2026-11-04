@@ -2,6 +2,7 @@ import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
 import { colorRamp } from './colorRamp.js';
+import { floatCurve } from './floatCurve.js';
 import { rgbCurves } from './rgbCurves.js';
 import { vectorCurves } from './vectorCurves.js';
 import { combineColor } from './combineColor.js';
@@ -62,6 +63,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeValToRGB: colorRamp,
   ShaderNodeRGBCurve: rgbCurves,
   ShaderNodeVectorCurve: vectorCurves,
+  ShaderNodeFloatCurve: floatCurve,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

@@ -41,7 +41,7 @@ STATUS = {
     "ShaderNodeDisplacement": "planned",
     "ShaderNodeEeveeSpecular": "planned",
     "ShaderNodeEmission": "supported",
-    "ShaderNodeFloatCurve": "planned",
+    "ShaderNodeFloatCurve": "supported",
     "ShaderNodeFresnel": "planned",
     "ShaderNodeGamma": "supported",
     "ShaderNodeGroup": "supported",
