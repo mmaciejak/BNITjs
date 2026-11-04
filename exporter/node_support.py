@@ -78,7 +78,7 @@ STATUS = {
     "ShaderNodeSeparateColor": "planned",
     "ShaderNodeSeparateHSV": "planned",
     "ShaderNodeSeparateRGB": "planned",
-    "ShaderNodeSeparateXYZ": "planned",
+    "ShaderNodeSeparateXYZ": "supported",
     "ShaderNodeShaderToRGB": "planned",
     "ShaderNodeSqueeze": "planned",
     "ShaderNodeSubsurfaceScattering": "planned",

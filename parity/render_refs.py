@@ -4,7 +4,9 @@
 
 For each parity/scenes/<name>.py (files starting with "_" are helpers), which defines build() ->
 material, and optionally setup(plane) to change the plane mesh or object and
-CAMERA = "PERSP" for a perspective camera (default orthographic):
+CAMERA = "PERSP" for a perspective camera (default orthographic). A module with
+VARIANTS = [...] defines build(variant) and yields one scene per variant, named
+<module>_<variant lowercased> (e.g. math_add):
 
 - parity/references/<name>.png: Cycles render, 512×512, 16-bit, Standard view transform, box pixel
   filter of width 1 (each pixel is the average over its area), 64 samples, no dither.
@@ -98,19 +100,33 @@ def build_scene(material, setup=None, camera_type="ORTHO"):
     setup_render(scene)
 
 
-def scene_names(argv):
-    names = sorted(f[:-3] for f in os.listdir(SCENES_DIR) if f.endswith(".py") and not f.startswith("_"))
+def scene_jobs(argv):
+    """(scene name, module, variant) for every scene; a module with VARIANTS gives one scene each."""
     wanted = argv[argv.index("--") + 1 :] if "--" in argv else []
-    return [n for n in names if not wanted or n in wanted]
+    jobs = []
+    for module_name in sorted(f[:-3] for f in os.listdir(SCENES_DIR) if f.endswith(".py") and not f.startswith("_")):
+        if wanted and not any(w == module_name or w.startswith(module_name + "_") for w in wanted):
+            continue
+        module = load_scene_module(module_name)
+        variants = getattr(module, "VARIANTS", None)
+        if variants is None:
+            jobs.append((module_name, module, None))
+            continue
+        for variant in variants:
+            name = f"{module_name}_{str(variant).lower()}"
+            if not wanted or module_name in wanted or name in wanted:
+                jobs.append((name, module, variant))
+    return jobs
 
 
 def main():
     os.makedirs(REFS_DIR, exist_ok=True)
-    for name in scene_names(sys.argv):
+    for name, module, variant in scene_jobs(sys.argv):
         bpy.ops.wm.read_factory_settings(use_empty=True)
         enable_addon()
-        module = load_scene_module(name)
-        build_scene(module.build(), getattr(module, "setup", None), getattr(module, "CAMERA", "ORTHO"))
+        material = module.build() if variant is None else module.build(variant)
+        material.name = name
+        build_scene(material, getattr(module, "setup", None), getattr(module, "CAMERA", "ORTHO"))
 
         scene = bpy.context.scene
         scene.render.filepath = os.path.join(REFS_DIR, f"{name}.png")

@@ -7,6 +7,7 @@ import { principled } from './principled.js';
 import { rgb } from './rgb.js';
 import { texCoord } from './texCoord.js';
 import { value } from './value.js';
+import { separateXYZ } from './xyz.js';
 
 /**
  * Blender node type (bl_idname) -> TSL implementation.
@@ -23,6 +24,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
   ShaderNodeValue: value,
+  ShaderNodeSeparateXYZ: separateXYZ,
 };
 
 /** The built-in registry, optionally extended or overridden with custom node implementations. */

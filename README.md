@@ -197,7 +197,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Script | Converter | ❌ Not planned | — | OSL not possible in realtime |
 | Separate Color | Converter | 🚧 Not yet | 3 | RGB, HSV, HSL |
 | Separate HSV / Separate RGB | Converter | 🚧 Not yet | 3 | Legacy, Blender 4.2 only; same code as Separate Color |
-| Separate XYZ | Converter | 🚧 Not yet | 3 | |
+| Separate XYZ | Converter | ✅ Supported | 3 | |
 | Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
 | Squeeze Value (Legacy) | Converter | 🚧 Not yet | 3 | |
 | Vector Math | Converter | 🚧 Not yet | 3 | All operations |
