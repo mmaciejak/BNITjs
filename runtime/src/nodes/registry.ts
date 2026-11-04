@@ -14,6 +14,7 @@ import { hueSaturation } from './hueSaturation.js';
 import { layerWeight } from './layerWeight.js';
 import { mix } from './mix.js';
 import { mixRGB } from './mixRGB.js';
+import { normal } from './normal.js';
 import { objectInfo } from './objectInfo.js';
 import { separateColor } from './separateColor.js';
 import { separateHSV, separateRGB } from './separateLegacy.js';
@@ -74,6 +75,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,
+  ShaderNodeNormal: normal,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

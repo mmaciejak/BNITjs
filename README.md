@@ -172,7 +172,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Bump | Vector | 🚧 Not yet | 7 | Screen-space derivatives |
 | Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
 | Mapping | Vector | ✅ Supported | 2 | Point, Texture, Vector, Normal |
-| Normal | Vector | 🚧 Not yet | 3 | |
+| Normal | Vector | ✅ Supported | 3 | |
 | Normal Map | Vector | 🚧 Not yet | 7 | Tangent / object / world; needs glTF tangents |
 | Radial Tiling | Vector | 🚧 Not yet | 6 | Blender 5.x |
 | Vector Curves | Vector | ✅ Supported | 3 | Cycles table incl. extrapolation |
