@@ -8,7 +8,7 @@ Take a Blender material built from shader nodes, export it with a Blender add-on
 
 See [SPEC.md](SPEC.md) for the full design and roadmap.
 
-> **Status:** Phase 1 done. The exporter writes node graphs into glTF files; the three.js runtime is next (Phase 2).
+> **Status:** Phase 2 done. Graphs built from Value, Color, Texture Coordinate, Mapping, Emission and Principled BSDF (base inputs) load in three.js and match Blender in the parity harness. Phase 3 (the rest of the easy nodes, live parameters) is next.
 
 ## License
 
@@ -27,6 +27,8 @@ The AGPL also covers network use. If you serve a modified version of the runtime
 
 ## Development
 
+`tools/check.sh` runs every suite: Python lint, node-table sync, exporter tests on Blender 4.2 and 5.2, runtime lint, typecheck, tests and build, and the parity harness on WebGPU and WebGL2. Run it before every commit.
+
 ```sh
 # Runtime
 cd runtime && npm install
@@ -42,7 +44,25 @@ blender -b --factory-startup --python exporter/tests/make_fixtures.py
 
 # After editing schema/node-support.json
 python3 tools/sync_node_support.py
+
+# Parity: render Blender references + export glTF, then compare in headless Chromium
+blender -b --factory-startup --python parity/render_refs.py [-- scene ...]
+cd runtime && npm run parity [-- scene ...] [--webgl]   # report: parity/compare/out/report.md
 ```
+
+### Using the runtime
+
+```js
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { WebGPURenderer } from 'three/webgpu';
+import { registerBlenderShaderGraph } from 'blender-shader-web';
+
+const renderer = new WebGPURenderer(); // falls back to WebGL2
+const loader = registerBlenderShaderGraph(new GLTFLoader());
+const gltf = await loader.loadAsync('model.gltf'); // materials rebuilt from their node graphs
+```
+
+Nodes that aren't supported yet log a warning and use a default value; a material that fails to build falls back to the standard glTF material in the same file.
 
 ### Using the exporter
 

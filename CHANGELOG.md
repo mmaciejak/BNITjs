@@ -2,6 +2,15 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-2: Runtime core and parity harness
+
+- Runtime: `registerBlenderShaderGraph(loader)` / `BlenderShaderGraphPlugin` for GLTFLoader. It rebuilds materials from `EXT_blender_shader_graph` (falling back to the standard glTF material on error) and stores per-object data in `userData`.
+- Graph evaluator with Blender's implicit socket conversions. Unknown nodes produce a warning and a default value, never a crash. Shader sockets carry closures that map onto `MeshPhysicalNodeMaterial` / `MeshBasicNodeMaterial`, with an `unlit` option.
+- Nodes: Value, Color, Texture Coordinate (all outputs), Mapping (all types), Emission, Principled BSDF (base inputs), Material Output (Surface).
+- Parity harness: Blender Cycles references vs. three.js in headless Chromium (WebGPU and WebGL2), with a pixel diff, per-scene thresholds, diff images and a report. 17 scenes pass with MAE ≤ 0.3 and max ≤ 0.8 levels out of 255.
+- Exporter now writes the output values of Value and Color nodes.
+- `tools/check.sh` runs every suite.
+
 ## phase-1: Export format and exporter MVP
 
 - `schema/graph.schema.json` v1: nodes, sockets, links, sampled ramps and curves, per-object data. Fixtures in `schema/fixtures/` are validated with Ajv.
