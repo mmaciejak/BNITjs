@@ -696,9 +696,9 @@
     ],
     "section": "Color",
     "category": "Color",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
-    "notes": "Sampled in Blender → 1D LUT"
+    "notes": "Cycles table incl. extrapolation"
   },
   {
     "name": "Bump",

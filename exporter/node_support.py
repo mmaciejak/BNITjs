@@ -70,7 +70,7 @@ STATUS = {
     "ShaderNodeParticleInfo": "not_planned",
     "ShaderNodePointInfo": "not_planned",
     "ShaderNodeRGB": "supported",
-    "ShaderNodeRGBCurve": "planned",
+    "ShaderNodeRGBCurve": "supported",
     "ShaderNodeRGBToBW": "supported",
     "ShaderNodeRadialTiling": "planned",
     "ShaderNodeRaycast": "not_planned",
