@@ -13,7 +13,7 @@ STATUS = {
     "NodeReroute": "supported",
     "ShaderNodeAddShader": "planned",
     "ShaderNodeAmbientOcclusion": "baked",
-    "ShaderNodeAttribute": "planned",
+    "ShaderNodeAttribute": "partial",
     "ShaderNodeBackground": "planned",
     "ShaderNodeBevel": "baked",
     "ShaderNodeBlackbody": "planned",

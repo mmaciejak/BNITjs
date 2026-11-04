@@ -85,7 +85,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
 | Ambient Occlusion | Input | 🧊 Baked | 9 | Bake in exporter or rely on scene SSAO |
-| Attribute | Input | 🚧 Not yet | 3 | Via glTF vertex attributes |
+| Attribute | Input | 🟡 Partial | 3 | Geometry type: color attributes, UV maps and "_" custom attributes (glTF Attributes option). Instancer/Object/View Layer types not supported |
 | Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
 | Camera Data | Input | ✅ Supported | 3 | |
 | Color | Input | ✅ Supported | 2 | Named "RGB" in 4.2 |

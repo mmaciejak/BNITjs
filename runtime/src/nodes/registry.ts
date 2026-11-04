@@ -1,4 +1,5 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
+import { attribute } from './attribute.js';
 import { bswValue } from './bswValue.js';
 import { cameraData } from './cameraData.js';
 import { checker } from './checker.js';
@@ -82,6 +83,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeCameraData: cameraData,
   ShaderNodeUVMap: uvMap,
   ShaderNodeVertexColor: colorAttribute,
+  ShaderNodeAttribute: attribute,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
