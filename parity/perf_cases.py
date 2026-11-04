@@ -2,8 +2,8 @@
 
     blender -b --factory-startup --python parity/perf_cases.py
 
-Each case is the parity plane and camera with a Noise Texture whose Detail comes from a Value node
-labelled "$Detail", so the browser side (parity/compare/perf.mjs) can sweep Detail as a live
+Each case is the parity plane and camera with a Noise or Voronoi Texture whose Detail comes from a
+Value node labelled "$Detail", so the browser side (parity/compare/perf.mjs) can sweep Detail as a live
 parameter without rebuilding the shader. "baseline" is a constant emission, for the fixed cost of
 a frame.
 """
@@ -24,7 +24,7 @@ from test_gltf_export import disable_addon, enable_addon  # noqa: E402
 
 OUT_DIR = os.path.join(PARITY, "compare", "out")
 
-# case: (noise type, dimensions, output, distortion); None = baseline
+# case: (noise type, dimensions, output, distortion) for Noise; None = baseline
 CASES = {
     "baseline": None,
     "fbm_2d_fac": ("FBM", "2D", "Fac", 0.0),
@@ -35,9 +35,36 @@ CASES = {
     "fbm_4d_color": ("FBM", "4D", "Color", 0.0),
     "ridged_3d_fac": ("RIDGED_MULTIFRACTAL", "3D", "Fac", 0.0),
 }
+# case: (feature, dimensions, output) for Voronoi
+VORONOI_CASES = {
+    "voronoi_f1_2d": ("F1", "2D", "Distance"),
+    "voronoi_f1_3d": ("F1", "3D", "Distance"),
+    "voronoi_f1_3d_color": ("F1", "3D", "Color"),
+    "voronoi_f1_4d": ("F1", "4D", "Distance"),
+    "voronoi_f2_3d": ("F2", "3D", "Distance"),
+    "voronoi_smooth_f1_3d": ("SMOOTH_F1", "3D", "Distance"),
+    "voronoi_smooth_f1_4d": ("SMOOTH_F1", "4D", "Distance"),
+    "voronoi_edge_3d": ("DISTANCE_TO_EDGE", "3D", "Distance"),
+}
+
+
+def build_voronoi(case):
+    mat, nodes, links, color_in = emission_material(f"perf_{case}")
+    feature, dims, output = VORONOI_CASES[case]
+    node = nodes.new("ShaderNodeTexVoronoi")
+    node.feature = feature
+    node.voronoi_dimensions = dims
+    detail = nodes.new("ShaderNodeValue")
+    detail.label = "$Detail"
+    detail.outputs[0].default_value = 2.0
+    links.new(detail.outputs[0], by_id(node.inputs)["Detail"])
+    links.new(by_id(node.outputs)[output], color_in)
+    return mat
 
 
 def build(case):
+    if case in VORONOI_CASES:
+        return build_voronoi(case)
     mat, nodes, links, color_in = emission_material(f"perf_{case}")
     spec = CASES[case]
     if spec is None:
@@ -59,7 +86,7 @@ def build(case):
 
 
 def main():
-    for case in CASES:
+    for case in [*CASES, *VORONOI_CASES]:
         bpy.ops.wm.read_factory_settings(use_empty=True)
         enable_addon()
         bpy.ops.mesh.primitive_plane_add(size=2.0)

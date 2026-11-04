@@ -49,7 +49,7 @@ python3 tools/sync_node_support.py
 blender -b --factory-startup --python parity/render_refs.py [-- scene ...]
 cd runtime && npm run parity [-- scene ...] [--webgl]   # report: parity/compare/out/report.md
 
-# Performance check: frame time of Noise at several Detail values
+# Performance check: frame time of Noise and Voronoi at several Detail values
 blender -b --factory-startup --python parity/perf_cases.py
 cd runtime && npm run perf [-- case ...] [--webgl]     # report: parity/compare/out/perf.md
 ```
@@ -83,22 +83,31 @@ params.set('Wood/Color', [0.6, 0.3, 0.1]); // linear RGB, as in Blender
 
 ### Performance of procedural textures
 
-Procedural textures are evaluated for every pixel, every frame. Their cost grows with the number of octaves, which is ⌊Detail⌋ + 1, plus one more when Detail has a fractional part. Shading cost measured with `npm run perf` on an Apple M3 Pro (WebGPU, in ms per megapixel per frame; WebGL2 gives similar numbers):
+Procedural textures are evaluated for every pixel, every frame. Their cost grows with the number of octaves, which is ⌊Detail⌋ + 1, plus one more when Detail has a fractional part. `npm run perf` measures the shading cost in ms per megapixel per frame. Below is one run on an Apple M3 Pro (WebGPU; WebGL2 gives similar numbers). Absolute numbers varied up to 2× between sessions on the same machine (probably its thermal state), so compare rows rather than reading them as exact budgets.
 
-| Noise Texture | Detail 0 | Detail 2 | Detail 4 | Detail 8 | Detail 15 |
+| Texture | Detail 0 | Detail 2 | Detail 4 | Detail 8 | Detail 15 |
 |---|---|---|---|---|---|
-| 2D, Fac | 0.00 | 0.05 | 0.17 | 0.42 | 0.86 |
-| 3D, Fac | 0.00 | 0.27 | 0.51 | 0.99 | 1.93 |
-| 3D, Color | 0.26 | 0.99 | 1.75 | 3.47 | 5.96 |
-| 3D, Color, Distortion | 0.62 | 1.34 | 2.07 | 3.76 | 6.48 |
-| 4D, Fac | 0.19 | 0.86 | 1.51 | 2.82 | 5.15 |
-| 4D, Color | 0.85 | 2.72 | 4.57 | 8.37 | 14.87 |
+| Noise 2D, Fac | 0.00 | 0.07 | 1.02 | 1.24 | 2.78 |
+| Noise 3D, Fac | 0.67 | 0.82 | 1.30 | 2.63 | 4.78 |
+| Noise 3D, Color | 1.10 | 2.35 | 4.39 | 7.70 | 14.47 |
+| Noise 3D, Color, Distortion | 2.18 | 3.70 | 5.31 | 8.56 | 15.98 |
+| Noise 4D, Fac | 1.48 | 2.86 | 3.65 | 7.21 | 13.23 |
+| Noise 4D, Color | 2.91 | 6.51 | 11.72 | 20.73 | 35.36 |
+| Voronoi 2D F1 | 0.00 | 0.96 | 0.92 | 1.51 | 3.51 |
+| Voronoi 3D F1 | 1.55 | 2.54 | 4.13 | 8.08 | 14.76 |
+| Voronoi 3D F2 | 1.24 | 2.61 | 4.61 | 7.97 | 15.64 |
+| Voronoi 3D Distance to Edge | 2.82 | 6.75 | 10.87 | 18.86 | 33.99 |
+| Voronoi 3D Smooth F1 | 5.02 | 14.16 | 21.76 | 38.72 | 70.01 |
+| Voronoi 4D F1 | 3.97 | 11.11 | 16.84 | 29.65 | 53.47 |
+| Voronoi 4D Smooth F1 | 37.53 | 113.60 | 188.10 | 332.40 | 568.42 |
 
 A full-screen 1080p view is about 2 megapixels. Rules of thumb:
 
-- Linking the **Color** output costs about 3× the Fac output, because it evaluates the noise three times. Use Fac when one channel is enough.
-- **4D** costs about 2.5× as much as 3D, and 3D costs about 3× as much as 2D. Distortion adds about one octave's cost per axis.
-- Recommended limits: Detail ≤ 8 on desktop GPUs, and **Detail ≤ 4** (3D, Fac) or **≤ 2** (Color or 4D) on phones. The phone limits are estimates: they assume a mid-range phone GPU is 5–10× slower than the M3 Pro. They have not been measured on phones.
+- Noise **Color** costs about 3× Noise Fac, because it evaluates the noise three times. Voronoi's Color output is almost free: it comes from the same cell search.
+- The cost per octave grows with the dimensions. 4D costs about 2.5× 3D for Noise and about 3.5× for Voronoi. 2D is the cheapest.
+- Voronoi **Smooth F1** searches 5^dims cells instead of 3^dims: about 5× F1 in 3D and about 10× in 4D. Avoid 4D Smooth F1 in real time. **Distance to Edge** makes two passes, about 2.5× F1.
+- Recommended limits on desktop GPUs: Noise Detail ≤ 8, and Voronoi 3D Detail ≤ 2 (Smooth F1: Detail 0).
+- On phones: Noise 3D Fac Detail ≤ 2, Noise Color or 4D Detail 0, and Voronoi only in 2D or at 3D F1 Detail 0. These are estimates: they assume a mid-range phone GPU is 5–10× slower than the M3 Pro. They have not been measured on phones.
 - Above these limits, bake the texture (planned for Phase 9).
 
 ### Using the exporter
