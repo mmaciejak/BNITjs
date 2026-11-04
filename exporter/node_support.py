@@ -95,7 +95,7 @@ STATUS = {
     "ShaderNodeTexNoise": "supported",
     "ShaderNodeTexPointDensity": "baked",
     "ShaderNodeTexSky": "planned",
-    "ShaderNodeTexVoronoi": "planned",
+    "ShaderNodeTexVoronoi": "partial",
     "ShaderNodeTexWave": "planned",
     "ShaderNodeTexWhiteNoise": "supported",
     "ShaderNodeUVAlongStroke": "not_planned",

@@ -7,8 +7,24 @@
  * unsigned ints. Each function is emitted once as a real shader function (Fn with a layout), so
  * the hash inputs are never constant expressions: WGSL rejects u32 overflow in constant evaluation.
  * The plain JS versions compute constants (e.g. Noise's random offsets) on the CPU.
+ *
+ * The PCG integer hashes (hash_pcg*d_i, used by Voronoi since Blender 5) are ported from
+ * source/blender/gpu/shaders/common/gpu_shader_common_hash.glsl (Blender 5.2), which matches
+ * Cycles. They run on i32, whose multiplication also wraps.
  */
-import { Fn, float, floatBitsToUint, uint, vec2, vec3, vec4 } from 'three/tsl';
+import {
+  Fn,
+  float,
+  floatBitsToUint,
+  int,
+  ivec2,
+  ivec3,
+  ivec4,
+  uint,
+  vec2,
+  vec3,
+  vec4,
+} from 'three/tsl';
 import type { Node } from 'three/webgpu';
 
 type U = Node<'uint'>;
@@ -127,6 +143,100 @@ export const hashFloat3ToVec3 = (k: V3): V3 =>
 
 export const hashFloat4ToVec3 = (k: V4): V3 =>
   vec3(hashFloat4(k), hashFloat4(k.zxwy as V4), hashFloat4(k.wzyx as V4)) as V3;
+
+/** hash_vec2_to_vec2 .. hash_vec4_to_vec4 (float cell hashes, Voronoi before Blender 5). */
+export const hashVec2ToVec2 = (k: V2): V2 =>
+  vec2(hashFloat2(k), hashFloat3(vec3(k, 1) as V3)) as V2;
+export const hashVec4ToVec4 = (k: V4): V4 =>
+  vec4(
+    hashFloat4(k),
+    hashFloat4(k.wxyz as V4),
+    hashFloat4(k.zwxy as V4),
+    hashFloat4(k.yzwx as V4),
+  ) as V4;
+
+// PCG integer hashes ---------------------------------------------------------------------------
+
+type I = Node<'int'>;
+type IV2 = Node<'ivec2'>;
+type IV3 = Node<'ivec3'>;
+type IV4 = Node<'ivec4'>;
+
+const PCG_MUL = 1664525;
+const PCG_ADD = 1013904223;
+const lcg = (x: I): I => x.mul(int(PCG_MUL)).add(int(PCG_ADD)).toVar() as I;
+const xorShift = (x: I): I => x.bitXor(x.shiftRight(int(16))).toVar() as I;
+const v = (x: I): I => x.toVar() as I;
+
+/** hash_pcg2d_i. */
+export const hashPcg2 = Fn(
+  ([k]: [IV2]) => {
+    let x = lcg(k.x as I);
+    let y = lcg(k.y as I);
+    x = v(x.add(y.mul(int(PCG_MUL))));
+    y = v(y.add(x.mul(int(PCG_MUL))));
+    x = xorShift(x);
+    y = xorShift(y);
+    x = v(x.add(y.mul(int(PCG_MUL))));
+    y = v(y.add(x.mul(int(PCG_MUL))));
+    return ivec2(x, y);
+  },
+  { k: 'ivec2', return: 'ivec2' },
+) as unknown as (k: IV2) => IV2;
+
+/** hash_pcg3d_i. */
+export const hashPcg3 = Fn(
+  ([k]: [IV3]) => {
+    let x = lcg(k.x as I);
+    let y = lcg(k.y as I);
+    let z = lcg(k.z as I);
+    x = v(x.add(y.mul(z)));
+    y = v(y.add(z.mul(x)));
+    z = v(z.add(x.mul(y)));
+    x = xorShift(x);
+    y = xorShift(y);
+    z = xorShift(z);
+    x = v(x.add(y.mul(z)));
+    y = v(y.add(z.mul(x)));
+    z = v(z.add(x.mul(y)));
+    return ivec3(x, y, z);
+  },
+  { k: 'ivec3', return: 'ivec3' },
+) as unknown as (k: IV3) => IV3;
+
+/** hash_pcg4d_i. */
+export const hashPcg4 = Fn(
+  ([k]: [IV4]) => {
+    let x = lcg(k.x as I);
+    let y = lcg(k.y as I);
+    let z = lcg(k.z as I);
+    let w = lcg(k.w as I);
+    x = v(x.add(y.mul(w)));
+    y = v(y.add(z.mul(x)));
+    z = v(z.add(x.mul(y)));
+    w = v(w.add(y.mul(z)));
+    x = xorShift(x);
+    y = xorShift(y);
+    z = xorShift(z);
+    w = xorShift(w);
+    x = v(x.add(y.mul(w)));
+    y = v(y.add(z.mul(x)));
+    z = v(z.add(x.mul(y)));
+    w = v(w.add(y.mul(z)));
+    return ivec4(x, y, z, w);
+  },
+  { k: 'ivec4', return: 'ivec4' },
+) as unknown as (k: IV4) => IV4;
+
+/** (h & 0x7fffffff) / float(0x7fffffff), with float(0x7fffffff) = 2^31 as in C. */
+const INV_31 = Math.fround(1 / 2147483648);
+const positive = <T>(h: T): T => (h as unknown as I).bitAnd(int(0x7fffffff)) as unknown as T;
+
+export const hashInt2ToVec2 = (k: IV2): V2 => vec2(positive(hashPcg2(k))).mul(INV_31) as V2;
+export const hashInt3ToVec3 = (k: IV3): V3 => vec3(positive(hashPcg3(k))).mul(INV_31) as V3;
+export const hashInt4ToVec4 = (k: IV4): V4 => vec4(positive(hashPcg4(k))).mul(INV_31) as V4;
+export const hashInt2ToVec3 = (k: IV2): V3 => hashInt3ToVec3(ivec3(k, 0) as IV3);
+export const hashInt4ToVec3 = (k: IV4): V3 => hashInt4ToVec4(k).xyz as V3;
 
 // ----------------------------------------------------------------------------------------- JS
 

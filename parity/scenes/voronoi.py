@@ -1,0 +1,9 @@
+"""Voronoi Texture (Blender 5 integer cell hashing). Variants: see _voronoi.py."""
+
+from _voronoi import build  # noqa: F401
+
+VARIANTS = [
+    "F1_1D", "F1_2D", "F1_3D", "F1_4D", "F1_1D_COLOR", "F1_2D_COLOR", "F1_3D_COLOR", "F1_4D_COLOR",
+    "F1_2D_POSITION", "F1_3D_POSITION", "F1_4D_W", "F1_1D_W", "F1_3D_RAND05", "F1_3D_NORMALIZE",
+    "F1_1D_NORMALIZE",
+]  # fmt: skip
