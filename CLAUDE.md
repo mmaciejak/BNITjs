@@ -1,0 +1,25 @@
+# Project notes for Claude
+
+The plan is in [SPEC.md](SPEC.md). Read it before starting a phase.
+
+## Git workflow (SPEC §4)
+
+- Make one commit per feature: one node, one exporter capability, or one harness feature. Never batch several nodes into one commit.
+- Commit only when the tests for that feature pass: unit tests, plus a parity test for texture and color nodes.
+- A commit that adds or changes node support updates the README node table in the same commit.
+- Commit messages use the `type(scope): message` style, e.g. `feat(nodes): add Voronoi F1 with euclidean distance`.
+- When a phase ends, add a `CHANGELOG.md` entry and tag it `phase-N`.
+
+## Commands
+
+- Runtime: `cd runtime && npm run lint && npm run typecheck && npm test && npm run build`
+- Exporter lint: `ruff check . && ruff format --check .`
+- Exporter tests: `"/Applications/Blender 5.app/Contents/MacOS/Blender" -b --factory-startup --python exporter/tests/run_tests.py` (5.2.2 LTS). Also run them with `"/Applications/Blender 2.app/..."`, which is 4.2.3 LTS, the minimum version.
+- Set `BLENDER_USER_RESOURCES` to a temporary directory for headless runs, so the user's real preferences are never touched.
+
+## Facts
+
+- Glossy BSDF's RNA type is `ShaderNodeBsdfAnisotropic`.
+- Point Density was removed in Blender 5.x.
+- The Sky Texture models differ between Blender 4.2 and 5.x.
+- Hook into the bundled glTF exporter (`io_scene_gltf2`, `glTF2ExportUserExtension`) instead of writing a separate glTF writer.
