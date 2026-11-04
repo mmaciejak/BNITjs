@@ -52,7 +52,7 @@ STATUS = {
     "ShaderNodeLayerWeight": "planned",
     "ShaderNodeLightFalloff": "not_planned",
     "ShaderNodeLightPath": "planned",
-    "ShaderNodeMapRange": "planned",
+    "ShaderNodeMapRange": "supported",
     "ShaderNodeMapping": "supported",
     "ShaderNodeMath": "supported",
     "ShaderNodeMix": "planned",

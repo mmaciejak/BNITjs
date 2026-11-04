@@ -1,6 +1,7 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
+import { mapRange } from './mapRange.js';
 import { emission } from './emission.js';
 import { mapping } from './mapping.js';
 import { math } from './math.js';
@@ -26,6 +27,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeMath: math,
   ShaderNodeVectorMath: vectorMath,
   ShaderNodeClamp: clamp,
+  ShaderNodeMapRange: mapRange,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
