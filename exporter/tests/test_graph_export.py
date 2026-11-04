@@ -94,8 +94,9 @@ class GraphExportTest(unittest.TestCase):
         self.assertEqual(len(data["elements"]), 3)
         self.assertEqual(len(data["lut"]), data["size"] * 4)
         ramp = mat.node_tree.nodes["Color Ramp"].color_ramp
-        for i in (0, 37, 100, 255):
-            expected = ramp.evaluate(i / 255)
+        n = data["size"]
+        for i in (0, 37, 100, n - 1):
+            expected = ramp.evaluate(i / (n - 1))
             for c in range(4):
                 self.assertAlmostEqual(data["lut"][i * 4 + c], expected[c], places=6)
 

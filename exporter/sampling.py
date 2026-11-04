@@ -7,7 +7,9 @@ CONSTANT and LINEAR ramps exactly instead of through the table.
 
 from .values import f32 as _f32
 
-LUT_SIZE = 256
+# Cycles' RAMP_TABLE_SIZE: 257 entries at i / 256 (Blender's 256-segment table plus the end
+# point). Measured: a CONSTANT ramp element at p switches exactly at ceil(p·256)/256 in Cycles.
+LUT_SIZE = 257
 
 
 def color_ramp(ramp, size=LUT_SIZE):

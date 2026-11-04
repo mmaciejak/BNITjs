@@ -18,7 +18,8 @@ class SamplingTest(unittest.TestCase):
         self.assertEqual(data["size"], sampling.LUT_SIZE)
         self.assertEqual(len(data["lut"]), sampling.LUT_SIZE * 4)
         self.assertEqual([e["position"] for e in data["elements"]], [0.0, 0.3, 1.0])
-        for i in range(0, sampling.LUT_SIZE, 17):
+        self.assertEqual(sampling.LUT_SIZE, 257)  # Cycles' RAMP_TABLE_SIZE
+        for i in range(0, sampling.LUT_SIZE, 16):
             expected = ramp.evaluate(i / (sampling.LUT_SIZE - 1))
             got = data["lut"][i * 4 : i * 4 + 4]
             for a, b in zip(got, expected, strict=True):
