@@ -11,7 +11,7 @@ import type { Vec3Node } from '../graph/convert.js';
 import type { NodeImpl } from '../graph/evaluate.js';
 
 /** Columns of Blender's euler_to_mat3 (XYZ Euler, radians). */
-function eulerColumns(euler: Vec3Node): [Vec3Node, Vec3Node, Vec3Node] {
+export function eulerColumns(euler: Vec3Node): [Vec3Node, Vec3Node, Vec3Node] {
   const cx = cos(euler.x);
   const cy = cos(euler.y);
   const cz = cos(euler.z);
@@ -26,12 +26,12 @@ function eulerColumns(euler: Vec3Node): [Vec3Node, Vec3Node, Vec3Node] {
 }
 
 /** M · v for a matrix given by columns. */
-function mulColumns([c0, c1, c2]: [Vec3Node, Vec3Node, Vec3Node], v: Vec3Node): Vec3Node {
+export function mulColumns([c0, c1, c2]: [Vec3Node, Vec3Node, Vec3Node], v: Vec3Node): Vec3Node {
   return c0.mul(v.x).add(c1.mul(v.y)).add(c2.mul(v.z));
 }
 
 /** Mᵀ · v for a matrix given by columns (the inverse, for a rotation). */
-function mulTransposed([c0, c1, c2]: [Vec3Node, Vec3Node, Vec3Node], v: Vec3Node): Vec3Node {
+export function mulTransposed([c0, c1, c2]: [Vec3Node, Vec3Node, Vec3Node], v: Vec3Node): Vec3Node {
   return vec3(c0.dot(v), c1.dot(v), c2.dot(v));
 }
 

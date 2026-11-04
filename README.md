@@ -177,7 +177,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Radial Tiling | Vector | 🚧 Not yet | 6 | Blender 5.x |
 | Vector Curves | Vector | 🚧 Not yet | 3 | Sampled in Blender → 1D LUT |
 | Vector Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
-| Vector Rotate | Vector | 🚧 Not yet | 3 | |
+| Vector Rotate | Vector | ✅ Supported | 3 | |
 | Vector Transform | Vector | 🚧 Not yet | 7 | |
 
 ### Converter
