@@ -97,7 +97,7 @@ STATUS = {
     "ShaderNodeTexSky": "planned",
     "ShaderNodeTexVoronoi": "planned",
     "ShaderNodeTexWave": "planned",
-    "ShaderNodeTexWhiteNoise": "planned",
+    "ShaderNodeTexWhiteNoise": "supported",
     "ShaderNodeUVAlongStroke": "not_planned",
     "ShaderNodeUVMap": "supported",
     "ShaderNodeValToRGB": "supported",

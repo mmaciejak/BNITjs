@@ -164,7 +164,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Sky Texture | Texture | 🚧 Not yet | 6 | World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT |
 | Voronoi Texture | Texture | 🚧 Not yet | 5 | F1 first, then F2, Smooth F1, Distance to Edge, N-Sphere Radius |
 | Wave Texture | Texture | 🚧 Not yet | 6 | |
-| White Noise Texture | Texture | 🚧 Not yet | 4 | Hash must match exactly |
+| White Noise Texture | Texture | ✅ Supported | 4 | Bit-exact Cycles hash. Since the hash depends on the exact float bits of its input, Blender and the browser only agree where the input is computed identically (e.g. snapped coordinates) |
 
 ### Color
 

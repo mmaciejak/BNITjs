@@ -41,6 +41,7 @@ import { texCoord } from './texCoord.js';
 import { uvMap } from './uvMap.js';
 import { value } from './value.js';
 import { vectorMath } from './vectorMath.js';
+import { whiteNoise } from './whiteNoise.js';
 import { combineXYZ, separateXYZ } from './xyz.js';
 
 /**
@@ -79,6 +80,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeFloatCurve: floatCurve,
   ShaderNodeTexChecker: checker,
   ShaderNodeTexGradient: gradient,
+  ShaderNodeTexWhiteNoise: whiteNoise,
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,

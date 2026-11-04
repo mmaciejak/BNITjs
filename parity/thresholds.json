@@ -49,6 +49,11 @@
     "vector_math_round": { "outliers": 0.006 },
     "vector_math_snap": { "outliers": 0.006 },
     "vector_math_tangent": { "outliers": 0.006 },
-    "vector_math_wrap": { "outliers": 0.006 }
+    "vector_math_wrap": { "outliers": 0.006 },
+    "white_noise_1d": { "outliers": 0.006 },
+    "white_noise_2d": { "outliers": 0.006 },
+    "white_noise_3d": { "outliers": 0.006 },
+    "white_noise_4d": { "outliers": 0.006 },
+    "white_noise_value": { "outliers": 0.006 }
   }
 }

@@ -627,9 +627,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
+    "status": "supported",
     "phase": 4,
-    "notes": "Hash must match exactly"
+    "notes": "Bit-exact Cycles hash. Since the hash depends on the exact float bits of its input, Blender and the browser only agree where the input is computed identically (e.g. snapped coordinates)"
   },
   {
     "name": "Brightness/Contrast",
