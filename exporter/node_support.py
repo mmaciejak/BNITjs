@@ -34,7 +34,7 @@ STATUS = {
     "ShaderNodeBump": "planned",
     "ShaderNodeCameraData": "planned",
     "ShaderNodeClamp": "supported",
-    "ShaderNodeCombineColor": "planned",
+    "ShaderNodeCombineColor": "supported",
     "ShaderNodeCombineHSV": "planned",
     "ShaderNodeCombineRGB": "planned",
     "ShaderNodeCombineXYZ": "supported",

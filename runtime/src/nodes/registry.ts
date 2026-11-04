@@ -1,6 +1,7 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { bswValue } from './bswValue.js';
 import { clamp } from './clamp.js';
+import { combineColor } from './combineColor.js';
 import { separateColor } from './separateColor.js';
 import { brightContrast } from './brightContrast.js';
 import { gamma } from './gamma.js';
@@ -42,6 +43,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeRGBToBW: rgbToBW,
   ShaderNodeSqueeze: squeeze,
   ShaderNodeSeparateColor: separateColor,
+  ShaderNodeCombineColor: combineColor,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

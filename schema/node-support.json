@@ -847,7 +847,7 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
+    "status": "supported",
     "phase": 3,
     "notes": "RGB, HSV, HSL"
   },
