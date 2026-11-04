@@ -403,6 +403,27 @@ class GraphBuilder:
         return node_id
 
 
+def _uv_maps(material, warnings):
+    """UV map names (glTF TEXCOORD_i = uv_layers[i]) and the active render index, read from the
+    meshes that use the material. Meshes that disagree get a warning; the first one wins."""
+    layouts = []
+    for obj in bpy.data.objects:
+        if obj.type != "MESH" or not any(slot.material == material for slot in obj.material_slots):
+            continue
+        layers = obj.data.uv_layers
+        # uv_layers.active_render_index only exists in Blender 5.x; the per-layer flag works everywhere.
+        active = next((i for i, layer in enumerate(layers) if layer.active_render), 0)
+        layout = ([layer.name for layer in layers], active)
+        if layout[0] and layout not in layouts:
+            layouts.append(layout)
+    if not layouts:
+        return None
+    if len(layouts) > 1:
+        warnings.append(f"Material '{material.name}' is used by meshes with different UV map layouts")
+    names, active = layouts[0]
+    return {"names": names, "activeRender": active}
+
+
 def _addon_version():
     import os
     import tomllib
@@ -449,6 +470,9 @@ def export_material_graph(material, include_data=True):
     }
     if builder.links:
         graph["links"] = builder.links
+    uv_maps = _uv_maps(material, builder.warnings)
+    if uv_maps:
+        graph["uvMaps"] = uv_maps
 
     for node_id, entry in builder.nodes.items():
         node_type = entry["type"]

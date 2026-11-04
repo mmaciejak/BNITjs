@@ -81,6 +81,8 @@ export interface ShaderGraph {
   generator: { name: string; version: string; blender: string };
   material: string;
   materialPassIndex?: number;
+  /** glTF TEXCOORD_i = names[i]; activeRender is the active render UV map. */
+  uvMaps?: { names: string[]; activeRender: number };
   output: string;
   nodes: Record<string, GraphNode>;
   links?: GraphLink[];

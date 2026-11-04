@@ -165,7 +165,13 @@
 								"Surface"
 							]
 						}
-					]
+					],
+					"uvMaps":{
+						"names":[
+							"UVMap"
+						],
+						"activeRender":0
+					}
 				}
 			},
 			"name":"emission_rgb",

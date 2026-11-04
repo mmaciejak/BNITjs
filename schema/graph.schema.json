@@ -54,6 +54,25 @@
     "materialPassIndex": {
       "type": "integer",
       "description": "Material pass index (Object Info > Material Index)."
+    },
+    "uvMaps": {
+      "type": "object",
+      "required": ["names", "activeRender"],
+      "additionalProperties": false,
+      "description": "UV maps of the meshes using the material: glTF TEXCOORD_i is names[i]; activeRender is the index of the active render UV map (Texture Coordinate > UV).",
+      "properties": {
+        "names": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "activeRender": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
     }
   },
   "$defs": {

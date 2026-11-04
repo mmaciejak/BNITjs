@@ -44,6 +44,17 @@ class GraphExportTest(unittest.TestCase):
         graph, _ = graph_export.export_material_graph(scenes.reroutes_frames_unused())
         self.assertEqual(graph["nodes"]["Value"]["outputs"]["Value"]["value"], 0.42)
 
+    def test_uv_maps_of_the_meshes_using_the_material(self):
+        mat = scenes.uv_mapping()
+        bpy.ops.mesh.primitive_plane_add()
+        obj = bpy.context.active_object
+        obj.data.materials.append(mat)
+        obj.data.uv_layers.new(name="Detail")
+        obj.data.uv_layers.active_index = 1
+        obj.data.uv_layers[1].active_render = True
+        graph, _ = graph_export.export_material_graph(mat)
+        self.assertEqual(graph["uvMaps"], {"names": ["UVMap", "Detail"], "activeRender": 1})
+
     def test_reroutes_frames_and_unused_nodes_are_removed(self):
         graph, _ = graph_export.export_material_graph(scenes.reroutes_frames_unused())
         self.assertNotIn("NodeReroute", types(graph))
