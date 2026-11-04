@@ -1093,7 +1093,7 @@
     ],
     "section": "Layout",
     "category": "Layout",
-    "status": "planned",
+    "status": "supported",
     "phase": 1,
     "notes": "Removed by exporter"
   },
@@ -1106,7 +1106,7 @@
     ],
     "section": "Layout",
     "category": "Layout",
-    "status": "planned",
+    "status": "supported",
     "phase": 1,
     "notes": "Flattened by exporter"
   },
@@ -1117,7 +1117,7 @@
     ],
     "section": "Layout",
     "category": "Layout",
-    "status": "planned",
+    "status": "supported",
     "phase": 1,
     "notes": "Removed by exporter"
   }

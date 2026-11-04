@@ -188,8 +188,8 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
-| Frame | Layout | 🚧 Not yet | 1 | Removed by exporter |
-| Group / Group Input / Group Output | Layout | 🚧 Not yet | 1 | Flattened by exporter |
-| Reroute | Layout | 🚧 Not yet | 1 | Removed by exporter |
+| Frame | Layout | ✅ Supported | 1 | Removed by exporter |
+| Group / Group Input / Group Output | Layout | ✅ Supported | 1 | Flattened by exporter |
+| Reroute | Layout | ✅ Supported | 1 | Removed by exporter |
 
 <!-- node-table:end -->
