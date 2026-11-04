@@ -92,7 +92,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
 | Background | Shader | 🚧 Not yet | 6 | World only |
 | Diffuse BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params |
-| Emission | Shader | 🚧 Not yet | 2 | |
+| Emission | Shader | 🟡 Partial | 2 | Implemented; parity test pending |
 | Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
 | Glossy BSDF | Shader | 🚧 Not yet | 3 | Mapped to physical material params. RNA type is `ShaderNodeBsdfAnisotropic` |
 | Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
@@ -191,7 +191,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Light Falloff | Light | ❌ Not planned | — | Belongs to lights |
 | Light Output | Output | ❌ Not planned | — | |
 | Line Style Output | Output | ❌ Not planned | — | Freestyle only |
-| Material Output | Output | 🚧 Not yet | 2 | |
+| Material Output | Output | 🟡 Partial | 2 | Surface only; parity test pending |
 | Raycast | Input | ❌ Not planned | — | Blender 5.x. Needs scene ray tracing |
 | UV Along Stroke | Input | ❌ Not planned | — | Freestyle only |
 | World Output | Output | 🚧 Not yet | 6 | World only |

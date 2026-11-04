@@ -1,0 +1,81 @@
+import { DoubleSide, type Material, type Object3D } from 'three/webgpu';
+import type {
+  GLTF,
+  GLTFLoader,
+  GLTFLoaderPlugin,
+  GLTFParser,
+} from 'three/addons/loaders/GLTFLoader.js';
+import { buildMaterial, type BuildOptions } from '../graph/build.js';
+import { EXTENSION_NAME, type ObjectExtension, USERDATA_KEY } from '../graph/types.js';
+
+export type LoaderOptions = BuildOptions;
+
+interface MaterialDef {
+  name?: string;
+  doubleSided?: boolean;
+  extensions?: Record<string, unknown>;
+}
+
+interface NodeDef {
+  extensions?: Record<string, unknown>;
+}
+
+/**
+ * GLTFLoader plugin: materials carrying EXT_blender_shader_graph are rebuilt from their node
+ * graph; the standard glTF material in the same file is used when building fails.
+ */
+export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
+  readonly name = EXTENSION_NAME;
+
+  constructor(
+    private readonly parser: GLTFParser,
+    private readonly options: LoaderOptions = {},
+  ) {}
+
+  loadMaterial(materialIndex: number): Promise<Material> | null {
+    const def = (this.parser.json.materials as MaterialDef[] | undefined)?.[materialIndex];
+    const graph = def?.extensions?.[EXTENSION_NAME];
+    if (!def || !graph) return null;
+    const warn = (message: string) => {
+      const text = `[${EXTENSION_NAME}] ${def.name ?? `material ${materialIndex}`}: ${message}`;
+      if (this.options.onWarning) this.options.onWarning(text);
+      else console.warn(text);
+    };
+    try {
+      const { material } = buildMaterial(graph, { ...this.options, onWarning: warn });
+      if (def.name) material.name = def.name;
+      if (def.doubleSided) material.side = DoubleSide;
+      return Promise.resolve(material);
+    } catch (error) {
+      warn(`falling back to the standard glTF material: ${(error as Error).message}`);
+      return null;
+    }
+  }
+
+  /** Store per-object data (Object Info, Generated coordinates) on the objects that use it. */
+  afterRoot(result: GLTF): Promise<void> | null {
+    const nodes = (this.parser.json.nodes as NodeDef[] | undefined) ?? [];
+    const associations = this.parser.associations as Map<Object3D, { nodes?: number }>;
+    for (const [object, mapping] of associations) {
+      if (mapping.nodes === undefined) continue;
+      const data = nodes[mapping.nodes]?.extensions?.[EXTENSION_NAME] as
+        ObjectExtension | undefined;
+      if (!data) continue;
+      object.userData[USERDATA_KEY] = data;
+      // Multi-primitive meshes: the glTF node becomes a Group of Meshes.
+      for (const child of object.children) {
+        if (associations.get(child)?.nodes === undefined) child.userData[USERDATA_KEY] = data;
+      }
+    }
+    void result;
+    return null;
+  }
+}
+
+/** Register the plugin on a GLTFLoader. */
+export function registerBlenderShaderGraph(
+  loader: GLTFLoader,
+  options: LoaderOptions = {},
+): GLTFLoader {
+  return loader.register((parser) => new BlenderShaderGraphPlugin(parser, options));
+}

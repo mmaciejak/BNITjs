@@ -255,8 +255,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
-    "phase": 2
+    "status": "partial",
+    "phase": 2,
+    "notes": "Implemented; parity test pending"
   },
   {
     "name": "Glass BSDF",
@@ -1050,8 +1051,9 @@
     ],
     "section": "Output, light and other",
     "category": "Output",
-    "status": "planned",
-    "phase": 2
+    "status": "partial",
+    "phase": 2,
+    "notes": "Surface only; parity test pending"
   },
   {
     "name": "Raycast",

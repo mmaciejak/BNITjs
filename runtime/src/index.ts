@@ -1,9 +1,25 @@
 /**
- * blender-shader-web runtime.
+ * blender-shader-web runtime: rebuilds Blender shader node graphs (exported by the add-on in
+ * /exporter) as three.js TSL node materials.
  *
- * Rebuilds a Blender shader node graph (exported by the add-on in /exporter)
- * as a three.js TSL graph. Feature code lands from Phase 1 onward; see SPEC.md.
+ *   const loader = registerBlenderShaderGraph(new GLTFLoader());
+ *   const gltf = await loader.loadAsync('model.glb');
  */
 
-/** Version of the graph export format this runtime understands. */
-export const GRAPH_FORMAT_VERSION = 1;
+export { buildMaterial, type BuildOptions, type BuildResult } from './graph/build.js';
+export type { NodeContext, NodeImpl, NodeOutput, NodeRegistry } from './graph/evaluate.js';
+export { GraphFormatError, parseGraph } from './graph/parse.js';
+export {
+  EXTENSION_NAME,
+  GRAPH_FORMAT_VERSION,
+  type ObjectData,
+  type ShaderGraph,
+  USERDATA_KEY,
+} from './graph/types.js';
+export {
+  BlenderShaderGraphPlugin,
+  type LoaderOptions,
+  registerBlenderShaderGraph,
+} from './loader/plugin.js';
+export { builtinNodes, createRegistry } from './nodes/registry.js';
+export type { Closure } from './shaders/closures.js';
