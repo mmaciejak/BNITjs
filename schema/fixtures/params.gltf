@@ -1,0 +1,616 @@
+{
+	"asset":{
+		"generator":"Khronos glTF Blender I/O v5.2.40",
+		"version":"2.0"
+	},
+	"extensionsUsed":[
+		"EXT_blender_shader_graph"
+	],
+	"scene":0,
+	"scenes":[
+		{
+			"name":"Scene",
+			"nodes":[
+				0
+			]
+		}
+	],
+	"nodes":[
+		{
+			"extensions":{
+				"EXT_blender_shader_graph":{
+					"object":{
+						"name":"Plane",
+						"passIndex":7,
+						"color":[
+							1,
+							1,
+							1,
+							1
+						],
+						"random":0.1357643,
+						"texspace":{
+							"location":[
+								0,
+								0,
+								0
+							],
+							"size":[
+								1,
+								1,
+								1
+							]
+						}
+					}
+				}
+			},
+			"mesh":0,
+			"name":"Plane"
+		}
+	],
+	"materials":[
+		{
+			"doubleSided":true,
+			"extensions":{
+				"EXT_blender_shader_graph":{
+					"version":1,
+					"generator":{
+						"name":"blender_shader_web",
+						"version":"0.0.0",
+						"blender":"5.2.2 LTS"
+					},
+					"material":"params",
+					"materialPassIndex":0,
+					"output":"Material Output",
+					"nodes":{
+						"Material Output":{
+							"type":"ShaderNodeOutputMaterial",
+							"name":"Material Output",
+							"properties":{
+								"is_active_output":true,
+								"target":"ALL"
+							},
+							"inputs":{
+								"Surface":{
+									"name":"Surface",
+									"type":"SHADER"
+								},
+								"Volume":{
+									"name":"Volume",
+									"type":"SHADER"
+								},
+								"Displacement":{
+									"name":"Displacement",
+									"type":"VECTOR",
+									"value":[
+										0,
+										0,
+										0
+									]
+								},
+								"Thickness":{
+									"name":"Thickness",
+									"type":"VALUE",
+									"value":0
+								}
+							}
+						},
+						"Principled BSDF":{
+							"type":"ShaderNodeBsdfPrincipled",
+							"name":"Principled BSDF",
+							"properties":{
+								"distribution":"MULTI_GGX",
+								"subsurface_method":"RANDOM_WALK"
+							},
+							"inputs":{
+								"Base Color":{
+									"name":"Base Color",
+									"type":"RGBA",
+									"value":[
+										0.8,
+										0.8,
+										0.8,
+										1
+									]
+								},
+								"Metallic":{
+									"name":"Metallic",
+									"type":"VALUE",
+									"value":0
+								},
+								"Roughness":{
+									"name":"Roughness",
+									"type":"VALUE",
+									"value":0.5
+								},
+								"IOR":{
+									"name":"IOR",
+									"type":"VALUE",
+									"value":1.5
+								},
+								"Alpha":{
+									"name":"Alpha",
+									"type":"VALUE",
+									"value":1
+								},
+								"Thin Wall":{
+									"name":"Thin Wall",
+									"type":"BOOLEAN",
+									"value":false
+								},
+								"Normal":{
+									"name":"Normal",
+									"type":"VECTOR",
+									"value":[
+										0,
+										0,
+										0
+									]
+								},
+								"Diffuse Roughness":{
+									"name":"Diffuse Roughness",
+									"type":"VALUE",
+									"value":0
+								},
+								"Subsurface Weight":{
+									"name":"Subsurface Weight",
+									"type":"VALUE",
+									"value":0
+								},
+								"Subsurface Radius":{
+									"name":"Subsurface Radius",
+									"type":"VECTOR",
+									"value":[
+										1,
+										0.2,
+										0.1
+									]
+								},
+								"Subsurface Scale":{
+									"name":"Subsurface Scale",
+									"type":"VALUE",
+									"value":0.005
+								},
+								"Subsurface Anisotropy":{
+									"name":"Subsurface Anisotropy",
+									"type":"VALUE",
+									"value":0
+								},
+								"Specular IOR Level":{
+									"name":"Specular IOR Level",
+									"type":"VALUE",
+									"value":0.5
+								},
+								"Specular Tint":{
+									"name":"Specular Tint",
+									"type":"RGBA",
+									"value":[
+										1,
+										1,
+										1,
+										1
+									]
+								},
+								"Anisotropic":{
+									"name":"Anisotropic",
+									"type":"VALUE",
+									"value":0
+								},
+								"Anisotropic Rotation":{
+									"name":"Anisotropic Rotation",
+									"type":"VALUE",
+									"value":0
+								},
+								"Tangent":{
+									"name":"Tangent",
+									"type":"VECTOR",
+									"value":[
+										0,
+										0,
+										0
+									]
+								},
+								"Transmission Weight":{
+									"name":"Transmission Weight",
+									"type":"VALUE",
+									"value":0
+								},
+								"Coat Weight":{
+									"name":"Coat Weight",
+									"type":"VALUE",
+									"value":0
+								},
+								"Coat Roughness":{
+									"name":"Coat Roughness",
+									"type":"VALUE",
+									"value":0.03
+								},
+								"Coat IOR":{
+									"name":"Coat IOR",
+									"type":"VALUE",
+									"value":1.5
+								},
+								"Coat Tint":{
+									"name":"Coat Tint",
+									"type":"RGBA",
+									"value":[
+										1,
+										1,
+										1,
+										1
+									]
+								},
+								"Coat Normal":{
+									"name":"Coat Normal",
+									"type":"VECTOR",
+									"value":[
+										0,
+										0,
+										0
+									]
+								},
+								"Sheen Weight":{
+									"name":"Sheen Weight",
+									"type":"VALUE",
+									"value":0
+								},
+								"Sheen Roughness":{
+									"name":"Sheen Roughness",
+									"type":"VALUE",
+									"value":0.5
+								},
+								"Sheen Tint":{
+									"name":"Sheen Tint",
+									"type":"RGBA",
+									"value":[
+										1,
+										1,
+										1,
+										1
+									]
+								},
+								"Emission Color":{
+									"name":"Emission Color",
+									"type":"RGBA",
+									"value":[
+										1,
+										1,
+										1,
+										1
+									]
+								},
+								"Emission Strength":{
+									"name":"Emission Strength",
+									"type":"VALUE",
+									"value":0
+								},
+								"Thin Film Thickness":{
+									"name":"Thin Film Thickness",
+									"type":"VALUE",
+									"value":0
+								},
+								"Thin Film IOR":{
+									"name":"Thin Film IOR",
+									"type":"VALUE",
+									"value":1.33
+								}
+							},
+							"outputs":{
+								"BSDF":{
+									"name":"BSDF",
+									"type":"SHADER"
+								}
+							}
+						},
+						"Group/Mix":{
+							"type":"ShaderNodeMix",
+							"name":"Mix",
+							"group":"Group",
+							"properties":{
+								"data_type":"RGBA",
+								"factor_mode":"UNIFORM",
+								"blend_type":"MIX",
+								"clamp_factor":true,
+								"clamp_result":false
+							},
+							"inputs":{
+								"Factor_Float":{
+									"name":"Factor",
+									"type":"VALUE",
+									"value":1
+								},
+								"A_Color":{
+									"name":"A",
+									"type":"RGBA",
+									"value":[
+										0.5,
+										0.5,
+										0.5,
+										1
+									]
+								},
+								"B_Color":{
+									"name":"B",
+									"type":"RGBA",
+									"value":[
+										0.5,
+										0.5,
+										0.5,
+										1
+									]
+								}
+							},
+							"outputs":{
+								"Result_Color":{
+									"name":"Result",
+									"type":"RGBA"
+								}
+							}
+						},
+						"Group/Group Input:Socket_0":{
+							"type":"BSW_Value",
+							"name":"Group: Grain",
+							"outputs":{
+								"Value":{
+									"name":"Value",
+									"type":"VALUE"
+								}
+							},
+							"properties":{
+								"value":3
+							}
+						},
+						"Group/Group Input:Socket_1":{
+							"type":"BSW_Value",
+							"name":"Group: Shade",
+							"outputs":{
+								"Value":{
+									"name":"Value",
+									"type":"RGBA"
+								}
+							},
+							"properties":{
+								"value":[
+									0,
+									0,
+									0,
+									1
+								]
+							}
+						},
+						"Value":{
+							"type":"ShaderNodeValue",
+							"name":"Value",
+							"label":"$Scale",
+							"outputs":{
+								"Value":{
+									"name":"Value",
+									"type":"VALUE",
+									"value":2.5
+								}
+							}
+						},
+						"Color":{
+							"type":"ShaderNodeRGB",
+							"name":"Color",
+							"label":"$Tint",
+							"outputs":{
+								"Color":{
+									"name":"Color",
+									"type":"RGBA",
+									"value":[
+										0.9,
+										0.3,
+										0.1,
+										1
+									]
+								}
+							}
+						}
+					},
+					"links":[
+						{
+							"from":[
+								"Group/Group Input:Socket_0",
+								"Value"
+							],
+							"to":[
+								"Group/Mix",
+								"Factor_Float"
+							]
+						},
+						{
+							"from":[
+								"Group/Group Input:Socket_1",
+								"Value"
+							],
+							"to":[
+								"Group/Mix",
+								"A_Color"
+							]
+						},
+						{
+							"from":[
+								"Group/Mix",
+								"Result_Color"
+							],
+							"to":[
+								"Principled BSDF",
+								"Base Color"
+							]
+						},
+						{
+							"from":[
+								"Value",
+								"Value"
+							],
+							"to":[
+								"Principled BSDF",
+								"Roughness"
+							]
+						},
+						{
+							"from":[
+								"Color",
+								"Color"
+							],
+							"to":[
+								"Principled BSDF",
+								"Emission Color"
+							]
+						},
+						{
+							"from":[
+								"Principled BSDF",
+								"BSDF"
+							],
+							"to":[
+								"Material Output",
+								"Surface"
+							]
+						}
+					],
+					"params":[
+						{
+							"name":"Wood/Grain",
+							"node":"Group/Group Input:Socket_0",
+							"type":"VALUE",
+							"default":3,
+							"min":0.5,
+							"max":8
+						},
+						{
+							"name":"Wood/Shade",
+							"node":"Group/Group Input:Socket_1",
+							"type":"RGBA",
+							"default":[
+								0,
+								0,
+								0,
+								1
+							]
+						},
+						{
+							"name":"Scale",
+							"node":"Value",
+							"type":"VALUE",
+							"default":2.5
+						},
+						{
+							"name":"Tint",
+							"node":"Color",
+							"type":"RGBA",
+							"default":[
+								0.9,
+								0.3,
+								0.1,
+								1
+							]
+						}
+					],
+					"uvMaps":{
+						"names":[
+							"UVMap"
+						],
+						"activeRender":0
+					}
+				}
+			},
+			"name":"params",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.5,
+					0.5,
+					0.5,
+					1
+				],
+				"metallicFactor":0,
+				"roughnessFactor":2.5
+			}
+		}
+	],
+	"meshes":[
+		{
+			"name":"Plane",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":0,
+						"NORMAL":1,
+						"TEXCOORD_0":2
+					},
+					"indices":3,
+					"material":0
+				}
+			]
+		}
+	],
+	"accessors":[
+		{
+			"bufferView":0,
+			"componentType":5126,
+			"count":4,
+			"max":[
+				1,
+				0,
+				1
+			],
+			"min":[
+				-1,
+				0,
+				-1
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":1,
+			"componentType":5126,
+			"count":4,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":2,
+			"componentType":5126,
+			"count":4,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":3,
+			"componentType":5123,
+			"count":6,
+			"type":"SCALAR"
+		}
+	],
+	"bufferViews":[
+		{
+			"buffer":0,
+			"byteLength":48,
+			"byteOffset":0,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":48,
+			"byteOffset":48,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":32,
+			"byteOffset":96,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":12,
+			"byteOffset":128,
+			"target":34963
+		}
+	],
+	"buffers":[
+		{
+			"byteLength":140,
+			"uri":"params.bin"
+		}
+	]
+}

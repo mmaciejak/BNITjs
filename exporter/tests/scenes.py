@@ -195,6 +195,39 @@ def image_texture():
     return mat
 
 
+def params():
+    """Live parameters: Value "$Scale", Color "$Tint" and a "$Wood" group with two inputs."""
+    group = _group_tree(
+        "WoodGroup", [("Grain", "NodeSocketFloat"), ("Shade", "NodeSocketColor")], [("Color", "NodeSocketColor")]
+    )
+    group.interface.items_tree["Grain"].min_value = 0.5
+    group.interface.items_tree["Grain"].max_value = 8.0
+    gi, go = group.nodes["Group Input"], group.nodes["Group Output"]
+    mix = group.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    group.links.new(gi.outputs["Grain"], mix.inputs[0])
+    group.links.new(gi.outputs["Shade"], _sock(mix.inputs, "A_Color"))
+    group.links.new(_sock(mix.outputs, "Result_Color"), go.inputs["Color"])
+
+    mat = new_material("params")
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    bsdf = _principled(mat)
+    scale = nodes.new("ShaderNodeValue")
+    scale.label = "$Scale"
+    scale.outputs[0].default_value = 2.5
+    tint = nodes.new("ShaderNodeRGB")
+    tint.label = "$Tint"
+    tint.outputs[0].default_value = (0.9, 0.3, 0.1, 1.0)
+    wood = nodes.new("ShaderNodeGroup")
+    wood.node_tree = group
+    wood.label = "$Wood"
+    wood.inputs["Grain"].default_value = 3.0
+    links.new(scale.outputs[0], bsdf.inputs["Roughness"])
+    links.new(tint.outputs[0], bsdf.inputs["Emission Color"])
+    links.new(wood.outputs["Color"], bsdf.inputs["Base Color"])
+    return mat
+
+
 def baked_node():
     """Ambient Occlusion (always baked, never live) into Base Color."""
     mat = new_material("baked_node")
@@ -214,4 +247,5 @@ ALL = [
     ramps_and_curves,
     baked_node,
     image_texture,
+    params,
 ]

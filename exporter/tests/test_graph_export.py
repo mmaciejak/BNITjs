@@ -55,6 +55,17 @@ class GraphExportTest(unittest.TestCase):
         graph, _ = graph_export.export_material_graph(mat)
         self.assertEqual(graph["uvMaps"], {"names": ["UVMap", "Detail"], "activeRender": 1})
 
+    def test_params_from_dollar_labels(self):
+        graph, report = graph_export.export_material_graph(scenes.params())
+        params = {p["name"]: p for p in graph["params"]}
+        self.assertEqual(set(params), {"Scale", "Tint", "Wood/Grain", "Wood/Shade"})
+        self.assertEqual(params["Scale"], {"name": "Scale", "node": "Value", "type": "VALUE", "default": 2.5})
+        self.assertEqual(params["Tint"]["default"], [0.9, 0.3, 0.1, 1.0])
+        grain = params["Wood/Grain"]
+        self.assertEqual((grain["default"], grain["min"], grain["max"]), (3.0, 0.5, 8.0))
+        self.assertEqual(graph["nodes"][grain["node"]]["type"], graph_export.VALUE_NODE)
+        self.assertEqual(report["warnings"], [])
+
     def test_reroutes_frames_and_unused_nodes_are_removed(self):
         graph, _ = graph_export.export_material_graph(scenes.reroutes_frames_unused())
         self.assertNotIn("NodeReroute", types(graph))

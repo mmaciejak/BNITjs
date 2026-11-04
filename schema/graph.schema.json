@@ -77,6 +77,35 @@
     "colorAttributes": {
       "$ref": "#/$defs/objectExtension/properties/object/properties/colorAttributes",
       "description": "Set by the runtime loader from the objects using the material (not written by the exporter)."
+    },
+    "params": {
+      "type": "array",
+      "description": "Live parameters: Value/Color nodes labelled \"$Name\", and unlinked inputs of group nodes labelled \"$Group\" (as \"Group/Input\"). node is the id of the Value, Color or BSW_Value node whose output the parameter drives.",
+      "items": {
+        "type": "object",
+        "required": ["name", "node", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/$defs/socketType"
+          },
+          "default": {
+            "$ref": "#/$defs/value"
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
+        }
+      }
     }
   },
   "$defs": {

@@ -7,8 +7,12 @@ The result is a flat graph that the three.js runtime can evaluate directly:
 - muted nodes are replaced by their pass-through (Blender's internal links);
 - muted and invalid links, and links to unavailable sockets, are dropped;
 - nodes that do not reach the active Material Output are pruned;
-- unlinked group inputs become ``BSW_Value`` constant nodes, so that a group input can later be
-  exposed as a live parameter (Phase 3).
+- unlinked group inputs become ``BSW_Value`` constant nodes.
+
+Live parameters (``params``): a Value or Color node whose label starts with ``$`` is exposed as
+a parameter named by the rest of the label (``$Grain Scale`` → ``Grain Scale``); a group node
+whose label starts with ``$`` exposes each of its unlinked inputs as ``<label>/<input name>``
+(with the group interface's min/max).
 
 Every collection in the output is omitted when empty, and ``None`` is never written. The glTF
 exporter strips empty collections and ``None`` values from extension data anyway.
@@ -260,7 +264,21 @@ class GraphBuilder:
         self.nodes = {}
         self.links = []
         self.warnings = []
+        self.params = []
         self._emitted = set()
+
+    def _add_param(self, name, node_id, socket_type, value, lo=None, hi=None):
+        if any(p["name"] == name for p in self.params):
+            self.warnings.append(f"Parameter '{name}' is defined twice; keeping the first")
+            return
+        param = {"name": name, "node": node_id, "type": socket_type}
+        if value is not None:
+            param["default"] = value
+        if lo is not None:
+            param["min"] = f32(lo)
+        if hi is not None:
+            param["max"] = f32(hi)
+        self.params.append(param)
 
     # -- sources ------------------------------------------------------------
 
@@ -328,7 +346,13 @@ class GraphBuilder:
         if outer.type == "SHADER":
             return None
         const_id = f"{ctx.parent.prefix}{group_node.name}/Group Input:{socket.identifier}"
-        return self._const(const_id, outer.type, socket_value(outer), f"{group_node.name}: {outer.name}")
+        is_new = const_id not in self.nodes
+        source = self._const(const_id, outer.type, socket_value(outer), f"{group_node.name}: {outer.name}")
+        label = _param_label(group_node)
+        if is_new and label is not None:
+            lo, hi = _interface_range(group_node.node_tree, socket.identifier)
+            self._add_param(f"{label}/{outer.name}", const_id, outer.type, socket_value(outer), lo, hi)
+        return source
 
     def _resolve_group_node(self, node, socket, ctx):
         tree = node.node_tree
@@ -366,6 +390,10 @@ class GraphBuilder:
             entry["label"] = node.label
         if ctx.group_node is not None:
             entry["group"] = ctx.prefix.rstrip("/")
+        label = _param_label(node)
+        if label is not None and node.bl_idname in ("ShaderNodeValue", "ShaderNodeRGB"):
+            out = node.outputs[0]
+            self._add_param(label, node_id, out.type, socket_value(out))
         props, data = node_properties(node, self.include_data)
         if props:
             entry["properties"] = props
@@ -424,6 +452,25 @@ def _uv_maps(material, warnings):
     return {"names": names, "activeRender": active}
 
 
+def _param_label(node):
+    """Parameter name from a "$Name" label, or None."""
+    label = (node.label or "").strip()
+    if not label.startswith("$") or not label[1:].strip():
+        return None
+    return label[1:].strip()
+
+
+def _interface_range(tree, identifier):
+    """(min, max) of a float group input, or (None, None)."""
+    if tree is None:
+        return None, None
+    for item in tree.interface.items_tree:
+        if getattr(item, "identifier", None) == identifier and hasattr(item, "min_value"):
+            if item.socket_type in ("NodeSocketFloat", "NodeSocketInt"):
+                return item.min_value, item.max_value
+    return None, None
+
+
 def _addon_version():
     import os
     import tomllib
@@ -470,6 +517,8 @@ def export_material_graph(material, include_data=True):
     }
     if builder.links:
         graph["links"] = builder.links
+    if builder.params:
+        graph["params"] = builder.params
     uv_maps = _uv_maps(material, builder.warnings)
     if uv_maps:
         graph["uvMaps"] = uv_maps
