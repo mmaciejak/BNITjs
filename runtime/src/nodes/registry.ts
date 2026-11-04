@@ -4,6 +4,7 @@ import { checker } from './checker.js';
 import { clamp } from './clamp.js';
 import { colorRamp } from './colorRamp.js';
 import { floatCurve } from './floatCurve.js';
+import { gradient } from './gradient.js';
 import { rgbCurves } from './rgbCurves.js';
 import { vectorCurves } from './vectorCurves.js';
 import { combineColor } from './combineColor.js';
@@ -66,6 +67,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeVectorCurve: vectorCurves,
   ShaderNodeFloatCurve: floatCurve,
   ShaderNodeTexChecker: checker,
+  ShaderNodeTexGradient: gradient,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

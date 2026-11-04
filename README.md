@@ -142,7 +142,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Checker Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
 | Environment Texture | Texture | 🚧 Not yet | 6 | World/background |
 | Gabor Texture | Texture | 🚧 Not yet | 6 | Blender 4.3+. Expensive on mobile; recommend bake |
-| Gradient Texture | Texture | 🚧 Not yet | 3 | |
+| Gradient Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
 | IES Texture | Texture | ❌ Not planned | — | Belongs to lights |
 | Image Texture | Texture | 🚧 Not yet | 3 | Box projection 🟡 at first |
 | Magic Texture | Texture | 🚧 Not yet | 6 | |

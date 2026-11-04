@@ -528,8 +528,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
-    "phase": 3
+    "status": "supported",
+    "phase": 3,
+    "notes": "Texture Mapping sidebar settings not supported"
   },
   {
     "name": "IES Texture",
