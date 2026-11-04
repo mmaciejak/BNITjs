@@ -91,7 +91,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Color | Input | ✅ Supported | 2 | Named "RGB" in 4.2 |
 | Color Attribute | Input | 🚧 Not yet | 3 | Via glTF `COLOR_n` |
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
-| Fresnel | Input | 🚧 Not yet | 3 | |
+| Fresnel | Input | ✅ Supported | 3 | Front faces |
 | Geometry | Input | 🚧 Not yet | 7 | Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute |
 | Layer Weight | Input | 🚧 Not yet | 3 | |
 | Light Path | Input | 🚧 Not yet | 10 | Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1) |

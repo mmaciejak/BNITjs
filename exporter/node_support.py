@@ -42,7 +42,7 @@ STATUS = {
     "ShaderNodeEeveeSpecular": "planned",
     "ShaderNodeEmission": "supported",
     "ShaderNodeFloatCurve": "supported",
-    "ShaderNodeFresnel": "planned",
+    "ShaderNodeFresnel": "supported",
     "ShaderNodeGamma": "supported",
     "ShaderNodeGroup": "supported",
     "ShaderNodeHairInfo": "not_planned",

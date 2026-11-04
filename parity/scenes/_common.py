@@ -125,3 +125,16 @@ def x_factor(nodes, links, lo=-0.25, hi=1.25):
 def by_id(sockets):
     """Sockets by identifier (Blender 5.x hides unused sockets from name lookup)."""
     return {s.identifier: s for s in sockets}
+
+
+def tilted_normal(nodes, links):
+    """normalize(Generated·2 − 1 + (0, 0, 0.35)): a strongly varying normal over the plane."""
+    coord = nodes.new("ShaderNodeTexCoord")
+    m = nodes.new("ShaderNodeMapping")
+    m.inputs["Scale"].default_value = (2.0, 2.0, 0.0)
+    m.inputs["Location"].default_value = (-1.0, -1.0, 0.35)
+    norm = nodes.new("ShaderNodeVectorMath")
+    norm.operation = "NORMALIZE"
+    links.new(coord.outputs["Generated"], m.inputs["Vector"])
+    links.new(m.outputs["Vector"], norm.inputs[0])
+    return norm.outputs["Vector"]
