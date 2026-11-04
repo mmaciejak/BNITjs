@@ -33,6 +33,8 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           args: format --check
+      - name: Node support table in sync
+        run: python3 tools/sync_node_support.py --check
 
   exporter-tests:
     runs-on: ubuntu-latest

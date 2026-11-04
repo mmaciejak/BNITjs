@@ -1,0 +1,1124 @@
+[
+  {
+    "name": "Ambient Occlusion",
+    "types": [
+      "ShaderNodeAmbientOcclusion"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "baked",
+    "phase": 9,
+    "notes": "Bake in exporter or rely on scene SSAO"
+  },
+  {
+    "name": "Attribute",
+    "types": [
+      "ShaderNodeAttribute"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Via glTF vertex attributes"
+  },
+  {
+    "name": "Bevel",
+    "types": [
+      "ShaderNodeBevel"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "baked",
+    "phase": 9,
+    "notes": "Bake to normal map"
+  },
+  {
+    "name": "Camera Data",
+    "types": [
+      "ShaderNodeCameraData"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3,
+    "notes": "View vector, view Z depth, view distance"
+  },
+  {
+    "name": "Color",
+    "types": [
+      "ShaderNodeRGB"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 2,
+    "notes": "Named \"RGB\" in 4.2"
+  },
+  {
+    "name": "Color Attribute",
+    "types": [
+      "ShaderNodeVertexColor"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Via glTF `COLOR_n`"
+  },
+  {
+    "name": "Curves Info",
+    "types": [
+      "ShaderNodeHairInfo"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Out of scope for mesh materials"
+  },
+  {
+    "name": "Fresnel",
+    "types": [
+      "ShaderNodeFresnel"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Geometry",
+    "types": [
+      "ShaderNodeNewGeometry"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute"
+  },
+  {
+    "name": "Layer Weight",
+    "types": [
+      "ShaderNodeLayerWeight"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Light Path",
+    "types": [
+      "ShaderNodeLightPath"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1)"
+  },
+  {
+    "name": "Object Info",
+    "types": [
+      "ShaderNodeObjectInfo"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Exporter writes a per-object seed"
+  },
+  {
+    "name": "Particle Info",
+    "types": [
+      "ShaderNodeParticleInfo"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Out of scope for mesh materials"
+  },
+  {
+    "name": "Point Info",
+    "types": [
+      "ShaderNodePointInfo"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Out of scope for mesh materials"
+  },
+  {
+    "name": "Tangent",
+    "types": [
+      "ShaderNodeTangent"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 7,
+    "notes": "UV and Radial"
+  },
+  {
+    "name": "Texture Coordinate",
+    "types": [
+      "ShaderNodeTexCoord"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 2,
+    "notes": "Generated needs exported bounds"
+  },
+  {
+    "name": "UV Map",
+    "types": [
+      "ShaderNodeUVMap"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Value",
+    "types": [
+      "ShaderNodeValue"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 2
+  },
+  {
+    "name": "Volume Info",
+    "types": [
+      "ShaderNodeVolumeInfo"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Volumes"
+  },
+  {
+    "name": "Wireframe",
+    "types": [
+      "ShaderNodeWireframe"
+    ],
+    "section": "Input",
+    "category": "Input",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Needs a barycentric attribute"
+  },
+  {
+    "name": "Add Shader",
+    "types": [
+      "ShaderNodeAddShader"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Approximation"
+  },
+  {
+    "name": "Background",
+    "types": [
+      "ShaderNodeBackground"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 6,
+    "notes": "World only"
+  },
+  {
+    "name": "Diffuse BSDF",
+    "types": [
+      "ShaderNodeBsdfDiffuse"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Mapped to physical material params"
+  },
+  {
+    "name": "Emission",
+    "types": [
+      "ShaderNodeEmission"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 2
+  },
+  {
+    "name": "Glass BSDF",
+    "types": [
+      "ShaderNodeBsdfGlass"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Screen-space transmission"
+  },
+  {
+    "name": "Glossy BSDF",
+    "types": [
+      "ShaderNodeBsdfAnisotropic"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Mapped to physical material params. RNA type is `ShaderNodeBsdfAnisotropic`"
+  },
+  {
+    "name": "Hair BSDF",
+    "types": [
+      "ShaderNodeBsdfHair"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Likely ❌"
+  },
+  {
+    "name": "Holdout",
+    "types": [
+      "ShaderNodeHoldout"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Alpha handling, scene-dependent"
+  },
+  {
+    "name": "Metallic BSDF",
+    "types": [
+      "ShaderNodeBsdfMetallic"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Blender 4.3+. Maps onto metalness/specular color"
+  },
+  {
+    "name": "Mix Shader",
+    "types": [
+      "ShaderNodeMixShader"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Principled+Principled → mix params; otherwise approximation"
+  },
+  {
+    "name": "Principled BSDF",
+    "types": [
+      "ShaderNodeBsdfPrincipled"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 2,
+    "notes": "Base color, metallic, roughness, normal, alpha, emission in phase 2. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8"
+  },
+  {
+    "name": "Principled Hair BSDF",
+    "types": [
+      "ShaderNodeBsdfHairPrincipled"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Likely ❌"
+  },
+  {
+    "name": "Principled Volume",
+    "types": [
+      "ShaderNodeVolumePrincipled"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Volumes"
+  },
+  {
+    "name": "Ray Portal BSDF",
+    "types": [
+      "ShaderNodeBsdfRayPortal"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Path-tracing only"
+  },
+  {
+    "name": "Refraction BSDF",
+    "types": [
+      "ShaderNodeBsdfRefraction"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Screen-space transmission"
+  },
+  {
+    "name": "Sheen BSDF",
+    "types": [
+      "ShaderNodeBsdfSheen"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Maps onto physical sheen"
+  },
+  {
+    "name": "Specular BSDF",
+    "types": [
+      "ShaderNodeEeveeSpecular"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Eevee-only node; maps onto physical params"
+  },
+  {
+    "name": "Subsurface Scattering",
+    "types": [
+      "ShaderNodeSubsurfaceScattering"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Thickness/translucency fake"
+  },
+  {
+    "name": "Toon BSDF",
+    "types": [
+      "ShaderNodeBsdfToon"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Custom lighting"
+  },
+  {
+    "name": "Translucent BSDF",
+    "types": [
+      "ShaderNodeBsdfTranslucent"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Fake"
+  },
+  {
+    "name": "Transparent BSDF",
+    "types": [
+      "ShaderNodeBsdfTransparent"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "planned",
+    "phase": 8,
+    "notes": "Alpha blending"
+  },
+  {
+    "name": "Volume Absorption",
+    "types": [
+      "ShaderNodeVolumeAbsorption"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Volumes"
+  },
+  {
+    "name": "Volume Coefficients",
+    "types": [
+      "ShaderNodeVolumeCoefficients"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Volumes. Blender 5.x"
+  },
+  {
+    "name": "Volume Scatter",
+    "types": [
+      "ShaderNodeVolumeScatter"
+    ],
+    "section": "Shader",
+    "category": "Shader",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Volumes"
+  },
+  {
+    "name": "Brick Texture",
+    "types": [
+      "ShaderNodeTexBrick"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 6
+  },
+  {
+    "name": "Checker Texture",
+    "types": [
+      "ShaderNodeTexChecker"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Environment Texture",
+    "types": [
+      "ShaderNodeTexEnvironment"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 6,
+    "notes": "World/background"
+  },
+  {
+    "name": "Gabor Texture",
+    "types": [
+      "ShaderNodeTexGabor"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 6,
+    "notes": "Blender 4.3+. Expensive on mobile; recommend bake"
+  },
+  {
+    "name": "Gradient Texture",
+    "types": [
+      "ShaderNodeTexGradient"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "IES Texture",
+    "types": [
+      "ShaderNodeTexIES"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Belongs to lights"
+  },
+  {
+    "name": "Image Texture",
+    "types": [
+      "ShaderNodeTexImage"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Box projection 🟡 at first"
+  },
+  {
+    "name": "Magic Texture",
+    "types": [
+      "ShaderNodeTexMagic"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 6
+  },
+  {
+    "name": "Noise Texture",
+    "types": [
+      "ShaderNodeTexNoise"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 4,
+    "notes": "fBm, multifractal, ridged, hybrid, hetero terrain; 1D–4D. Musgrave merged in since 4.1"
+  },
+  {
+    "name": "Point Density",
+    "types": [
+      "ShaderNodeTexPointDensity"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "baked",
+    "phase": 9,
+    "notes": "Blender 4.2 only (removed in 5.x)"
+  },
+  {
+    "name": "Sky Texture",
+    "types": [
+      "ShaderNodeTexSky"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 6,
+    "notes": "World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT"
+  },
+  {
+    "name": "Voronoi Texture",
+    "types": [
+      "ShaderNodeTexVoronoi"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 5,
+    "notes": "F1 first, then F2, Smooth F1, Distance to Edge, N-Sphere Radius"
+  },
+  {
+    "name": "Wave Texture",
+    "types": [
+      "ShaderNodeTexWave"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 6
+  },
+  {
+    "name": "White Noise Texture",
+    "types": [
+      "ShaderNodeTexWhiteNoise"
+    ],
+    "section": "Texture",
+    "category": "Texture",
+    "status": "planned",
+    "phase": 4,
+    "notes": "Hash must match exactly"
+  },
+  {
+    "name": "Brightness/Contrast",
+    "types": [
+      "ShaderNodeBrightContrast"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Gamma",
+    "types": [
+      "ShaderNodeGamma"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Hue/Saturation/Value",
+    "types": [
+      "ShaderNodeHueSaturation"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Invert Color",
+    "types": [
+      "ShaderNodeInvert"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Mix",
+    "types": [
+      "ShaderNodeMix"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Float, Vector, Color + all blend modes"
+  },
+  {
+    "name": "Mix (Legacy)",
+    "types": [
+      "ShaderNodeMixRGB"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3,
+    "notes": "`MixRGB`; same blend code as Mix"
+  },
+  {
+    "name": "RGB Curves",
+    "types": [
+      "ShaderNodeRGBCurve"
+    ],
+    "section": "Color",
+    "category": "Color",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Sampled in Blender → 1D LUT"
+  },
+  {
+    "name": "Bump",
+    "types": [
+      "ShaderNodeBump"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Screen-space derivatives"
+  },
+  {
+    "name": "Displacement",
+    "types": [
+      "ShaderNodeDisplacement"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Vertex stage, needs dense mesh"
+  },
+  {
+    "name": "Mapping",
+    "types": [
+      "ShaderNodeMapping"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 2,
+    "notes": "Point, Texture, Vector, Normal"
+  },
+  {
+    "name": "Normal",
+    "types": [
+      "ShaderNodeNormal"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Normal Map",
+    "types": [
+      "ShaderNodeNormalMap"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Tangent / object / world; needs glTF tangents"
+  },
+  {
+    "name": "Radial Tiling",
+    "types": [
+      "ShaderNodeRadialTiling"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 6,
+    "notes": "Blender 5.x"
+  },
+  {
+    "name": "Vector Curves",
+    "types": [
+      "ShaderNodeVectorCurve"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Sampled in Blender → 1D LUT"
+  },
+  {
+    "name": "Vector Displacement",
+    "types": [
+      "ShaderNodeVectorDisplacement"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Vertex stage, needs dense mesh"
+  },
+  {
+    "name": "Vector Rotate",
+    "types": [
+      "ShaderNodeVectorRotate"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Vector Transform",
+    "types": [
+      "ShaderNodeVectorTransform"
+    ],
+    "section": "Vector",
+    "category": "Vector",
+    "status": "planned",
+    "phase": 7
+  },
+  {
+    "name": "Blackbody",
+    "types": [
+      "ShaderNodeBlackbody"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 7,
+    "notes": "Fitted formula"
+  },
+  {
+    "name": "Clamp",
+    "types": [
+      "ShaderNodeClamp"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Color Ramp",
+    "types": [
+      "ShaderNodeValToRGB"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Sampled in Blender → 1D LUT"
+  },
+  {
+    "name": "Combine Color",
+    "types": [
+      "ShaderNodeCombineColor"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "RGB, HSV, HSL"
+  },
+  {
+    "name": "Combine HSV / Combine RGB",
+    "types": [
+      "ShaderNodeCombineHSV",
+      "ShaderNodeCombineRGB"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Legacy, Blender 4.2 only; same code as Combine Color"
+  },
+  {
+    "name": "Combine XYZ",
+    "types": [
+      "ShaderNodeCombineXYZ"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Float Curve",
+    "types": [
+      "ShaderNodeFloatCurve"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Sampled in Blender → 1D LUT"
+  },
+  {
+    "name": "Map Range",
+    "types": [
+      "ShaderNodeMapRange"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "All modes, float + vector"
+  },
+  {
+    "name": "Math",
+    "types": [
+      "ShaderNodeMath"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "All operations"
+  },
+  {
+    "name": "RGB to BW",
+    "types": [
+      "ShaderNodeRGBToBW"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Script",
+    "types": [
+      "ShaderNodeScript"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "OSL not possible in realtime"
+  },
+  {
+    "name": "Separate Color",
+    "types": [
+      "ShaderNodeSeparateColor"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "RGB, HSV, HSL"
+  },
+  {
+    "name": "Separate HSV / Separate RGB",
+    "types": [
+      "ShaderNodeSeparateHSV",
+      "ShaderNodeSeparateRGB"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "Legacy, Blender 4.2 only; same code as Separate Color"
+  },
+  {
+    "name": "Separate XYZ",
+    "types": [
+      "ShaderNodeSeparateXYZ"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Shader to RGB",
+    "types": [
+      "ShaderNodeShaderToRGB"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 10,
+    "notes": "Needs custom lighting inside the material"
+  },
+  {
+    "name": "Squeeze Value (Legacy)",
+    "types": [
+      "ShaderNodeSqueeze"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3
+  },
+  {
+    "name": "Vector Math",
+    "types": [
+      "ShaderNodeVectorMath"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 3,
+    "notes": "All operations"
+  },
+  {
+    "name": "Wavelength",
+    "types": [
+      "ShaderNodeWavelength"
+    ],
+    "section": "Converter",
+    "category": "Converter",
+    "status": "planned",
+    "phase": 7
+  },
+  {
+    "name": "AOV Output",
+    "types": [
+      "ShaderNodeOutputAOV"
+    ],
+    "section": "Output, light and other",
+    "category": "Output",
+    "status": "not_planned",
+    "phase": null
+  },
+  {
+    "name": "Light Falloff",
+    "types": [
+      "ShaderNodeLightFalloff"
+    ],
+    "section": "Output, light and other",
+    "category": "Light",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Belongs to lights"
+  },
+  {
+    "name": "Light Output",
+    "types": [
+      "ShaderNodeOutputLight"
+    ],
+    "section": "Output, light and other",
+    "category": "Output",
+    "status": "not_planned",
+    "phase": null
+  },
+  {
+    "name": "Line Style Output",
+    "types": [
+      "ShaderNodeOutputLineStyle"
+    ],
+    "section": "Output, light and other",
+    "category": "Output",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Freestyle only"
+  },
+  {
+    "name": "Material Output",
+    "types": [
+      "ShaderNodeOutputMaterial"
+    ],
+    "section": "Output, light and other",
+    "category": "Output",
+    "status": "planned",
+    "phase": 2
+  },
+  {
+    "name": "Raycast",
+    "types": [
+      "ShaderNodeRaycast"
+    ],
+    "section": "Output, light and other",
+    "category": "Input",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Blender 5.x. Needs scene ray tracing"
+  },
+  {
+    "name": "UV Along Stroke",
+    "types": [
+      "ShaderNodeUVAlongStroke"
+    ],
+    "section": "Output, light and other",
+    "category": "Input",
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Freestyle only"
+  },
+  {
+    "name": "World Output",
+    "types": [
+      "ShaderNodeOutputWorld"
+    ],
+    "section": "Output, light and other",
+    "category": "Output",
+    "status": "planned",
+    "phase": 6,
+    "notes": "World only"
+  },
+  {
+    "name": "Frame",
+    "types": [
+      "NodeFrame"
+    ],
+    "section": "Layout",
+    "category": "Layout",
+    "status": "planned",
+    "phase": 1,
+    "notes": "Removed by exporter"
+  },
+  {
+    "name": "Group / Group Input / Group Output",
+    "types": [
+      "ShaderNodeGroup",
+      "NodeGroupInput",
+      "NodeGroupOutput"
+    ],
+    "section": "Layout",
+    "category": "Layout",
+    "status": "planned",
+    "phase": 1,
+    "notes": "Flattened by exporter"
+  },
+  {
+    "name": "Reroute",
+    "types": [
+      "NodeReroute"
+    ],
+    "section": "Layout",
+    "category": "Layout",
+    "status": "planned",
+    "phase": 1,
+    "notes": "Removed by exporter"
+  }
+]

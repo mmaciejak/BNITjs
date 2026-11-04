@@ -6,7 +6,7 @@ The plan is in [SPEC.md](SPEC.md). Read it before starting a phase.
 
 - Make one commit per feature: one node, one exporter capability, or one harness feature. Never batch several nodes into one commit.
 - Commit only when the tests for that feature pass: unit tests, plus a parity test for texture and color nodes.
-- A commit that adds or changes node support updates the README node table in the same commit.
+- A commit that adds or changes node support updates the README node table in the same commit. Edit `schema/node-support.json`, then run `python3 tools/sync_node_support.py`. The script regenerates the README table and `exporter/node_support.py`, and CI fails if they are out of sync.
 - Commit messages use the `type(scope): message` style, e.g. `feat(nodes): add Voronoi F1 with euclidean distance`.
 - When a phase ends, add a `CHANGELOG.md` entry and tag it `phase-N`.
 
