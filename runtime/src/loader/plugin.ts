@@ -6,6 +6,7 @@ import type {
   GLTFParser,
 } from 'three/addons/loaders/GLTFLoader.js';
 import { buildMaterial, type BuildOptions, textureIndices } from '../graph/build.js';
+import { restoreParams } from '../params/params.js';
 import {
   type ColorAttributes,
   EXTENSION_NAME,
@@ -103,7 +104,13 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
         if (associations.get(child)?.nodes === undefined) child.userData[USERDATA_KEY] = data;
       }
     }
-    void result;
+    // GLTFLoader clones most materials; give the clones their params back.
+    result.scene.traverse((object) => {
+      const material = (object as { material?: Material | Material[] }).material;
+      for (const m of Array.isArray(material) ? material : material ? [material] : []) {
+        restoreParams(m as Parameters<typeof restoreParams>[0]);
+      }
+    });
     return null;
   }
 }

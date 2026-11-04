@@ -1,6 +1,6 @@
 import type { Texture } from 'three/webgpu';
 import { createRegistry } from '../nodes/registry.js';
-import { type BlenderShaderMaterial, MaterialParams } from '../params/params.js';
+import { type BlenderShaderMaterial, MaterialParams, registerParams } from '../params/params.js';
 import { isClosure } from '../shaders/closures.js';
 import { materialFromClosure, type MaterialOptions } from '../shaders/material.js';
 import { GraphEvaluator, type NodeImpl } from './evaluate.js';
@@ -37,7 +37,10 @@ export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): B
   ) as BlenderShaderMaterial;
   material.name = graph.material;
   material.params = params;
-  material.userData.blenderShaderGraph = { warnings: evaluator.warnings };
+  material.userData.blenderShaderGraph = {
+    warnings: evaluator.warnings,
+    ...(params.names().length ? { params: registerParams(params) } : {}),
+  };
   return { material, params, warnings: evaluator.warnings };
 }
 

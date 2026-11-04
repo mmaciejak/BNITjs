@@ -113,7 +113,35 @@ function toDefault(value: Value | undefined, kind: 'float' | 'vec3'): number | n
 /** A node material built from a Blender graph, with its live parameters. */
 export type BlenderShaderMaterial = NodeMaterial & { params: MaterialParams };
 
-/** The live parameters of a material built by this library, or undefined. */
-export function getParams(material: { params?: unknown }): MaterialParams | undefined {
-  return material.params instanceof MaterialParams ? material.params : undefined;
+/*
+ * Material.clone() (GLTFLoader clones most materials in assignFinalMaterial) copies userData as
+ * JSON but not custom properties, so params are also found through an id kept in userData.
+ * Clones share the uniform nodes, so one MaterialParams drives the original and every clone.
+ */
+const registry = new Map<string, MaterialParams>();
+let nextId = 0;
+
+/** Register params for a material; returns the id stored in userData.blenderShaderGraph.params. */
+export function registerParams(params: MaterialParams): string {
+  const id = `bsw-params-${nextId++}`;
+  registry.set(id, params);
+  return id;
+}
+
+interface WithParams {
+  params?: unknown;
+  userData?: { blenderShaderGraph?: { params?: string } };
+}
+
+/** The live parameters of a material built by this library (or a clone of one), or undefined. */
+export function getParams(material: WithParams): MaterialParams | undefined {
+  if (material.params instanceof MaterialParams) return material.params;
+  const id = material.userData?.blenderShaderGraph?.params;
+  return id ? registry.get(id) : undefined;
+}
+
+/** Give a cloned material its `params` property back. */
+export function restoreParams(material: WithParams): void {
+  const params = getParams(material);
+  if (params && material.params !== params) material.params = params;
 }

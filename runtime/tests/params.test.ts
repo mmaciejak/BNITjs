@@ -22,6 +22,12 @@ describe('live parameters', () => {
     expect(getParams(material)).toBe(params);
   });
 
+  it('survives Material.clone() (GLTFLoader clones most materials)', () => {
+    const { material, params } = build();
+    const clone = material.clone();
+    expect(getParams(clone)).toBe(params);
+  });
+
   it('sets numbers and colors, and resets to the defaults', () => {
     const { params } = build();
     params
