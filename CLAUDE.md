@@ -10,6 +10,13 @@ The plan is in [SPEC.md](SPEC.md). Read it before starting a phase.
 - Commit messages use the `type(scope): message` style, e.g. `feat(nodes): add Voronoi F1 with euclidean distance`.
 - When a phase ends, add a `CHANGELOG.md` entry and tag it `phase-N`.
 
+## License (decided 2026-11-04)
+
+- The whole repository is AGPL-3.0-or-later.
+- Porting Blender's shader implementations (GLSL and C++, GPL-2.0-or-later) is allowed and is the preferred way to match Blender exactly.
+- Each ported node file starts with a comment that names the Blender source file and version it was ported from, and keeps Blender's copyright line.
+- Before adding a dependency, check that its license is AGPL-compatible.
+
 ## Commands
 
 - Runtime: `cd runtime && npm run lint && npm run typecheck && npm test && npm run build`

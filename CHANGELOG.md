@@ -9,4 +9,4 @@ Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 - Exporter tooling: Blender extension manifest, ruff, background-Blender test runner (tested on 4.2.3 and 5.2.2).
 - CI: runtime checks, ruff, exporter tests on Blender 4.2 and 5.2.
 - README with the full node support table, built from the shader node list of Blender 4.2 and 5.2.
-- Pending: license decision (SPEC §5).
+- License: AGPL-3.0-or-later for the whole repository, so porting Blender's shader code is allowed (SPEC §5).

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Rebuild Blender shader node graphs live in three.js with TSL",
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "main": "./dist/blender-shader-web.js",
   "module": "./dist/blender-shader-web.js",

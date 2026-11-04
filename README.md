@@ -12,10 +12,11 @@ See [SPEC.md](SPEC.md) for the full design and roadmap.
 
 ## License
 
-**Not decided yet.** It must be decided before Phase 1 (SPEC §5).
+The whole repository (exporter, runtime, schema, parity harness and examples) is licensed under the **GNU Affero General Public License v3.0 or later** ([LICENSE](LICENSE)).
 
-- `exporter/` is a Blender add-on, so it is GPL-3.0-or-later in any case.
-- `runtime/` will be either MIT, implemented clean-room with no Blender source ported, or GPL, ported from Blender's GLSL.
+Because the project uses a GPL-family license, node implementations may be ported from Blender's own shader code (GPL-2.0-or-later), which AGPL-3.0 can include (SPEC §5). Every ported file names the Blender source file it comes from and keeps Blender's copyright notice.
+
+The AGPL also covers network use. If you serve a modified version of the runtime to users over a network, you must offer those users the corresponding source code.
 
 ## Compatibility
 

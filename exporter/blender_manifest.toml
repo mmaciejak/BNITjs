@@ -9,8 +9,8 @@ type = "add-on"
 
 blender_version_min = "4.2.0"
 
-# Blender add-ons link against bpy and are distributed under the GPL.
-license = ["SPDX:GPL-3.0-or-later"]
+# AGPL-3.0 is compatible with Blender's GPL (GPLv3 §13).
+license = ["SPDX:AGPL-3.0-or-later"]
 
 tags = ["Import-Export", "Material"]
 
