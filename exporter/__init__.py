@@ -1,10 +1,12 @@
 """Blender Shader Web: export material node graphs for the three.js runtime.
 
-Feature code lands from Phase 1 onward; see SPEC.md.
+With the add-on enabled, every glTF export (File > Export > glTF 2.0) also writes each
+material's node graph into the EXT_blender_shader_graph extension. See SPEC.md.
 """
 
-# Version of the graph export format written into the glTF vendor extension.
-GRAPH_FORMAT_VERSION = 1
+# Discovered by Blender's glTF exporter on every enabled add-on.
+from .gltf_hooks import glTF2ExportUserExtension  # noqa: F401
+from .graph_export import GRAPH_FORMAT_VERSION  # noqa: F401
 
 _classes: tuple = ()
 
