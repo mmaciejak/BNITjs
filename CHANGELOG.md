@@ -2,6 +2,16 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-6: Remaining textures and the World
+
+- New supported nodes (✅, ported from Blender's GLSL): Wave, Magic, Brick and Gabor Textures, and Environment Texture.
+- Image Texture gains Box projection, with the blend between projections.
+- Float (HDR) images are embedded as RGBE PNGs, because glTF only carries PNG and JPEG. The runtime decodes each texel before interpolating, like Cycles: about 1% precision, and alpha is lost.
+- The World is exported from its active World Output and stored on the glTF scene. `applyBlenderWorld(scene, gltf)` shows it as `scene.backgroundNode`, and texture coordinates in a World are the view direction. Background and World Output are 🟡: the World does not light the scene yet.
+- Sky Texture (🟡) covers every model of Blender 4.2 and 5.x. Those models run in Blender's C++ code, so the exporter bakes each Sky node with a Cycles equirectangular panorama to a 1024×512 RGBE image. The panorama camera's rotation was measured to match Environment Texture's mapping. Sharp features are blurred to the bake's resolution, and sky settings cannot change live.
+- Radial Tiling (new in Blender 5) is deferred to phase 10: it is a port of about 900 lines.
+- Parity harness: scenes can define `build_world()` and `CAMERA_ROTATION`, and the browser renders into a `Scene` with the World applied. A scene that times out is retried once, and `check.sh` keeps the Mac awake with `caffeinate`. 420 scenes pass on WebGPU and WebGL2.
+
 ## phase-5: Voronoi
 
 - Voronoi Texture (✅): every feature (F1, F2, Smooth F1, Distance to Edge, N-Sphere Radius) and distance metric, 1D–4D, fractal Detail with fractional interpolation, and Normalize. It is ported from Blender's GLSL, which matches Cycles. Octaves run in real shader loops, so Detail can be a live parameter.
