@@ -44,5 +44,7 @@ if [[ -z "${SKIP_PARITY:-}" ]]; then
   (cd runtime && npm run parity --silent -- --webgl | grep -E '^(RETRY|FAIL)|passed')
   step "configurator example"
   (cd runtime && npm run example:check --silent 2>&1 | grep -E '^(PASS|FAIL)' && npm run example:check --silent -- --webgl 2>&1 | grep -E '^(PASS|FAIL)')
+  step "materials example"
+  (cd runtime && npm run example:materials --silent && npm run example:materials --silent -- --webgl)
 fi
 printf '\nAll checks passed.\n'

@@ -335,7 +335,7 @@
     "category": "Shader",
     "status": "partial",
     "phase": 2,
-    "notes": "Base color, metallic, roughness, alpha, emission (base color parity-tested) and Normal. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8"
+    "notes": "Base color, metallic, roughness, alpha, emission (base color parity-tested), Normal, and three.js physical equivalents of coat, sheen, transmission, IOR, specular level and tint, thin film and anisotropy (close, not identical to Cycles; see examples/materials). Not mapped: subsurface, coat IOR and tint"
   },
   {
     "name": "Principled Hair BSDF",

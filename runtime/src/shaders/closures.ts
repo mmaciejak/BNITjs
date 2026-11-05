@@ -20,6 +20,17 @@ export interface PrincipledClosure {
   specular?: FloatNode;
   /** Shading normal in Blender's world axes, when the Normal input is linked. */
   normal?: Vec3Node;
+  /** Principled extras (Phase 8), each set only when it has a visible effect. */
+  coat?: { weight: FloatNode; roughness: FloatNode; normal?: Vec3Node };
+  /** Sheen color (Sheen Weight × Sheen Tint) and roughness. */
+  sheen?: { color: Vec3Node; roughness: FloatNode };
+  transmission?: FloatNode;
+  ior?: FloatNode;
+  specularColor?: Vec3Node;
+  /** Thin film: thickness in nanometers and IOR. */
+  thinFilm?: { thickness: FloatNode; ior: FloatNode };
+  /** Anisotropy strength (0-1) and rotation (radians). */
+  anisotropy?: { strength: FloatNode; rotation: FloatNode };
 }
 
 export interface EmissionClosure {

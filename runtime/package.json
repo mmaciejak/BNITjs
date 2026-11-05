@@ -28,7 +28,8 @@
     "perf": "node ../parity/compare/perf.mjs",
     "parity:refs": "${BLENDER:-blender} -b --factory-startup --python ../parity/render_refs.py --",
     "example": "node ../examples/server.mjs",
-    "example:check": "node ../examples/configurator/check.mjs"
+    "example:check": "node ../examples/configurator/check.mjs",
+    "example:materials": "node ../examples/materials/check.mjs"
   },
   "peerDependencies": {
     "three": "0.187.0"
