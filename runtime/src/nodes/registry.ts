@@ -28,6 +28,7 @@ import { mix } from './mix.js';
 import { noise } from './noise.js';
 import { mixRGB } from './mixRGB.js';
 import { normal } from './normal.js';
+import { normalMap } from './normalMap.js';
 import { objectInfo } from './objectInfo.js';
 import { separateColor } from './separateColor.js';
 import { skyTexture } from './skyTexture.js';
@@ -121,6 +122,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeNewGeometry: geometry,
   ShaderNodeTangent: tangent,
   ShaderNodeBump: bump,
+  ShaderNodeNormalMap: normalMap,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

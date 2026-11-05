@@ -49,6 +49,8 @@
     "mix_rgb_dodge": { "outliers": 0.006 },
     "mix_rgb_linear_light": { "outliers": 0.006 },
     "mix_rgb_screen": { "outliers": 0.006 },
+    "normal_map_blender_object": { "outliers": 0.006 },
+    "normal_map_object": { "outliers": 0.006 },
     "rgb_curves_extrapolated": { "outliers": 0.006 },
     "rgb_curves_half": { "outliers": 0.006 },
     "separate_color_hsl": { "outliers": 0.006 },
