@@ -80,6 +80,8 @@ export interface ShaderGraph {
   version: number;
   generator: { name: string; version: string; blender: string };
   material: string;
+  /** "world" for a World graph (absent for materials). */
+  kind?: 'material' | 'world';
   materialPassIndex?: number;
   /** glTF TEXCOORD_i = names[i]; activeRender is the active render UV map. */
   uvMaps?: { names: string[]; activeRender: number };

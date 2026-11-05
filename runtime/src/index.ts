@@ -21,6 +21,13 @@ export {
   type LoaderOptions,
   registerBlenderShaderGraph,
 } from './loader/plugin.js';
+export {
+  applyBlenderWorld,
+  type BlenderWorld,
+  buildWorld,
+  getBlenderWorld,
+  WORLD_KEY,
+} from './graph/world.js';
 export { builtinNodes, createRegistry } from './nodes/registry.js';
 export {
   type BlenderShaderMaterial,

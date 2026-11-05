@@ -68,6 +68,22 @@ const gltf = await loader.loadAsync('model.gltf'); // materials rebuilt from the
 
 Nodes that aren't supported yet log a warning and use a default value; a material that fails to build falls back to the standard glTF material in the same file.
 
+### World
+
+The exporter also writes the scene's World (its active World Output) to the glTF file. To show it as the background:
+
+```js
+import { Scene } from 'three/webgpu';
+import { applyBlenderWorld, getBlenderWorld } from 'blender-shader-web';
+
+const scene = new Scene();
+scene.add(gltf.scene);
+applyBlenderWorld(scene, gltf);          // scene.backgroundNode = the World's Background
+getBlenderWorld(gltf)?.params.set(...);  // live parameters work in the World too
+```
+
+Texture coordinates in a World are the view direction, as in Blender. The World does not light the scene yet: set `scene.environment` yourself.
+
 ### Live parameters
 
 In Blender, label a Value or Color node `$Grain Scale`, or a group node `$Wood`. A labelled group exposes its unlinked inputs as `Wood/<input>`, with the group's min and max. In three.js:
@@ -156,7 +172,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
 | Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
-| Background | Shader | 🚧 Not yet | 6 | World only |
+| Background | Shader | 🟡 Partial | 6 | Shown as the scene background with applyBlenderWorld(scene, gltf). The world does not light the scene yet (set scene.environment yourself) |
 | Diffuse BSDF | Shader | 🟡 Partial | 3 | Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped; Normal in phase 7 |
 | Emission | Shader | ✅ Supported | 2 | |
 | Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
@@ -260,7 +276,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Material Output | Output | 🟡 Partial | 2 | Surface only so far (Displacement in phase 7) |
 | Raycast | Input | ❌ Not planned | — | Blender 5.x. Needs scene ray tracing |
 | UV Along Stroke | Input | ❌ Not planned | — | Freestyle only |
-| World Output | Output | 🚧 Not yet | 6 | World only |
+| World Output | Output | 🟡 Partial | 6 | Surface only (no Volume). See Background |
 
 ### Layout
 

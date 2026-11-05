@@ -11,7 +11,7 @@ import {
   vec4,
 } from 'three/tsl';
 import type { NodeImpl } from '../graph/evaluate.js';
-import { blenderUV, texspaceUniforms, toBlender } from './space.js';
+import { blenderUV, texspaceUniforms, toBlender, worldDirection } from './space.js';
 
 /**
  * Texture Coordinate. All outputs are in Blender's conventions:
@@ -32,6 +32,25 @@ export const texCoord: NodeImpl = (ctx) => {
     );
   }
   if (ctx.prop('from_instancer', false)) ctx.warn('From Instancer is not supported');
+
+  if (ctx.graph.kind === 'world') {
+    // World shaders (Cycles' background shading): the point is the ray direction D and the normal
+    // is −D. Camera, Window, Reflection and UV are not supported there.
+    const d = worldDirection();
+    for (const name of ['UV', 'Camera', 'Window', 'Reflection']) {
+      if (ctx.isOutputLinked(name))
+        ctx.warn(`${name} in a World is not supported; using the direction`);
+    }
+    return {
+      Generated: d,
+      Object: d,
+      Normal: d.negate(),
+      UV: d,
+      Camera: d,
+      Window: d,
+      Reflection: d,
+    };
+  }
 
   const space = texspaceUniforms();
   const objectPos = toBlender(positionLocal);

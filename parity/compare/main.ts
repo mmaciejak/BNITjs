@@ -5,11 +5,15 @@
 import {
   NoToneMapping,
   SRGBColorSpace,
+  Scene,
   WebGPURenderer,
   type Camera,
 } from "three/webgpu";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { registerBlenderShaderGraph } from "../../runtime/src/index.js";
+import {
+  applyBlenderWorld,
+  registerBlenderShaderGraph,
+} from "../../runtime/src/index.js";
 
 interface ParityState {
   done: boolean;
@@ -54,8 +58,12 @@ async function main() {
   const gltf = await loader.loadAsync(`./out/${scene}/scene.gltf`);
   const camera = gltf.cameras[0] as Camera | undefined;
   if (!camera) throw new Error("scene has no camera");
-  gltf.scene.updateMatrixWorld(true);
-  renderer.render(gltf.scene, camera);
+  // A Scene (not the glTF Group) so the file's World can be the background.
+  const root = new Scene();
+  root.add(gltf.scene);
+  applyBlenderWorld(root, gltf);
+  root.updateMatrixWorld(true);
+  renderer.render(root, camera);
   // Let the frame reach the canvas before the harness captures it.
   await new Promise((resolve) =>
     requestAnimationFrame(() => requestAnimationFrame(resolve)),

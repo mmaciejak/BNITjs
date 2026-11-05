@@ -4,6 +4,7 @@ import {
   cameraViewMatrix,
   mix,
   normalWorld,
+  normalWorldGeometry,
   positionLocal,
   positionWorld,
   uniform,
@@ -93,4 +94,12 @@ export function shadingNormalBlender(): Vec3Node {
 export function blenderUV(index: number): Vec3Node {
   const coords = uv(index);
   return vec3(coords.x, coords.y.oneMinus(), 0);
+}
+
+/**
+ * World shaders: the view direction in Blender axes. three.js draws scene.backgroundNode on a unit
+ * sphere around the camera, so the normalised sphere normal is the exact direction of each pixel.
+ */
+export function worldDirection(): Vec3Node {
+  return toBlender(normalWorldGeometry.normalize());
 }

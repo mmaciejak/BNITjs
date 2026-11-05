@@ -3,8 +3,10 @@
     blender -b --factory-startup --python parity/render_refs.py [-- scene_name ...]
 
 For each parity/scenes/<name>.py (files starting with "_" are helpers), which defines build() ->
-material, and optionally setup(plane) to change the plane mesh or object and
-CAMERA = "PERSP" for a perspective camera (default orthographic). A module with
+material, and optionally setup(plane) to change the plane mesh or object,
+CAMERA = "PERSP" for a perspective camera (default orthographic), CAMERA_ROTATION = (x, y, z) in
+radians for the camera's rotation (default looking down at the plane), and build_world() -> World
+to give the scene a World (world shader scenes; the default has none, so the background is black). A module with
 VARIANTS = [...] defines build(variant) (and setup(plane, variant)) and yields one scene per variant, named
 <module>_<variant lowercased> (e.g. math_add):
 
@@ -73,7 +75,7 @@ def setup_render(scene):
     image.compression = 15
 
 
-def build_scene(material, setup=None, camera_type="ORTHO"):
+def build_scene(material, setup=None, camera_type="ORTHO", camera_rotation=None):
     scene = bpy.context.scene
     bpy.ops.mesh.primitive_plane_add(size=2.0, location=(0.0, 0.0, 0.0))
     plane = bpy.context.active_object
@@ -95,6 +97,8 @@ def build_scene(material, setup=None, camera_type="ORTHO"):
     cam_data.clip_end = 10.0
     camera = bpy.data.objects.new("Camera", cam_data)
     camera.location = (0.0, 0.0, 2.0)
+    if camera_rotation is not None:
+        camera.rotation_euler = camera_rotation
     scene.collection.objects.link(camera)
     scene.camera = camera
     setup_render(scene)
@@ -140,7 +144,10 @@ def main():
         setup = getattr(module, "setup", None)
         if setup is not None and variant is not None:
             setup = (lambda s, v: lambda plane: s(plane, v))(setup, variant)
-        build_scene(material, setup, getattr(module, "CAMERA", "ORTHO"))
+        build_world = getattr(module, "build_world", None)
+        if build_world is not None:
+            bpy.context.scene.world = build_world() if variant is None else build_world(variant)
+        build_scene(material, setup, getattr(module, "CAMERA", "ORTHO"), getattr(module, "CAMERA_ROTATION", None))
 
         scene = bpy.context.scene
         scene.render.filepath = os.path.join(REFS_DIR, f"{name}.png")

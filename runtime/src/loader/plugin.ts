@@ -7,6 +7,7 @@ import type {
 } from 'three/addons/loaders/GLTFLoader.js';
 import { buildMaterial, type BuildOptions, textureIndices } from '../graph/build.js';
 import { restoreParams } from '../params/params.js';
+import { buildWorld, WORLD_KEY } from '../graph/world.js';
 import {
   type ColorAttributes,
   EXTENSION_NAME,
@@ -89,6 +90,35 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
     return undefined;
   }
 
+  /** Build the scene's World graph (scenes[i].extensions) into result.userData.blenderWorld. */
+  private async buildWorld(result: GLTF): Promise<void> {
+    const scenes = (this.parser.json.scenes as NodeDef[] | undefined) ?? [];
+    const sceneIndex = (this.parser.json.scene as number | undefined) ?? 0;
+    const graph = (
+      scenes[sceneIndex]?.extensions?.[EXTENSION_NAME] as { world?: unknown } | undefined
+    )?.world;
+    if (!graph) return;
+    const warn = (message: string) => {
+      const text = `[${EXTENSION_NAME}] world: ${message}`;
+      if (this.options.onWarning) this.options.onWarning(text);
+      else console.warn(text);
+    };
+    try {
+      const textures = new Map<number, Texture>();
+      for (const index of textureIndices(graph)) {
+        textures.set(index, (await this.parser.getDependency('texture', index)) as Texture);
+      }
+      result.userData = result.userData ?? {};
+      result.userData[WORLD_KEY] = buildWorld(graph, {
+        ...this.options,
+        textures,
+        onWarning: warn,
+      });
+    } catch (error) {
+      warn(`cannot build the world: ${(error as Error).message}`);
+    }
+  }
+
   /** Store per-object data (Object Info, Generated coordinates) on the objects that use it. */
   afterRoot(result: GLTF): Promise<void> | null {
     const nodes = (this.parser.json.nodes as NodeDef[] | undefined) ?? [];
@@ -111,7 +141,7 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
         restoreParams(m as Parameters<typeof restoreParams>[0]);
       }
     });
-    return null;
+    return this.buildWorld(result);
   }
 }
 

@@ -1,5 +1,6 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { attribute } from './attribute.js';
+import { background } from './background.js';
 import { brick } from './brick.js';
 import { bswValue } from './bswValue.js';
 import { cameraData } from './cameraData.js';
@@ -48,6 +49,7 @@ import { vectorMath } from './vectorMath.js';
 import { voronoi } from './voronoi.js';
 import { wave } from './wave.js';
 import { whiteNoise } from './whiteNoise.js';
+import { worldOutput } from './worldOutput.js';
 import { combineXYZ, separateXYZ } from './xyz.js';
 
 /**
@@ -59,6 +61,8 @@ import { combineXYZ, separateXYZ } from './xyz.js';
 export const builtinNodes: Record<string, NodeImpl> = {
   BSW_Value: bswValue,
   ShaderNodeOutputMaterial: materialOutput,
+  ShaderNodeOutputWorld: worldOutput,
+  ShaderNodeBackground: background,
   ShaderNodeEmission: emission,
   ShaderNodeMapping: mapping,
   ShaderNodeMath: math,

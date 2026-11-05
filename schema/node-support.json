@@ -235,9 +235,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 6,
-    "notes": "World only"
+    "notes": "Shown as the scene background with applyBlenderWorld(scene, gltf). The world does not light the scene yet (set scene.environment yourself)"
   },
   {
     "name": "Diffuse BSDF",
@@ -1089,9 +1089,9 @@
     ],
     "section": "Output, light and other",
     "category": "Output",
-    "status": "planned",
+    "status": "partial",
     "phase": 6,
-    "notes": "World only"
+    "notes": "Surface only (no Volume). See Background"
   },
   {
     "name": "Frame",
