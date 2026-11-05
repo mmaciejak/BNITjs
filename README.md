@@ -232,7 +232,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
 | Bump | Vector | ✅ Supported | 7 | Cycles' formula on screen-space derivatives of the height (parity-tested). The Filter Width input has no effect |
-| Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
+| Displacement | Vector | 🟡 Partial | 7 | Object and World space (parity-tested). Material Settings > Displacement: Bump Only (the default) shades with the displaced surface's normal; Displacement moves the vertices (needs a dense mesh; normals are not recomputed); Displacement and Bump is treated as Displacement |
 | Mapping | Vector | ✅ Supported | 2 | Point, Texture, Vector, Normal |
 | Normal | Vector | ✅ Supported | 3 | |
 | Normal Map | Vector | 🟡 Partial | 7 | Every space and Strength (parity-tested). Tangent space builds its frame from screen-space derivatives of the UV map instead of MikkTSpace tangents: exact on flat, uniformly mapped surfaces, close on curved ones |

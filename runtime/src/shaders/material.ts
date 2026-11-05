@@ -1,6 +1,22 @@
 import { cameraViewMatrix, vec3, vec4 } from 'three/tsl';
-import { MeshBasicNodeMaterial, MeshPhysicalNodeMaterial, type NodeMaterial } from 'three/webgpu';
+import {
+  MeshBasicNodeMaterial,
+  MeshPhysicalNodeMaterial,
+  type Node,
+  type NodeMaterial,
+} from 'three/webgpu';
 import type { Closure } from './closures.js';
+
+/**
+ * three.js's MeshBasicNodeMaterial always shades with the geometry normal. Blender's unlit
+ * (Emission) materials still see a displaced (bump) normal through Geometry > Normal, so this one
+ * uses normalNode when it is set.
+ */
+export class BlenderBasicNodeMaterial extends MeshBasicNodeMaterial {
+  override setupNormal() {
+    return this.normalNode ? vec3(this.normalNode as Node<'vec3'>) : super.setupNormal();
+  }
+}
 
 export interface MaterialOptions {
   /**
@@ -17,19 +33,19 @@ export function materialFromClosure(
 ): NodeMaterial {
   if (surface === null) {
     // Nothing linked to Surface: Blender renders black.
-    const material = new MeshBasicNodeMaterial();
+    const material = new BlenderBasicNodeMaterial();
     material.colorNode = vec3(0);
     return material;
   }
 
   if (surface.kind === 'emission') {
-    const material = new MeshBasicNodeMaterial();
+    const material = new BlenderBasicNodeMaterial();
     material.colorNode = surface.color;
     return material;
   }
 
   if (options.unlit) {
-    const material = new MeshBasicNodeMaterial();
+    const material = new BlenderBasicNodeMaterial();
     material.colorNode = surface.baseColor;
     return material;
   }

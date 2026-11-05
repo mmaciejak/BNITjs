@@ -541,6 +541,9 @@ def _export_tree_graph(owner, kind, include_data):
         graph["kind"] = "world"
     else:
         graph["materialPassIndex"] = owner.pass_index
+        displacement = output.inputs.get("Displacement")
+        if displacement is not None and displacement.is_linked:
+            graph["displacementMethod"] = owner.displacement_method
     graph["output"] = output_id
     graph["nodes"] = builder.nodes
     if builder.links:

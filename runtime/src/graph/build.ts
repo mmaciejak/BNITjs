@@ -1,3 +1,19 @@
+import {
+  cameraViewMatrix,
+  cross,
+  dFdx,
+  dFdy,
+  dot,
+  modelWorldMatrixInverse,
+  normalWorld,
+  positionLocal,
+  positionWorld,
+  select,
+  vec4,
+} from 'three/tsl';
+import type { NodeMaterial } from 'three/webgpu';
+import type { Vec3Node } from './convert.js';
+import { toBlender } from '../nodes/space.js';
 import type { Texture } from 'three/webgpu';
 import { createRegistry } from '../nodes/registry.js';
 import { type BlenderShaderMaterial, MaterialParams, registerParams } from '../params/params.js';
@@ -21,6 +37,33 @@ export interface BuildResult {
 }
 
 /** Build a three.js node material from an EXT_blender_shader_graph payload. */
+/**
+ * The Material Output's Displacement (an offset in Blender's world axes). "Bump Only" (Blender's
+ * default) shades with the normal of the displaced surface, from screen-space derivatives of
+ * P + offset, unless the BSDF already sets a normal. "Displacement" moves the vertices.
+ */
+function applyDisplacement(
+  material: NodeMaterial,
+  offset: Vec3Node,
+  method: string,
+  warn: (message: string) => void,
+): void {
+  if (method === 'BUMP') {
+    if (material.normalNode) return;
+    const p = toBlender(positionWorld).add(offset);
+    const raw = cross(dFdx(p), dFdy(p)).normalize();
+    const n = toBlender(normalWorld);
+    const bumped = select(dot(raw, n).lessThan(0), raw.negate(), raw);
+    material.normalNode = cameraViewMatrix
+      .mul(vec4(bumped.x, bumped.z, bumped.y.negate(), 0))
+      .xyz.normalize();
+    return;
+  }
+  if (method === 'BOTH') warn('Displacement "Displacement and Bump" moves the vertices only');
+  const local = modelWorldMatrixInverse.mul(vec4(offset.x, offset.z, offset.y.negate(), 0)).xyz;
+  material.positionNode = positionLocal.add(local);
+}
+
 export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): BuildResult {
   const graph = parseGraph(graphJson);
   const params = new MaterialParams(graph);
@@ -30,11 +73,18 @@ export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): B
     params,
     onWarning: options.onWarning,
   });
-  const surface = evaluator.outputs(graph.output).Surface ?? null;
+  const outputs = evaluator.outputs(graph.output);
+  const surface = outputs.Surface ?? null;
   const material = materialFromClosure(
     isClosure(surface) ? surface : null,
     options,
   ) as BlenderShaderMaterial;
+  const offset = outputs.Displacement;
+  if (offset && !isClosure(offset)) {
+    applyDisplacement(material, offset as Vec3Node, graph.displacementMethod ?? 'BUMP', (m) =>
+      evaluator.warn(m),
+    );
+  }
   material.name = graph.material;
   material.params = params;
   material.userData.blenderShaderGraph = {

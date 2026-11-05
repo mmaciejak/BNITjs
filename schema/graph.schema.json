@@ -55,6 +55,10 @@
         "$ref": "#/$defs/link"
       }
     },
+    "displacementMethod": {
+      "enum": ["BUMP", "DISPLACEMENT", "BOTH"],
+      "description": "Material > Settings > Displacement, written when the Material Output's Displacement is linked."
+    },
     "materialPassIndex": {
       "type": "integer",
       "description": "Material pass index (Object Info > Material Index)."

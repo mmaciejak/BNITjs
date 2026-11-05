@@ -83,6 +83,8 @@ export interface ShaderGraph {
   /** "world" for a World graph (absent for materials). */
   kind?: 'material' | 'world';
   materialPassIndex?: number;
+  /** How the Material Output's Displacement is used (when linked). */
+  displacementMethod?: 'BUMP' | 'DISPLACEMENT' | 'BOTH';
   /** glTF TEXCOORD_i = names[i]; activeRender is the active render UV map. */
   uvMaps?: { names: string[]; activeRender: number };
   /** Filled in by the loader from the objects that use the material. */

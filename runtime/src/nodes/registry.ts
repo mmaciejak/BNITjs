@@ -43,6 +43,7 @@ import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
 import { vectorTransform } from './vectorTransform.js';
 import { diffuse } from './diffuse.js';
+import { displacement } from './displacement.js';
 import { emission } from './emission.js';
 import { environmentTexture } from './environmentTexture.js';
 import { mapping } from './mapping.js';
@@ -125,6 +126,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBump: bump,
   ShaderNodeNormalMap: normalMap,
   ShaderNodeVectorTransform: vectorTransform,
+  ShaderNodeDisplacement: displacement,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

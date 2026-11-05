@@ -185,3 +185,20 @@ class GraphExportTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DisplacementMethodTest(unittest.TestCase):
+    def setUp(self):
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+
+    def test_written_only_when_displacement_is_linked(self):
+        mat = scenes.emission_rgb()
+        graph, _ = graph_export.export_material_graph(mat)
+        self.assertNotIn("displacementMethod", graph)
+
+        nodes, links = mat.node_tree.nodes, mat.node_tree.links
+        disp = nodes.new("ShaderNodeDisplacement")
+        links.new(disp.outputs["Displacement"], nodes["Material Output"].inputs["Displacement"])
+        mat.displacement_method = "DISPLACEMENT"
+        graph, _ = graph_export.export_material_graph(mat)
+        self.assertEqual(graph["displacementMethod"], "DISPLACEMENT")
