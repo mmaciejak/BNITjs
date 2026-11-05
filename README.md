@@ -236,7 +236,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Mapping | Vector | ✅ Supported | 2 | Point, Texture, Vector, Normal |
 | Normal | Vector | ✅ Supported | 3 | |
 | Normal Map | Vector | 🚧 Not yet | 7 | Tangent / object / world; needs glTF tangents |
-| Radial Tiling | Vector | 🚧 Not yet | 6 | Blender 5.x |
+| Radial Tiling | Vector | 🚧 Not yet | 10 | New in Blender 5. Deferred to phase 10: a large port (≈900 lines of Blender's GLSL) |
 | Vector Curves | Vector | ✅ Supported | 3 | Cycles table incl. extrapolation |
 | Vector Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
 | Vector Rotate | Vector | ✅ Supported | 3 | |

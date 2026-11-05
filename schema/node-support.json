@@ -766,8 +766,8 @@
     "section": "Vector",
     "category": "Vector",
     "status": "planned",
-    "phase": 6,
-    "notes": "Blender 5.x"
+    "phase": 10,
+    "notes": "New in Blender 5. Deferred to phase 10: a large port (≈900 lines of Blender's GLSL)"
   },
   {
     "name": "Vector Curves",
