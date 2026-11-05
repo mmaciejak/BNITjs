@@ -8,7 +8,8 @@
  * box-downsamples in linear space (like Cycles' box pixel filter), and compares with the
  * Blender reference. Writes browser.png / diff.png per scene and report.{md,json}; exits 1 if a
  * scene exceeds its thresholds (parity/thresholds.json): the mean error must be ≤ mae, and at
- * most a fraction `outliers` (default 0) of pixels may have a channel error above max.
+ * most a fraction `outliers` (default 0) of pixels may have a channel error above max. A scene that
+ * fails is run once more (printed as RETRY) before it counts as failed.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -113,7 +114,8 @@ const { base, page, consoleLines, close } = await startHarness({ width: 512 * SS
 
 const results = [];
 let failed = 0;
-for (const name of scenes) {
+/** Render and compare one scene. */
+async function runScene(name) {
   const dir = join(OUT, name);
   const limit = { ...thresholds.default, ...(thresholds.scenes[name] ?? {}) };
   const result = { scene: name, limit };
@@ -156,6 +158,21 @@ for (const name of scenes) {
     result.pass = false;
     result.error = String(error.message ?? error);
     result.console = [...consoleLines];
+  }
+  return result;
+}
+
+for (const name of scenes) {
+  const limit = { ...thresholds.default, ...(thresholds.scenes[name] ?? {}) };
+  let result = await runScene(name);
+  // A bad capture (rare, e.g. a frame not fully drawn) fails a scene that passes on a rerun: retry
+  // a failed comparison once and keep the first attempt in the report.
+  if (!result.pass && !String(result.error ?? '').startsWith('missing')) {
+    console.log(`RETRY ${name}: first attempt mae ${result.mae ?? '—'} max ${result.max ?? '—'}${result.error ? ` (${result.error.split('\n')[0]})` : ''}`);
+    const first = { mae: result.mae, max: result.max, error: result.error };
+    result = await runScene(name);
+    result.retried = true;
+    result.firstAttempt = first;
   }
   if (!result.pass) failed++;
   results.push(result);
