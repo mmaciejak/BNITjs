@@ -27,6 +27,7 @@ import { mixRGB } from './mixRGB.js';
 import { normal } from './normal.js';
 import { objectInfo } from './objectInfo.js';
 import { separateColor } from './separateColor.js';
+import { skyTexture } from './skyTexture.js';
 import { separateHSV, separateRGB } from './separateLegacy.js';
 import { brightContrast } from './brightContrast.js';
 import { gamma } from './gamma.js';
@@ -110,6 +111,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBsdfAnisotropic: glossy,
   ShaderNodeTexImage: imageTexture,
   ShaderNodeTexEnvironment: environmentTexture,
+  ShaderNodeTexSky: skyTexture,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

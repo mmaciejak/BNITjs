@@ -88,6 +88,7 @@
     "white_noise_2d": { "outliers": 0.006 },
     "white_noise_3d": { "outliers": 0.006 },
     "white_noise_4d": { "outliers": 0.006 },
-    "white_noise_value": { "outliers": 0.006 }
+    "white_noise_value": { "outliers": 0.006 },
+    "world_sky_multiple_scattering": { "outliers": 0.015 }
   }
 }

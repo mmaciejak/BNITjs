@@ -210,7 +210,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Magic Texture | Texture | ✅ Supported | 6 | |
 | Noise Texture | Texture | ✅ Supported | 4 | All types (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, distortion, normalize. Musgrave nodes from older files are converted to Noise by Blender |
 | Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |
-| Sky Texture | Texture | 🚧 Not yet | 6 | World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT |
+| Sky Texture | Texture | 🟡 Partial | 6 | Every model of Blender 4.2 and 5.x, baked by the exporter with Cycles to a 1024×512 equirectangular RGBE image (the sky models run in Blender's C++ code). Sharp features such as the sun disc and the multiple-scattering horizon are blurred to the bake's resolution; sky settings cannot change live |
 | Voronoi Texture | Texture | ✅ Supported | 5 | Every feature and distance metric, 1D–4D, fractal Detail, Normalize. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern |
 | Wave Texture | Texture | ✅ Supported | 6 | |
 | White Noise Texture | Texture | ✅ Supported | 4 | Bit-exact Cycles hash. Since the hash depends on the exact float bits of its input, Blender and the browser only agree where the input is computed identically (e.g. snapped coordinates) |

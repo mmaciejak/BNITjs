@@ -10,12 +10,14 @@ calls its hooks during export. This module adds:
   inputs need (Object Info, Generated texture coordinates).
 """
 
+import json
 import os
 import tempfile
 
 import bpy
 
 from .graph_export import export_material_graph, export_world_graph
+from .sky_bake import bake_sky
 from .values import f32
 
 EXTENSION_NAME = "EXT_blender_shader_graph"
@@ -177,6 +179,7 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
         self.BinaryData = BinaryData
         self._graphs = {}
         self._textures = {}
+        self._skies = {}
 
     def _texture(self, image, export_settings):
         """(glTF texture embedding the image, encoding) shared between materials; None if it fails."""
@@ -188,26 +191,57 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
                 self._log(export_settings, "warning", f"{EXTENSION_NAME}: cannot embed image '{image.name}': {error}")
                 self._textures[key] = None
                 return None
-            io = self.gltf2_io
-            gltf_image = io.Image(
-                buffer_view=self.BinaryData(data),
-                extensions=None,
-                extras=None,
-                mime_type=mime,
-                name=image.name,
-                uri=None,
-            )
-            texture = io.Texture(extensions=None, extras=None, name=image.name, sampler=None, source=gltf_image)
-            self._textures[key] = (texture, encoding)
+            self._textures[key] = (self._gltf_texture(image.name, data, mime), encoding)
         return self._textures[key]
 
+    def _gltf_texture(self, name, data, mime):
+        io = self.gltf2_io
+        gltf_image = io.Image(
+            buffer_view=self.BinaryData(data), extensions=None, extras=None, mime_type=mime, name=name, uri=None
+        )
+        return io.Texture(extensions=None, extras=None, name=name, sampler=None, source=gltf_image)
+
+    def _sky_image(self, props, export_settings):
+        """An image reference to the Sky Texture with these settings, baked to an equirectangular
+        RGBE image (shared by identical skies); None if baking fails."""
+        key = json.dumps(props, sort_keys=True)
+        if key not in self._skies:
+            try:
+                image = bake_sky(props)
+                try:
+                    data = rgbe_png(image)
+                finally:
+                    bpy.data.images.remove(image)
+            except Exception as error:  # noqa: BLE001  (report and continue the export)
+                self._log(export_settings, "warning", f"{EXTENSION_NAME}: cannot bake the Sky Texture: {error}")
+                self._skies[key] = None
+                return None
+            self._skies[key] = self._gltf_texture("Sky Texture", data, "image/png")
+        texture = self._skies[key]
+        if texture is None:
+            return None
+        return {
+            "name": "Sky Texture",
+            "source": "GENERATED",
+            "colorspace": "Linear Rec.709",
+            "alphaMode": "NONE",
+            "texture": texture,
+            "encoding": "rgbe",
+        }
+
     def _embed_images(self, graph, owner, export_settings):
-        """Point every Image / Environment Texture node at an embedded glTF texture."""
+        """Point every Image / Environment Texture node at an embedded glTF texture, and bake Sky
+        Textures to embedded equirectangular images."""
         images = {}
         for tree_node in _all_nodes(owner.node_tree):
             if tree_node.bl_idname in _IMAGE_NODES and tree_node.image is not None:
                 images[tree_node.image.name] = tree_node.image
         for node in graph["nodes"].values():
+            if node["type"] == "ShaderNodeTexSky":
+                sky = self._sky_image(node.get("properties", {}), export_settings)
+                if sky is not None:
+                    node.setdefault("properties", {})["image"] = sky
+                continue
             ref = node.get("properties", {}).get("image")
             if node["type"] not in _IMAGE_NODES or not ref or ref["name"] not in images:
                 continue

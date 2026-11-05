@@ -595,9 +595,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
+    "status": "partial",
     "phase": 6,
-    "notes": "World only. 4.2: Preetham, Hosek-Wilkie, Nishita. 5.x: Single/Multiple Scattering, Preetham, Hosek-Wilkie. Scattering models need a precomputed LUT"
+    "notes": "Every model of Blender 4.2 and 5.x, baked by the exporter with Cycles to a 1024×512 equirectangular RGBE image (the sky models run in Blender's C++ code). Sharp features such as the sun disc and the multiple-scattering horizon are blurred to the bake's resolution; sky settings cannot change live"
   },
   {
     "name": "Voronoi Texture",

@@ -5,6 +5,8 @@ CONSTANT: a plain color. DIRECTION: Generated (the view direction) × 0.5 + 0.5.
 Normal output (−direction) × 0.5 + 0.5. NOISE: Noise Texture with its Vector unlinked.
 ENV_EQUIRECT / ENV_MIRROR: Environment Texture of a smooth 64×32 image, both projections.
 ENV_HDR: the same with a float image (values up to 3, Strength 0.3), exported as RGBE.
+SKY_*: Sky Texture models (baked by the exporter), Strength 0.4 (0.04 for the physical models, which
+are far brighter), 5.x types; see sky_legacy for 4.2.
 """
 
 import math
@@ -14,7 +16,19 @@ from _common import emission_material
 
 CAMERA = "PERSP"
 CAMERA_ROTATION = (1.75, 0.0, 0.6)
-VARIANTS = ["CONSTANT", "DIRECTION", "NORMAL", "NOISE", "ENV_EQUIRECT", "ENV_MIRROR", "ENV_HDR"]
+VARIANTS = [
+    "CONSTANT",
+    "DIRECTION",
+    "NORMAL",
+    "NOISE",
+    "ENV_EQUIRECT",
+    "ENV_MIRROR",
+    "ENV_HDR",
+    "SKY_MULTIPLE_SCATTERING",
+    "SKY_SINGLE_SCATTERING",
+    "SKY_PREETHAM",
+    "SKY_HOSEK_WILKIE",
+]
 
 
 def build(variant):
@@ -61,6 +75,15 @@ def build_world(variant):
         remap.inputs[2].default_value = (0.5, 0.5, 0.5)
         links.new(coord.outputs["Generated" if variant == "DIRECTION" else "Normal"], remap.inputs[0])
         links.new(remap.outputs[0], bg.inputs["Color"])
+    elif variant.startswith("SKY_"):
+        sky = nodes.new("ShaderNodeTexSky")
+        sky.sky_type = variant[4:]
+        sky.sun_elevation = 0.3
+        sky.sun_rotation = 2.5
+        # The physical models are much brighter than Preetham / Hosek-Wilkie: keep them unclipped.
+        physical = variant in ("SKY_MULTIPLE_SCATTERING", "SKY_SINGLE_SCATTERING", "SKY_NISHITA")
+        bg.inputs["Strength"].default_value = 0.04 if physical else 0.4
+        links.new(sky.outputs["Color"], bg.inputs["Color"])
     elif variant.startswith("ENV_"):
         env = nodes.new("ShaderNodeTexEnvironment")
         env.image = env_image(hdr=variant == "ENV_HDR")
