@@ -202,8 +202,8 @@ def _incoming_link(socket):
     return None
 
 
-def _material_output(tree):
-    outputs = [n for n in tree.nodes if n.bl_idname == "ShaderNodeOutputMaterial" and not n.mute]
+def _material_output(tree, output_type="ShaderNodeOutputMaterial"):
+    outputs = [n for n in tree.nodes if n.bl_idname == output_type and not n.mute]
     for targets in (("EEVEE",), ("ALL",)):
         candidates = [n for n in outputs if n.target in targets]
         for n in candidates:
@@ -502,13 +502,26 @@ def export_material_graph(material, include_data=True):
     active Material Output. ``report`` is a dict with ``unsupported`` (node id, Blender type,
     display name and status for every node the runtime cannot evaluate live) and ``warnings``.
     """
+    return _export_tree_graph(material, "material", include_data)
+
+
+def export_world_graph(world, include_data=True):
+    """Build the graph dict of a World's node tree (its active World Output); see
+    export_material_graph. The graph has ``kind: "world"`` and the world's name in ``material``.
+    """
+    return _export_tree_graph(world, "world", include_data)
+
+
+def _export_tree_graph(owner, kind, include_data):
     report = {"unsupported": [], "warnings": []}
-    tree = material.node_tree if material is not None else None
+    tree = owner.node_tree if owner is not None else None
     if tree is None:
         return None, report
-    output = _material_output(tree)
+    output_type = "ShaderNodeOutputWorld" if kind == "world" else "ShaderNodeOutputMaterial"
+    output = _material_output(tree, output_type)
     if output is None:
-        report["warnings"].append(f"Material '{material.name}' has no active Material Output")
+        label = "World" if kind == "world" else "Material"
+        report["warnings"].append(f"{label} '{owner.name}' has no active {label} Output")
         return None, report
 
     limit = sys.getrecursionlimit()
@@ -522,16 +535,19 @@ def export_material_graph(material, include_data=True):
     graph = {
         "version": GRAPH_FORMAT_VERSION,
         "generator": {"name": "blender_shader_web", "version": _addon_version(), "blender": bpy.app.version_string},
-        "material": material.name,
-        "materialPassIndex": material.pass_index,
-        "output": output_id,
-        "nodes": builder.nodes,
+        "material": owner.name,
     }
+    if kind == "world":
+        graph["kind"] = "world"
+    else:
+        graph["materialPassIndex"] = owner.pass_index
+    graph["output"] = output_id
+    graph["nodes"] = builder.nodes
     if builder.links:
         graph["links"] = builder.links
     if builder.params:
         graph["params"] = builder.params
-    uv_maps = _uv_maps(material, builder.warnings)
+    uv_maps = _uv_maps(owner, builder.warnings) if kind == "material" else None
     if uv_maps:
         graph["uvMaps"] = uv_maps
 

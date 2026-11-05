@@ -90,6 +90,26 @@ class GltfExportTest(unittest.TestCase):
         self.assertIn("bufferView", image)
         self.assertEqual(node["properties"]["interpolation"], "Closest")
 
+    def test_world_graph_is_written_to_scene_extension(self):
+        plane_with(scenes.world_background())
+        gltf = export_gltf(os.path.join(self.tmp, "world.gltf"))
+        (scene,) = gltf["scenes"]
+        graph = scene["extensions"][EXTENSION_NAME]["world"]
+        self.assertEqual(graph["kind"], "world")
+        self.assertEqual(graph["material"], "Sky")
+        self.assertNotIn("materialPassIndex", graph)
+        types = {node["type"] for node in graph["nodes"].values()}
+        self.assertEqual(
+            types, {"ShaderNodeOutputWorld", "ShaderNodeBackground", "ShaderNodeTexGradient", "ShaderNodeTexCoord"}
+        )
+        self.assertEqual(graph["nodes"][graph["output"]]["type"], "ShaderNodeOutputWorld")
+
+    def test_no_world_no_scene_extension(self):
+        plane_with(scenes.emission_rgb())
+        bpy.context.scene.world = None
+        gltf = export_gltf(os.path.join(self.tmp, "noworld.gltf"))
+        self.assertNotIn(EXTENSION_NAME, gltf["scenes"][0].get("extensions", {}))
+
     def test_every_test_scene_exports(self):
         for build in scenes.ALL:
             bpy.ops.wm.read_factory_settings(use_empty=True)

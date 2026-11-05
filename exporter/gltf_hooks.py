@@ -15,7 +15,7 @@ import tempfile
 
 import bpy
 
-from .graph_export import export_material_graph
+from .graph_export import export_material_graph, export_world_graph
 from .values import f32
 
 EXTENSION_NAME = "EXT_blender_shader_graph"
@@ -124,6 +124,9 @@ def image_bytes(image):
             bpy.data.images.remove(copy)
 
 
+_IMAGE_NODES = {"ShaderNodeTexImage", "ShaderNodeTexEnvironment"}
+
+
 class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
     def __init__(self):
         from io_scene_gltf2.io.com import gltf2_io
@@ -164,15 +167,15 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
             )
         return self._textures[key]
 
-    def _embed_images(self, graph, blender_material, export_settings):
-        """Point every Image Texture node at an embedded glTF texture (replaced by its index)."""
+    def _embed_images(self, graph, owner, export_settings):
+        """Point every Image / Environment Texture node at an embedded glTF texture."""
         images = {}
-        for tree_node in _all_nodes(blender_material.node_tree):
-            if tree_node.bl_idname == "ShaderNodeTexImage" and tree_node.image is not None:
+        for tree_node in _all_nodes(owner.node_tree):
+            if tree_node.bl_idname in _IMAGE_NODES and tree_node.image is not None:
                 images[tree_node.image.name] = tree_node.image
         for node in graph["nodes"].values():
             ref = node.get("properties", {}).get("image")
-            if node["type"] != "ShaderNodeTexImage" or not ref or ref["name"] not in images:
+            if node["type"] not in _IMAGE_NODES or not ref or ref["name"] not in images:
                 continue
             texture = self._texture(images[ref["name"]], export_settings)
             if texture is not None:
@@ -209,6 +212,31 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
         if gltf2_material.extensions is None:
             gltf2_material.extensions = {}
         gltf2_material.extensions[EXTENSION_NAME] = self.Extension(name=EXTENSION_NAME, extension=graph, required=False)
+
+    def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
+        """The scene's World node tree, as {"world": graph} on the glTF scene."""
+        world = getattr(blender_scene, "world", None)
+        if world is None:
+            return
+        graph, report = export_world_graph(world)
+        for warning in report["warnings"]:
+            self._log(export_settings, "warning", warning)
+        if graph is None:
+            return
+        if report["unsupported"]:
+            names = ", ".join(sorted({u["name"] for u in report["unsupported"]}))
+            self._log(
+                export_settings,
+                "warning",
+                f"{EXTENSION_NAME}: world '{world.name}' uses nodes the three.js runtime does not "
+                f"evaluate live yet: {names}",
+            )
+        self._embed_images(graph, world, export_settings)
+        if gltf2_scene.extensions is None:
+            gltf2_scene.extensions = {}
+        gltf2_scene.extensions[EXTENSION_NAME] = self.Extension(
+            name=EXTENSION_NAME, extension={"world": graph}, required=False
+        )
 
     def gather_node_hook(self, gltf2_node, blender_object, export_settings):
         if blender_object is None or not isinstance(blender_object, bpy.types.Object):

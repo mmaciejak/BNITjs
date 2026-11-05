@@ -238,7 +238,31 @@ def baked_node():
     return mat
 
 
+def world_background():
+    """A World with Background(Color = Gradient of Generated, Strength 1.5) on the scene, and an
+    Emission material for the plane."""
+    world = bpy.data.worlds.new("Sky")
+    if bpy.app.version < (5, 0, 0):
+        world.use_nodes = True
+    nodes, links = world.node_tree.nodes, world.node_tree.links
+    nodes.clear()
+    out = nodes.new("ShaderNodeOutputWorld")
+    bg = nodes.new("ShaderNodeBackground")
+    bg.inputs["Strength"].default_value = 1.5
+    coord = nodes.new("ShaderNodeTexCoord")
+    grad = nodes.new("ShaderNodeTexGradient")
+    links.new(coord.outputs["Generated"], grad.inputs["Vector"])
+    links.new(grad.outputs["Color"], bg.inputs["Color"])
+    links.new(bg.outputs["Background"], out.inputs["Surface"])
+    bpy.context.scene.world = world
+    mat = new_material("world_background")
+    emission = mat.node_tree.nodes.new("ShaderNodeEmission")
+    mat.node_tree.links.new(emission.outputs[0], _out(mat).inputs["Surface"])
+    return mat
+
+
 ALL = [
+    world_background,
     uv_mapping,
     emission_rgb,
     reroutes_frames_unused,

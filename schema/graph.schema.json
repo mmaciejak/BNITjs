@@ -31,11 +31,15 @@
     },
     "material": {
       "type": "string",
-      "description": "Blender material name."
+      "description": "Blender material name (the World's name for a world graph)."
+    },
+    "kind": {
+      "enum": ["material", "world"],
+      "description": "What the graph shades; absent means material. A world graph starts at the active World Output and is stored on the glTF scene (see sceneExtension)."
     },
     "output": {
       "type": "string",
-      "description": "Id of the active Material Output node; evaluation starts here."
+      "description": "Id of the active Material Output (or World Output) node; evaluation starts here."
     },
     "nodes": {
       "type": "object",
@@ -450,6 +454,17 @@
               "description": "size × (3 for RGB/VECTOR, 1 for FLOAT)"
             }
           }
+        }
+      }
+    },
+    "sceneExtension": {
+      "description": "Stored at scenes[i].extensions.EXT_blender_shader_graph: the Blender scene's World.",
+      "type": "object",
+      "required": ["world"],
+      "additionalProperties": false,
+      "properties": {
+        "world": {
+          "$ref": "#"
         }
       }
     },

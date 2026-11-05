@@ -10,6 +10,7 @@ const schema = JSON.parse(readFileSync(join(SCHEMA_DIR, 'graph.schema.json'), 'u
 const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
 const validateGraph = ajv.compile(schema);
 const validateObject = ajv.compile({ $ref: `${schema.$id}#/$defs/objectExtension` });
+const validateScene = ajv.compile({ $ref: `${schema.$id}#/$defs/sceneExtension` });
 
 const fixtures = readdirSync(join(SCHEMA_DIR, 'fixtures')).filter((f) => f.endsWith('.gltf'));
 
@@ -39,6 +40,14 @@ describe('graph schema', () => {
       }
       for (const node of gltf.nodes.filter((n: { mesh?: number }) => n.mesh !== undefined)) {
         expect(validateObject(node.extensions[EXT])).toBe(true);
+      }
+      for (const scene of gltf.scenes ?? []) {
+        const ext = scene.extensions?.[EXT];
+        if (!ext) continue;
+        const ok = validateScene(ext);
+        expect(validateScene.errors ?? []).toEqual([]);
+        expect(ok).toBe(true);
+        expect(ext.world.kind).toBe('world');
       }
     });
   }
