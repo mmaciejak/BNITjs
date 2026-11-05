@@ -1,10 +1,10 @@
-"""Mix Shader of Emission shaders (exact in the runtime): two gradients mixed by Generated x, by a
-constant factor, and nested.
+"""Mix Shader and Add Shader of Emission shaders (exact in the runtime): two gradients mixed by
+Generated x, by a constant factor, nested, and added.
 """
 
 from _common import emission_material, two_colors, x_factor
 
-VARIANTS = ["MIX", "MIX_CONSTANT", "MIX_NESTED"]
+VARIANTS = ["MIX", "MIX_CONSTANT", "MIX_NESTED", "ADD"]
 
 
 def emission(nodes, links, color_socket=None, color=None):

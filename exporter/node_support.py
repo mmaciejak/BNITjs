@@ -11,7 +11,7 @@ STATUS = {
     "NodeGroupInput": "supported",
     "NodeGroupOutput": "supported",
     "NodeReroute": "supported",
-    "ShaderNodeAddShader": "planned",
+    "ShaderNodeAddShader": "partial",
     "ShaderNodeAmbientOcclusion": "baked",
     "ShaderNodeAttribute": "partial",
     "ShaderNodeBackground": "partial",

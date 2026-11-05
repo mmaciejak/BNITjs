@@ -171,7 +171,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
-| Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
+| Add Shader | Shader | 🟡 Partial | 8 | Emission and Transparent add exactly (parity-tested for emission); emission added to a BSDF becomes its emission; two BSDFs are summed by their parameters (approximation) |
 | Background | Shader | 🟡 Partial | 6 | Shown as the scene background with applyBlenderWorld(scene, gltf). The world does not light the scene yet (set scene.environment yourself) |
 | Diffuse BSDF | Shader | 🟡 Partial | 3 | Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped |
 | Emission | Shader | ✅ Supported | 2 | |
