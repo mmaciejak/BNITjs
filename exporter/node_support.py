@@ -23,7 +23,7 @@ STATUS = {
     "ShaderNodeBsdfGlass": "partial",
     "ShaderNodeBsdfHair": "planned",
     "ShaderNodeBsdfHairPrincipled": "planned",
-    "ShaderNodeBsdfMetallic": "planned",
+    "ShaderNodeBsdfMetallic": "partial",
     "ShaderNodeBsdfPrincipled": "partial",
     "ShaderNodeBsdfRayPortal": "not_planned",
     "ShaderNodeBsdfRefraction": "partial",

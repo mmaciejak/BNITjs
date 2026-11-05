@@ -18,4 +18,10 @@ describe('BSDFs mapped to the physical material', () => {
     expect(m.transmissionNode).toBeTruthy();
     expect(m.specularIntensityNode).toBeTruthy();
   });
+
+  it('Metallic is a metal', () => {
+    const { m } = physical('ShaderNodeBsdfMetallic');
+    expect(m.metalnessNode).toBeTruthy();
+    expect(m.transmissionNode).toBeNull();
+  });
 });

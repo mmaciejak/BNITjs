@@ -311,9 +311,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 8,
-    "notes": "Blender 4.3+. Maps onto metalness/specular color"
+    "notes": "Metal with Base Color reflectance, roughness, anisotropy and thin film. Not mapped: Edge Tint, Physical Conductor (IOR, Extinction)"
   },
   {
     "name": "Mix Shader",
