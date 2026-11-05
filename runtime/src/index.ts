@@ -1,5 +1,5 @@
 /**
- * blender-shader-web runtime: rebuilds Blender shader node graphs (exported by the add-on in
+ * BNITjs runtime: rebuilds Blender shader node graphs (exported by the add-on in
  * /exporter) as three.js TSL node materials.
  *
  *   const loader = registerBlenderShaderGraph(new GLTFLoader());

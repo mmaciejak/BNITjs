@@ -1,17 +1,21 @@
 {
-  "name": "blender-shader-web",
+  "name": "bnitjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmaciejak/BNITjs.git"
+  },
   "version": "0.0.0",
   "private": true,
   "description": "Rebuild Blender shader node graphs live in three.js with TSL",
   "license": "AGPL-3.0-or-later",
   "type": "module",
-  "main": "./dist/blender-shader-web.js",
-  "module": "./dist/blender-shader-web.js",
+  "main": "./dist/bnitjs.js",
+  "module": "./dist/bnitjs.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/blender-shader-web.js"
+      "import": "./dist/bnitjs.js"
     }
   },
   "files": [

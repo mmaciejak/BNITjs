@@ -1,11 +1,12 @@
 schema_version = "1.0.0"
 
-id = "blender_shader_web"
+id = "bnitjs"
 version = "0.0.0"
-name = "Blender Shader Web"
+name = "BNITjs"
 tagline = "Export procedural shader node graphs for live three.js materials"
 maintainer = "Maciej <maciejak28@gmail.com>"
 type = "add-on"
+website = "https://github.com/mmaciejak/BNITjs"
 
 blender_version_min = "4.2.0"
 

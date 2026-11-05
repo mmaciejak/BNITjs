@@ -534,7 +534,7 @@ def _export_tree_graph(owner, kind, include_data):
 
     graph = {
         "version": GRAPH_FORMAT_VERSION,
-        "generator": {"name": "blender_shader_web", "version": _addon_version(), "blender": bpy.app.version_string},
+        "generator": {"name": "bnitjs", "version": _addon_version(), "blender": bpy.app.version_string},
         "material": owner.name,
     }
     if kind == "world":

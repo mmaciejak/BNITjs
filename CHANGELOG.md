@@ -2,6 +2,11 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## Unreleased
+
+- The project is now called **BNITjs** (repository <https://github.com/mmaciejak/BNITjs>): npm package `bnitjs`, Blender extension id `bnitjs`, panel "BNITjs (three.js)", graph generator name `bnitjs`, schema id `urn:bnitjs:graph:1`. The glTF extension keeps its name, `EXT_blender_shader_graph`, so existing exports still load.
+- Glossy BSDF maps Anisotropy and Rotation.
+
 ## phase-8: Shader combination and advanced Principled
 
 - Principled BSDF maps its advanced inputs onto three.js's physical material: coat (weight, roughness, normal), sheen, transmission, IOR, specular IOR level and tint, thin film and anisotropy. Subsurface, Coat IOR and Coat Tint are reported and ignored.

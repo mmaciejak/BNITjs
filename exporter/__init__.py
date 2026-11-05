@@ -1,4 +1,4 @@
-"""Blender Shader Web: export material node graphs for the three.js runtime.
+"""BNITjs: export material node graphs for the three.js runtime.
 
 With the add-on enabled, every glTF export (File > Export > glTF 2.0) also writes each
 material's node graph into the EXT_blender_shader_graph extension. See SPEC.md.

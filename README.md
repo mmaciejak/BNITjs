@@ -1,4 +1,4 @@
-# Blender Shader Web
+# BNITjs
 
 Take a Blender material built from shader nodes, export it with a Blender add-on, and evaluate the procedural material **live in the browser** with three.js TSL. No baked textures are needed for supported nodes.
 
@@ -6,7 +6,7 @@ Take a Blender material built from shader nodes, export it with a Blender add-on
 - **`runtime/`**: TypeScript npm package. A GLTFLoader plugin rebuilds the graph as TSL on `MeshPhysicalNodeMaterial` (rendered with `WebGPURenderer`, which falls back to WebGL2).
 - **`parity/`**: a visual parity harness that compares Blender reference renders with browser renders, pixel by pixel.
 
-See [SPEC.md](SPEC.md) for the full design and roadmap.
+Repository: <https://github.com/mmaciejak/BNITjs>. See [SPEC.md](SPEC.md) for the full design and roadmap.
 
 > **Status:** Phase 8 done. Every texture node except Radial Tiling is live (Noise, Voronoi, Wave, Gabor and the rest match Blender), as are bump, normal and displacement mapping, shader mixing and the physical Principled inputs. The World can be shown as the background. 463 parity scenes match Blender on WebGPU and WebGL2. Phase 9 (baking and the model-viewer fallback) is next.
 
@@ -59,7 +59,7 @@ cd runtime && npm run perf [-- case ...] [--webgl]     # report: parity/compare/
 ```js
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { WebGPURenderer } from 'three/webgpu';
-import { registerBlenderShaderGraph } from 'blender-shader-web';
+import { registerBlenderShaderGraph } from 'bnitjs';
 
 const renderer = new WebGPURenderer(); // falls back to WebGL2
 const loader = registerBlenderShaderGraph(new GLTFLoader());
@@ -74,7 +74,7 @@ The exporter also writes the scene's World (its active World Output) to the glTF
 
 ```js
 import { Scene } from 'three/webgpu';
-import { applyBlenderWorld, getBlenderWorld } from 'blender-shader-web';
+import { applyBlenderWorld, getBlenderWorld } from 'bnitjs';
 
 const scene = new Scene();
 scene.add(gltf.scene);
@@ -132,7 +132,7 @@ A full-screen 1080p view is about 2 megapixels. Rules of thumb:
 
 1. Install the extension zip: Edit › Preferences › Get Extensions › ⌄ › Install from Disk…
 2. Export with File › Export › glTF 2.0 as usual. Every material gets its node graph in the `EXT_blender_shader_graph` extension; the normal PBR material stays in the file as a fallback.
-3. Material Properties › **Shader Web (three.js)** lists the nodes that the runtime can't evaluate live yet.
+3. Material Properties › **BNITjs (three.js)** lists the nodes that the runtime can't evaluate live yet.
 
 Workflow rules (SPEC §4): one commit per feature, using the `type(scope): message` style. Every commit that changes node support also updates the table below. Each phase ends with a `phase-N` tag and a `CHANGELOG.md` entry.
 

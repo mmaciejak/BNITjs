@@ -14,7 +14,7 @@
 					"world":{
 						"version":1,
 						"generator":{
-							"name":"blender_shader_web",
+							"name":"bnitjs",
 							"version":"0.0.0",
 							"blender":"5.2.2 LTS"
 						},
@@ -219,7 +219,7 @@
 				"EXT_blender_shader_graph":{
 					"version":1,
 					"generator":{
-						"name":"blender_shader_web",
+						"name":"bnitjs",
 						"version":"0.0.0",
 						"blender":"5.2.2 LTS"
 					},

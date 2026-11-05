@@ -1,6 +1,6 @@
 # Blender Shader Nodes on the Web — Project Spec
 
-> Working name: **`blender-shader-web`** (rename freely).
+> Project name: **BNITjs** (repository `BNITjs`, npm package `bnitjs`).
 > Goal: take a Blender material built from shader nodes, export it with a custom Blender add-on, and evaluate the procedural material **live in the browser** with three.js — no baked textures required for supported nodes.
 
 ---
@@ -53,7 +53,7 @@ Exporter add-on ──► glTF + graph JSON ──► Graph parser ──► Nod
 ## 3. Repository layout
 
 ```
-blender-shader-web/
+BNITjs/
 ├── README.md                 # includes the node support table (§7)
 ├── SPEC.md                   # this file
 ├── LICENSE

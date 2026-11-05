@@ -30,7 +30,7 @@ def summarize(material):
 
 
 class BSW_PT_material(bpy.types.Panel):  # noqa: N801 (Blender naming convention)
-    bl_label = "Shader Web (three.js)"
+    bl_label = "BNITjs (three.js)"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "material"

@@ -5,7 +5,7 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],
-      fileName: 'blender-shader-web',
+      fileName: 'bnitjs',
     },
     // three is a peer dependency: never bundle it.
     rollupOptions: {

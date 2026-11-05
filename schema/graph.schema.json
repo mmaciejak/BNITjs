@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:blender-shader-web:graph:1",
+  "$id": "urn:bnitjs:graph:1",
   "title": "EXT_blender_shader_graph material graph, version 1",
   "description": "A Blender material node graph, flattened by the exporter add-on. Stored in glTF at materials[i].extensions.EXT_blender_shader_graph. Every array and object is optional when empty and null never appears, because Blender's glTF exporter strips both. Integral floats may be written as integers.",
   "type": "object",
