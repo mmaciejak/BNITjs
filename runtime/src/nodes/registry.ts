@@ -17,6 +17,7 @@ import { combineHSV, combineRGB } from './combineLegacy.js';
 import { hueSaturation } from './hueSaturation.js';
 import { imageTexture } from './imageTexture.js';
 import { layerWeight } from './layerWeight.js';
+import { magic } from './magic.js';
 import { mix } from './mix.js';
 import { noise } from './noise.js';
 import { mixRGB } from './mixRGB.js';
@@ -87,6 +88,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexNoise: noise,
   ShaderNodeTexVoronoi: voronoi,
   ShaderNodeTexWave: wave,
+  ShaderNodeTexMagic: magic,
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,
