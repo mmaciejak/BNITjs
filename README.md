@@ -263,7 +263,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
 | Squeeze Value (Legacy) | Converter | 🟡 Partial | 3 | EEVEE formula. Cycles doesn't implement this node, so there is no parity test |
 | Vector Math | Converter | ✅ Supported | 3 | All operations (Power, Sign, Round need Blender 4.3+/5.x); Cycles semantics |
-| Wavelength | Converter | 🚧 Not yet | 7 | |
+| Wavelength | Converter | ✅ Supported | 7 | Interpolates a table measured from Cycles (tools/measure_spectra.py), including Cycles' extension down to 375 nm |
 
 ### Output, light and other
 

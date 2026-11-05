@@ -1,4 +1,4 @@
-"""Blackbody (and, once supported, Wavelength) over their input ranges (and past both ends), along Generated x.
+"""Blackbody and Wavelength over their input ranges (and past both ends), along Generated x.
 
 The Blackbody output reaches about 6 (deep red below 1000 K), so it is scaled by 0.15.
 """
@@ -9,6 +9,7 @@ from _common import by_id, emission_material
 SPECS = {
     "BLACKBODY": ("ShaderNodeBlackbody", "Temperature", 300.0, 13000.0, 0.15),
     "BLACKBODY_LOW": ("ShaderNodeBlackbody", "Temperature", 750.0, 2500.0, 0.15),
+    "WAVELENGTH": ("ShaderNodeWavelength", "Wavelength", 350.0, 800.0, 1.0),
 }
 VARIANTS = list(SPECS)
 

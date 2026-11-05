@@ -1004,8 +1004,9 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
-    "phase": 7
+    "status": "supported",
+    "phase": 7,
+    "notes": "Interpolates a table measured from Cycles (tools/measure_spectra.py), including Cycles' extension down to 375 nm"
   },
   {
     "name": "AOV Output",

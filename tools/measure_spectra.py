@@ -19,7 +19,7 @@ OUT = os.path.join(REPO, "runtime", "src", "nodes", "spectra.ts")
 TABLES = {
     # name: (node type, input, lo, hi, samples)
     "BLACKBODY": ("ShaderNodeBlackbody", "Temperature", 800.0, 12000.0, 1121),
-    "WAVELENGTH": ("ShaderNodeWavelength", "Wavelength", 380.0, 780.0, 401),
+    "WAVELENGTH": ("ShaderNodeWavelength", "Wavelength", 380.0, 780.0, 1601),
 }
 
 

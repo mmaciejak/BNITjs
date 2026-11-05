@@ -113,7 +113,7 @@ STATUS = {
     "ShaderNodeVolumeInfo": "not_planned",
     "ShaderNodeVolumePrincipled": "not_planned",
     "ShaderNodeVolumeScatter": "not_planned",
-    "ShaderNodeWavelength": "planned",
+    "ShaderNodeWavelength": "supported",
     "ShaderNodeWireframe": "planned",
 }
 
