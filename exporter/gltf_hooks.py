@@ -97,20 +97,55 @@ def object_data(blender_object):
 _MIME = {"PNG": "image/png", "JPEG": "image/jpeg"}
 
 
-def image_bytes(image):
-    """(bytes, mime type) of a Blender image as PNG or JPEG, without color management.
-
-    Packed or on-disk PNG/JPEG files are used as they are; anything else (generated, float,
-    other formats) is saved to a temporary PNG copy (8-bit: float images are clamped).
+def rgbe_png(image):
+    """PNG bytes of a float image in Radiance RGBE: 8-bit mantissas in RGB, a shared exponent
+    (+128) in A. Keeps the full range at about 1% precision; alpha and negative values are lost.
     """
+    import numpy as np
+
+    w, h = image.size
+    px = np.empty(w * h * 4, dtype=np.float32)
+    image.pixels.foreach_get(px)
+    rgb = np.maximum(px.reshape(-1, 4)[:, :3], 0.0)
+    peak = rgb.max(axis=1)
+    mantissa, exponent = np.frexp(peak)  # peak = mantissa · 2^exponent, mantissa in [0.5, 1)
+    visible = peak > 1e-32
+    scale = np.where(visible, mantissa * 256.0 / np.where(visible, peak, 1.0), 0.0)
+    out = np.zeros((w * h, 4), dtype=np.float32)
+    out[:, :3] = np.minimum(np.floor(rgb * scale[:, None]), 255.0)
+    out[:, 3] = np.where(visible, exponent + 128, 0)
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "image.png")
+        copy = bpy.data.images.new("bsw_rgbe", w, h, alpha=True)
+        try:
+            copy.colorspace_settings.name = "Non-Color"
+            copy.alpha_mode = "CHANNEL_PACKED"
+            copy.pixels.foreach_set((out / 255.0).ravel())
+            copy.filepath_raw = path
+            copy.file_format = "PNG"
+            copy.save()
+            with open(path, "rb") as f:
+                return f.read()
+        finally:
+            bpy.data.images.remove(copy)
+
+
+def image_bytes(image):
+    """(bytes, mime type, encoding) of a Blender image as PNG or JPEG, without color management.
+
+    Float images become RGBE PNGs (encoding "rgbe"). Packed or on-disk PNG/JPEG files are used as
+    they are; anything else (generated, other formats) is saved to a temporary PNG copy.
+    """
+    if image.is_float:
+        return rgbe_png(image), "image/png", "rgbe"
     fmt = image.file_format
     if fmt in _MIME:
         if image.packed_file is not None:
-            return bytes(image.packed_file.data), _MIME[fmt]
+            return bytes(image.packed_file.data), _MIME[fmt], None
         path = bpy.path.abspath(image.filepath_raw or image.filepath)
         if image.source == "FILE" and os.path.isfile(path):
             with open(path, "rb") as f:
-                return f.read(), _MIME[fmt]
+                return f.read(), _MIME[fmt], None
     with tempfile.TemporaryDirectory() as tmp:
         path = os.path.join(tmp, "image.png")
         copy = image.copy()
@@ -119,7 +154,7 @@ def image_bytes(image):
             copy.file_format = "PNG"
             copy.save()
             with open(path, "rb") as f:
-                return f.read(), "image/png"
+                return f.read(), "image/png", None
         finally:
             bpy.data.images.remove(copy)
 
@@ -144,11 +179,11 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
         self._textures = {}
 
     def _texture(self, image, export_settings):
-        """A glTF texture embedding the image (shared between materials); None if it fails."""
+        """(glTF texture embedding the image, encoding) shared between materials; None if it fails."""
         key = image.name_full
         if key not in self._textures:
             try:
-                data, mime = image_bytes(image)
+                data, mime, encoding = image_bytes(image)
             except Exception as error:  # noqa: BLE001  (report and continue the export)
                 self._log(export_settings, "warning", f"{EXTENSION_NAME}: cannot embed image '{image.name}': {error}")
                 self._textures[key] = None
@@ -162,9 +197,8 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
                 name=image.name,
                 uri=None,
             )
-            self._textures[key] = io.Texture(
-                extensions=None, extras=None, name=image.name, sampler=None, source=gltf_image
-            )
+            texture = io.Texture(extensions=None, extras=None, name=image.name, sampler=None, source=gltf_image)
+            self._textures[key] = (texture, encoding)
         return self._textures[key]
 
     def _embed_images(self, graph, owner, export_settings):
@@ -177,9 +211,11 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
             ref = node.get("properties", {}).get("image")
             if node["type"] not in _IMAGE_NODES or not ref or ref["name"] not in images:
                 continue
-            texture = self._texture(images[ref["name"]], export_settings)
-            if texture is not None:
-                ref["texture"] = texture
+            embedded = self._texture(images[ref["name"]], export_settings)
+            if embedded is not None:
+                ref["texture"], encoding = embedded
+                if encoding:
+                    ref["encoding"] = encoding
 
     def _log(self, export_settings, level, message):
         log = export_settings.get("log")

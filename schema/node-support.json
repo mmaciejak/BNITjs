@@ -508,9 +508,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "partial",
+    "status": "supported",
     "phase": 6,
-    "notes": "Equirectangular and Mirror Ball, Linear/Closest, 8-bit images. Not yet: HDR images (rendered from an 8-bit copy)"
+    "notes": "Equirectangular and Mirror Ball. Float (HDR) images are embedded as RGBE PNGs (about 1% precision, no alpha)"
   },
   {
     "name": "Gabor Texture",
@@ -554,7 +554,7 @@
     "category": "Texture",
     "status": "partial",
     "phase": 3,
-    "notes": "Flat/Box/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Cubic/Smart (rendered Linear), float/HDR images, mipmaps"
+    "notes": "Flat/Box/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit and float images (float as RGBE: about 1% precision, no alpha). Not yet: Cubic/Smart (rendered Linear), mipmaps"
   },
   {
     "name": "Magic Texture",

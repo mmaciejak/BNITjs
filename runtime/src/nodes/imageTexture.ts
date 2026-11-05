@@ -13,6 +13,7 @@ import {
   acos,
   atan,
   clamp,
+  exp2,
   float,
   floor,
   int,
@@ -40,6 +41,15 @@ interface ImageRef {
   name?: string;
   colorspace?: string;
   alphaMode?: string;
+  /** "rgbe": a float image stored as Radiance RGBE in an 8-bit PNG. */
+  encoding?: string;
+}
+
+/** Radiance RGBE texel → linear rgb (alpha 1): (byte + 0.5) · 2^(e − 136), 0 when e = 0. */
+function decodeRGBE(raw: Vec4Node): Vec4Node {
+  const e = raw.w.mul(255).round();
+  const scale = select(e.equal(0), float(0), exp2(e.sub(136)));
+  return vec4(raw.xyz.mul(255).round().add(0.5).mul(scale), 1);
 }
 
 function mapToTube(co: Vec3Node): Vec2Node {
@@ -111,6 +121,7 @@ function sampleCycles(
   uv: Vec2Node,
   associate: boolean,
   extension?: string,
+  rgbe = false,
 ): Vec4Node {
   const { width, height } = source.image as { width: number; height: number };
   const tex = source.clone();
@@ -128,7 +139,7 @@ function sampleCycles(
       tex,
       ivec2(x.index, int(height - 1).sub(y.index)),
     ) as unknown as Vec4Node;
-    const value = associate ? vec4(raw.xyz.mul(raw.w), raw.w) : raw;
+    const value = rgbe ? decodeRGBE(raw) : associate ? vec4(raw.xyz.mul(raw.w), raw.w) : raw;
     const valid = x.valid && y.valid ? x.valid.and(y.valid) : (x.valid ?? y.valid);
     return valid ? select(valid, value, vec4(0)) : value;
   };
@@ -164,18 +175,21 @@ export function makeImageLookup(
     return null;
   }
   const colorspace = image?.colorspace ?? 'sRGB';
+  const rgbe = image?.encoding === 'rgbe';
   const isData = /^(Non-Color|Raw)/.test(colorspace);
-  const isLinear = colorspace.startsWith('Linear');
+  // Float images hold scene-linear values (Blender converts their color space on load).
+  const isLinear = rgbe || colorspace.startsWith('Linear');
   if (!isData && !isLinear && colorspace !== 'sRGB') {
     ctx.warn(`image color space "${colorspace}" is treated as sRGB`);
   }
   const associate =
     !isData &&
+    !rgbe &&
     !['CHANNEL_PACKED', 'NONE'].includes(image?.alphaMode ?? 'STRAIGHT') &&
     !ctx.isOutputLinked('Alpha');
   /** One image lookup, decoded to linear like Cycles' svm_image_texture. */
   return (uv: Vec2Node): Vec4Node => {
-    const sample = sampleCycles(ctx, source, uv, associate, extension);
+    const sample = sampleCycles(ctx, source, uv, associate, extension, rgbe);
     const raw: Vec3Node = sample.xyz;
     const color: Vec3Node =
       isData || isLinear

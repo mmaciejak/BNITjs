@@ -110,6 +110,32 @@ class GltfExportTest(unittest.TestCase):
         gltf = export_gltf(os.path.join(self.tmp, "noworld.gltf"))
         self.assertNotIn(EXTENSION_NAME, gltf["scenes"][0].get("extensions", {}))
 
+    def test_float_image_round_trips_through_rgbe(self):
+        from exporter.gltf_hooks import image_bytes
+
+        image = bpy.data.images.new("HDR", 8, 4, float_buffer=True)
+        values = [0.0, 0.001, 0.25, 0.9, 1.0, 3.5, 17.0, 250.0]
+        pixels = []
+        for y in range(4):
+            for x in range(8):
+                pixels += [values[x], values[(x + y) % 8] * 0.5, values[7 - x] * 0.1, 1.0]
+        image.pixels = pixels
+        data, mime, encoding = image_bytes(image)
+        self.assertEqual((mime, encoding), ("image/png", "rgbe"))
+        path = os.path.join(self.tmp, "rgbe.png")
+        with open(path, "wb") as f:
+            f.write(data)
+        png = bpy.data.images.load(path)
+        png.colorspace_settings.name = "Non-Color"
+        got = list(png.pixels)
+        for i in range(0, len(pixels), 4):
+            e = round(got[i + 3] * 255)
+            for c in range(3):
+                want = pixels[i + c]
+                value = 0.0 if e == 0 else (round(got[i + c] * 255) + 0.5) * 2.0 ** (e - 136)
+                # 8-bit mantissas: within 1% of the pixel's largest channel.
+                self.assertAlmostEqual(value, want, delta=0.01 * max(pixels[i : i + 3]) + 1e-6)
+
     def test_every_test_scene_exports(self):
         for build in scenes.ALL:
             bpy.ops.wm.read_factory_settings(use_empty=True)
