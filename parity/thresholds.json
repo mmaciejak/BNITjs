@@ -7,6 +7,7 @@
     "checker_object": { "max": 25 },
     "color_ramp_constant": { "outliers": 0.006 },
     "float_curve_extrapolated": { "outliers": 0.006 },
+    "gabor_2d_phase": { "outliers": 0.02 },
     "image_texture_closest": { "outliers": 0.006 },
     "image_texture_sphere": { "outliers": 0.006 },
     "image_texture_tube": { "outliers": 0.006 },

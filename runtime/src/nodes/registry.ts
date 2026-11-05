@@ -9,6 +9,7 @@ import { colorAttribute } from './colorAttribute.js';
 import { colorRamp } from './colorRamp.js';
 import { floatCurve } from './floatCurve.js';
 import { fresnel } from './fresnel.js';
+import { gabor } from './gabor.js';
 import { glossy } from './glossy.js';
 import { gradient } from './gradient.js';
 import { rgbCurves } from './rgbCurves.js';
@@ -91,6 +92,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexWave: wave,
   ShaderNodeTexMagic: magic,
   ShaderNodeTexBrick: brick,
+  ShaderNodeTexGabor: gabor,
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,

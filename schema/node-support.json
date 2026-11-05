@@ -519,9 +519,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
+    "status": "supported",
     "phase": 6,
-    "notes": "Blender 4.3+. Expensive on mobile; recommend bake"
+    "notes": "2D and 3D, all outputs. Blender 4.3+. Expensive (72 kernels per pixel in 2D, 216 in 3D): consider baking on phones"
   },
   {
     "name": "Gradient Texture",

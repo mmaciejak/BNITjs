@@ -87,7 +87,7 @@ STATUS = {
     "ShaderNodeTexChecker": "supported",
     "ShaderNodeTexCoord": "partial",
     "ShaderNodeTexEnvironment": "planned",
-    "ShaderNodeTexGabor": "planned",
+    "ShaderNodeTexGabor": "supported",
     "ShaderNodeTexGradient": "supported",
     "ShaderNodeTexIES": "not_planned",
     "ShaderNodeTexImage": "partial",
