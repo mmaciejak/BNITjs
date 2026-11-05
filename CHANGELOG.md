@@ -2,6 +2,18 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-7: Surface detail and geometry
+
+- New supported nodes (✅): Bump, Vector Transform, Blackbody and Wavelength. Bump follows Cycles' formula on screen-space derivatives, which gives the same result because it does not depend on the size of the differences. Blackbody and Wavelength use tables measured from Cycles with `tools/measure_spectra.py`, because Blender computes them from tables in its C++ code.
+- Partial (🟡, limits in the README):
+  - Geometry: Position, Normal, Tangent, True Normal, Incoming and Backfacing. Pointiness, Random Per Island and Parametric are not done yet.
+  - Tangent: Radial X/Y/Z.
+  - Normal Map: every space and Strength. Tangent space builds its frame from screen-space derivatives instead of MikkTSpace tangents.
+  - Displacement and Vector Displacement: object and world space.
+  - Wireframe: world size is parity-tested; meshes that use it get barycentrics from the loader.
+- Principled, Diffuse and Glossy use a linked Normal as the material's shading normal. The exporter writes the material's displacement method. With "Bump Only" (the default), the runtime shades with the displaced surface's normal; with "Displacement", it moves the vertices. Unlit materials respect a displaced normal, as Blender's Emission materials do through Geometry > Normal.
+- 459 scenes pass on WebGPU and WebGL2.
+
 ## phase-6: Remaining textures and the World
 
 - New supported nodes (✅, ported from Blender's GLSL): Wave, Magic, Brick and Gabor Textures, and Environment Texture.
