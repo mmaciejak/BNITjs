@@ -159,9 +159,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "planned",
+    "status": "partial",
     "phase": 7,
-    "notes": "UV and Radial"
+    "notes": "Radial X/Y/Z. Not yet: UV Map tangents (rendered as Radial Z)"
   },
   {
     "name": "Texture Coordinate",

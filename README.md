@@ -160,7 +160,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Object Info | Input | ✅ Supported | 3 | Random matches Cycles for non-instanced objects (name hash) |
 | Particle Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Point Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
-| Tangent | Input | 🚧 Not yet | 7 | UV and Radial |
+| Tangent | Input | 🟡 Partial | 7 | Radial X/Y/Z. Not yet: UV Map tangents (rendered as Radial Z) |
 | Texture Coordinate | Input | 🟡 Partial | 2 | All outputs pass parity (ortho and perspective). Not supported yet: the Object setting (another object's space) and From Instancer |
 | UV Map | Input | ✅ Supported | 3 | Resolves names via the exported UV map list; From Instancer not supported |
 | Value | Input | ✅ Supported | 2 | |

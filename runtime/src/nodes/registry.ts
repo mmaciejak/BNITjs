@@ -36,6 +36,7 @@ import { gamma } from './gamma.js';
 import { invertColor } from './invert.js';
 import { rgbToBW } from './rgbToBw.js';
 import { squeeze } from './squeeze.js';
+import { tangent } from './tangent.js';
 import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
 import { diffuse } from './diffuse.js';
@@ -117,6 +118,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBlackbody: blackbody,
   ShaderNodeWavelength: wavelength,
   ShaderNodeNewGeometry: geometry,
+  ShaderNodeTangent: tangent,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

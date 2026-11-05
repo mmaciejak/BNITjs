@@ -1,6 +1,7 @@
-"""Geometry outputs on the smooth, bumpy surface of image_box, perspective camera.
+"""Geometry outputs (and the Tangent node) on the smooth, bumpy surface of image_box, perspective camera.
 
-Vectors are shown as v × 0.5 + 0.5; Position as p × 0.3 + 0.5.
+Vectors are shown as v × 0.5 + 0.5; Position as p × 0.3 + 0.5. TANGENT_X / _Y / _Z are the
+Tangent node's radial tangents.
 """
 
 from _common import by_id, emission_material
@@ -11,7 +12,7 @@ OUTPUTS = {
     "POSITION": "Position", "NORMAL": "Normal", "TANGENT": "Tangent", "TRUE_NORMAL": "True Normal",
     "INCOMING": "Incoming", "BACKFACING": "Backfacing",
 }  # fmt: skip
-VARIANTS = list(OUTPUTS)
+VARIANTS = [*OUTPUTS, "TANGENT_X", "TANGENT_Y", "TANGENT_Z"]
 
 
 def build(variant):

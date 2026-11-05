@@ -82,7 +82,7 @@ STATUS = {
     "ShaderNodeShaderToRGB": "planned",
     "ShaderNodeSqueeze": "partial",
     "ShaderNodeSubsurfaceScattering": "planned",
-    "ShaderNodeTangent": "planned",
+    "ShaderNodeTangent": "partial",
     "ShaderNodeTexBrick": "supported",
     "ShaderNodeTexChecker": "supported",
     "ShaderNodeTexCoord": "partial",
