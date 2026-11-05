@@ -37,6 +37,7 @@ import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
 import { diffuse } from './diffuse.js';
 import { emission } from './emission.js';
+import { environmentTexture } from './environmentTexture.js';
 import { mapping } from './mapping.js';
 import { math } from './math.js';
 import { materialOutput } from './output.js';
@@ -108,6 +109,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBsdfDiffuse: diffuse,
   ShaderNodeBsdfAnisotropic: glossy,
   ShaderNodeTexImage: imageTexture,
+  ShaderNodeTexEnvironment: environmentTexture,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

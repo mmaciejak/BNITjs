@@ -508,9 +508,9 @@
     ],
     "section": "Texture",
     "category": "Texture",
-    "status": "planned",
+    "status": "partial",
     "phase": 6,
-    "notes": "World/background"
+    "notes": "Equirectangular and Mirror Ball, Linear/Closest, 8-bit images. Not yet: HDR images (rendered from an 8-bit copy)"
   },
   {
     "name": "Gabor Texture",

@@ -110,6 +110,7 @@ function sampleCycles(
   source: Texture,
   uv: Vec2Node,
   associate: boolean,
+  extension?: string,
 ): Vec4Node {
   const { width, height } = source.image as { width: number; height: number };
   const tex = source.clone();
@@ -118,7 +119,7 @@ function sampleCycles(
   tex.minFilter = NearestFilter;
   tex.magFilter = NearestFilter;
   tex.needsUpdate = true;
-  const mode = ctx.prop<string>('extension', 'REPEAT');
+  const mode = extension ?? ctx.prop<string>('extension', 'REPEAT');
   const texel = (ix: Node<'int'>, iy: Node<'int'>): Vec4Node => {
     const x = wrapIndex(mode, ix, width);
     const y = wrapIndex(mode, iy, height);
@@ -148,17 +149,20 @@ function sampleCycles(
   return mix(bottom, top, fy);
 }
 
-export const imageTexture: NodeImpl = (ctx) => {
+/**
+ * The image of an Image or Environment Texture node as a lookup uv → linear (rgb, alpha), sampled
+ * like Cycles; null (with a warning) when the image is missing.
+ */
+export function makeImageLookup(
+  ctx: NodeContext,
+  extension?: string,
+): ((uv: Vec2Node) => Vec4Node) | null {
   const image = ctx.prop<ImageRef | undefined>('image', undefined);
   const source = image?.texture !== undefined ? ctx.texture(image.texture) : undefined;
   if (!source) {
     ctx.warn(image ? `image "${image.name}" is missing` : 'no image');
-    return { Color: vec3(1, 0, 1), Alpha: float(1) };
+    return null;
   }
-  const vector = ctx.isLinked('Vector')
-    ? ctx.vec3('Vector')
-    : blenderUV(ctx.graph.uvMaps?.activeRender ?? 0);
-
   const colorspace = image?.colorspace ?? 'sRGB';
   const isData = /^(Non-Color|Raw)/.test(colorspace);
   const isLinear = colorspace.startsWith('Linear');
@@ -170,8 +174,8 @@ export const imageTexture: NodeImpl = (ctx) => {
     !['CHANNEL_PACKED', 'NONE'].includes(image?.alphaMode ?? 'STRAIGHT') &&
     !ctx.isOutputLinked('Alpha');
   /** One image lookup, decoded to linear like Cycles' svm_image_texture. */
-  const lookup = (uv: Vec2Node): Vec4Node => {
-    const sample = sampleCycles(ctx, source, uv, associate);
+  return (uv: Vec2Node): Vec4Node => {
+    const sample = sampleCycles(ctx, source, uv, associate, extension);
     const raw: Vec3Node = sample.xyz;
     const color: Vec3Node =
       isData || isLinear
@@ -179,6 +183,14 @@ export const imageTexture: NodeImpl = (ctx) => {
         : vec3(srgbToLinear(raw.x), srgbToLinear(raw.y), srgbToLinear(raw.z));
     return vec4(color, sample.w);
   };
+}
+
+export const imageTexture: NodeImpl = (ctx) => {
+  const lookup = makeImageLookup(ctx);
+  if (!lookup) return { Color: vec3(1, 0, 1), Alpha: float(1) };
+  const vector = ctx.isLinked('Vector')
+    ? ctx.vec3('Vector')
+    : blenderUV(ctx.graph.uvMaps?.activeRender ?? 0);
 
   const projection = ctx.prop<string>('projection', 'FLAT');
   let result: Vec4Node;

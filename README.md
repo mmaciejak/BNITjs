@@ -202,7 +202,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 |---|---|---|---|---|
 | Brick Texture | Texture | ✅ Supported | 6 | |
 | Checker Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
-| Environment Texture | Texture | 🚧 Not yet | 6 | World/background |
+| Environment Texture | Texture | 🟡 Partial | 6 | Equirectangular and Mirror Ball, Linear/Closest, 8-bit images. Not yet: HDR images (rendered from an 8-bit copy) |
 | Gabor Texture | Texture | ✅ Supported | 6 | 2D and 3D, all outputs. Blender 4.3+. Expensive (72 kernels per pixel in 2D, 216 in 3D): consider baking on phones |
 | Gradient Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
 | IES Texture | Texture | ❌ Not planned | — | Belongs to lights |
