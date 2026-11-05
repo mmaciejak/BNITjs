@@ -175,7 +175,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Background | Shader | 🟡 Partial | 6 | Shown as the scene background with applyBlenderWorld(scene, gltf). The world does not light the scene yet (set scene.environment yourself) |
 | Diffuse BSDF | Shader | 🟡 Partial | 3 | Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped |
 | Emission | Shader | ✅ Supported | 2 | |
-| Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
+| Glass BSDF | Shader | 🟡 Partial | 8 | three.js physical transmission with IOR, roughness, Color tint and thin film (screen-space transmission; close, not identical to Cycles) |
 | Glossy BSDF | Shader | 🟡 Partial | 3 | Fully metallic physical material with the same roughness; no parity test (lighting differs). Anisotropy in phase 8 |
 | Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
 | Holdout | Shader | 🚧 Not yet | 10 | Alpha handling, scene-dependent |

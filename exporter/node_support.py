@@ -20,7 +20,7 @@ STATUS = {
     "ShaderNodeBrightContrast": "supported",
     "ShaderNodeBsdfAnisotropic": "partial",
     "ShaderNodeBsdfDiffuse": "partial",
-    "ShaderNodeBsdfGlass": "planned",
+    "ShaderNodeBsdfGlass": "partial",
     "ShaderNodeBsdfHair": "planned",
     "ShaderNodeBsdfHairPrincipled": "planned",
     "ShaderNodeBsdfMetallic": "planned",

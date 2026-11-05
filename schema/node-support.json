@@ -267,9 +267,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 8,
-    "notes": "Screen-space transmission"
+    "notes": "three.js physical transmission with IOR, roughness, Color tint and thin film (screen-space transmission; close, not identical to Cycles)"
   },
   {
     "name": "Glossy BSDF",
