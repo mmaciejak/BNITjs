@@ -2,6 +2,21 @@
 
 Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 
+## phase-8: Shader combination and advanced Principled
+
+- Principled BSDF maps its advanced inputs onto three.js's physical material: coat (weight, roughness, normal), sheen, transmission, IOR, specular IOR level and tint, thin film and anisotropy. Subsurface, Coat IOR and Coat Tint are reported and ignored.
+- Mix Shader and Add Shader (🟡) combine closures by their parameters. Emission and Transparent mix exactly, as radiance and opacity, and are parity-tested for emission. BSDF pairs are mixed parameter by parameter: exact for Principled pairs that differ only in colors, approximate otherwise.
+- New BSDFs (🟡), mapped onto the physical material:
+  - Transparent.
+  - Glass: transmission with IOR.
+  - Refraction: transmission without reflection.
+  - Metallic: Edge Tint and Physical Conductor are not mapped.
+  - Specular: EEVEE-only, mapped like EEVEE.
+- `examples/materials` shows car paint, glass, fabric, a soap film, brushed metal, Glass and Metallic BSDFs and a Mix Shader under a baked Sky World. Its check, part of `check.sh`, fails on shader errors or warnings on WebGPU and WebGL2. Lit materials are close to Blender, not identical, because three.js's BSDFs differ from Cycles'.
+- Transparency uses straight alpha blending, which is exact only when blending happens in linear space.
+- Parity harness: a scene that fails is run once more before it counts as failed (printed as RETRY), after a one-off bad capture on WebGL2. 463 scenes pass on WebGPU and WebGL2.
+- During this phase, the Glass BSDF commit (`e776a23`) went in after a check that failed on that one-off capture. The next full check, which included that code, passed.
+
 ## phase-7: Surface detail and geometry
 
 - New supported nodes (✅): Bump, Vector Transform, Blackbody and Wavelength. Bump follows Cycles' formula on screen-space derivatives, which gives the same result because it does not depend on the size of the differences. Blackbody and Wavelength use tables measured from Cycles with `tools/measure_spectra.py`, because Blender computes them from tables in its C++ code.
