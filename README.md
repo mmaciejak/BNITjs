@@ -191,7 +191,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Subsurface Scattering | Shader | 🚧 Not yet | 10 | Thickness/translucency fake |
 | Toon BSDF | Shader | 🚧 Not yet | 10 | Custom lighting |
 | Translucent BSDF | Shader | 🚧 Not yet | 10 | Fake |
-| Transparent BSDF | Shader | 🚧 Not yet | 8 | Alpha blending |
+| Transparent BSDF | Shader | 🟡 Partial | 8 | Opacity for Mix/Add Shader (straight alpha blending, exact only when blending in linear space). A tinted Color is rendered untinted |
 | Volume Absorption | Shader | ❌ Not planned | — | Volumes |
 | Volume Coefficients | Shader | ❌ Not planned | — | Volumes. Blender 5.x |
 | Volume Scatter | Shader | ❌ Not planned | — | Volumes |
