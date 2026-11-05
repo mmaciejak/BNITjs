@@ -787,9 +787,9 @@
     ],
     "section": "Vector",
     "category": "Vector",
-    "status": "planned",
+    "status": "partial",
     "phase": 7,
-    "notes": "Vertex stage, needs dense mesh"
+    "notes": "Object and World space (parity-tested), as Displacement. Not yet: Tangent space (treated as Object)"
   },
   {
     "name": "Vector Rotate",

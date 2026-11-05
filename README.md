@@ -238,7 +238,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Normal Map | Vector | 🟡 Partial | 7 | Every space and Strength (parity-tested). Tangent space builds its frame from screen-space derivatives of the UV map instead of MikkTSpace tangents: exact on flat, uniformly mapped surfaces, close on curved ones |
 | Radial Tiling | Vector | 🚧 Not yet | 10 | New in Blender 5. Deferred to phase 10: a large port (≈900 lines of Blender's GLSL) |
 | Vector Curves | Vector | ✅ Supported | 3 | Cycles table incl. extrapolation |
-| Vector Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
+| Vector Displacement | Vector | 🟡 Partial | 7 | Object and World space (parity-tested), as Displacement. Not yet: Tangent space (treated as Object) |
 | Vector Rotate | Vector | ✅ Supported | 3 | |
 | Vector Transform | Vector | ✅ Supported | 7 | |
 

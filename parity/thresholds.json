@@ -6,6 +6,8 @@
     "checker_default": { "max": 25 },
     "checker_object": { "max": 25 },
     "color_ramp_constant": { "outliers": 0.006 },
+    "displacement_vector_object": { "outliers": 0.006 },
+    "displacement_vector_world": { "outliers": 0.006 },
     "float_curve_extrapolated": { "outliers": 0.006 },
     "gabor_2d_phase": { "outliers": 0.02 },
     "geometry_backfacing": { "outliers": 0.006 },

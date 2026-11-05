@@ -4,12 +4,13 @@ BUMP_NORMAL: "Bump Only" (Blender's default) shows Geometry Normal × 0.5 + 0.5.
 DISPLACE_POSITION / DISPLACE_WORLD: true displacement (object / world space) shows Geometry
 Position × 0.3 + 0.5 (seen from above, so the z offset is the color). Cycles also recomputes the
 displaced mesh's normals, which the runtime does not, so normals are not compared there.
+VECTOR_OBJECT / VECTOR_WORLD: Vector Displacement of the Noise Color (Midlevel 0.5, Scale 0.4).
 """
 
 import bpy
 from _common import by_id, emission_material
 
-VARIANTS = ["BUMP_NORMAL", "BUMP_WORLD", "DISPLACE_POSITION", "DISPLACE_WORLD"]
+VARIANTS = ["BUMP_NORMAL", "BUMP_WORLD", "DISPLACE_POSITION", "DISPLACE_WORLD", "VECTOR_OBJECT", "VECTOR_WORLD"]
 N = 48
 
 
@@ -32,11 +33,16 @@ def build(variant):
     noise = nodes.new("ShaderNodeTexNoise")
     by_id(noise.inputs)["Scale"].default_value = 2.0
     by_id(noise.inputs)["Detail"].default_value = 1.0
-    disp = nodes.new("ShaderNodeDisplacement")
-    disp.space = "WORLD" if variant.endswith("WORLD") else "OBJECT"
+    if variant.startswith("VECTOR"):
+        disp = nodes.new("ShaderNodeVectorDisplacement")
+        disp.space = "WORLD" if variant.endswith("WORLD") else "OBJECT"
+        links.new(by_id(noise.outputs)["Color"], disp.inputs["Vector"])
+    else:
+        disp = nodes.new("ShaderNodeDisplacement")
+        disp.space = "WORLD" if variant.endswith("WORLD") else "OBJECT"
+        links.new(by_id(noise.outputs)["Fac"], disp.inputs["Height"])
     disp.inputs["Midlevel"].default_value = 0.5
     disp.inputs["Scale"].default_value = 0.4
-    links.new(by_id(noise.outputs)["Fac"], disp.inputs["Height"])
     links.new(disp.outputs["Displacement"], nodes["Material Output"].inputs["Displacement"])
     geometry = nodes.new("ShaderNodeNewGeometry")
     remap = nodes.new("ShaderNodeVectorMath")
