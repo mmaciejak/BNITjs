@@ -246,7 +246,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
-| Blackbody | Converter | 🚧 Not yet | 7 | Fitted formula |
+| Blackbody | Converter | ✅ Supported | 7 | Interpolates a table measured from Cycles (tools/measure_spectra.py); same in Blender 4.2 and 5.2 |
 | Clamp | Converter | ✅ Supported | 3 | Min Max and Range |
 | Color Ramp | Converter | ✅ Supported | 3 | Every interpolation and color mode; 257-entry table like Cycles |
 | Combine Color | Converter | ✅ Supported | 3 | RGB, HSV, HSL |

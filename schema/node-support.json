@@ -818,9 +818,9 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
+    "status": "supported",
     "phase": 7,
-    "notes": "Fitted formula"
+    "notes": "Interpolates a table measured from Cycles (tools/measure_spectra.py); same in Blender 4.2 and 5.2"
   },
   {
     "name": "Clamp",

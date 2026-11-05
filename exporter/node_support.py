@@ -16,7 +16,7 @@ STATUS = {
     "ShaderNodeAttribute": "partial",
     "ShaderNodeBackground": "partial",
     "ShaderNodeBevel": "baked",
-    "ShaderNodeBlackbody": "planned",
+    "ShaderNodeBlackbody": "supported",
     "ShaderNodeBrightContrast": "supported",
     "ShaderNodeBsdfAnisotropic": "partial",
     "ShaderNodeBsdfDiffuse": "partial",
