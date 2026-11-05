@@ -248,7 +248,7 @@
     "category": "Shader",
     "status": "partial",
     "phase": 3,
-    "notes": "Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped; Normal in phase 7"
+    "notes": "Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped"
   },
   {
     "name": "Emission",
@@ -335,7 +335,7 @@
     "category": "Shader",
     "status": "partial",
     "phase": 2,
-    "notes": "Base color, metallic, roughness, alpha and emission (base color parity-tested). Normal in phase 7; coat, sheen, transmission, IOR, thin film, anisotropy in phase 8"
+    "notes": "Base color, metallic, roughness, alpha, emission (base color parity-tested) and Normal. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8"
   },
   {
     "name": "Principled Hair BSDF",
@@ -711,9 +711,9 @@
     ],
     "section": "Vector",
     "category": "Vector",
-    "status": "planned",
+    "status": "supported",
     "phase": 7,
-    "notes": "Screen-space derivatives"
+    "notes": "Cycles' formula on screen-space derivatives of the height (parity-tested). The Filter Width input has no effect"
   },
   {
     "name": "Displacement",

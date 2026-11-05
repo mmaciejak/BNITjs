@@ -18,6 +18,8 @@ export interface PrincipledClosure {
   emission: Vec3Node;
   /** Specular intensity multiplier (three.js specularIntensity); 0 for a pure diffuse BSDF. */
   specular?: FloatNode;
+  /** Shading normal in Blender's world axes, when the Normal input is linked. */
+  normal?: Vec3Node;
 }
 
 export interface EmissionClosure {

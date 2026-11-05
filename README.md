@@ -173,7 +173,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 |---|---|---|---|---|
 | Add Shader | Shader | 🚧 Not yet | 8 | Approximation |
 | Background | Shader | 🟡 Partial | 6 | Shown as the scene background with applyBlenderWorld(scene, gltf). The world does not light the scene yet (set scene.environment yourself) |
-| Diffuse BSDF | Shader | 🟡 Partial | 3 | Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped; Normal in phase 7 |
+| Diffuse BSDF | Shader | 🟡 Partial | 3 | Physical material without specular (color parity-tested). Oren-Nayar roughness not mapped |
 | Emission | Shader | ✅ Supported | 2 | |
 | Glass BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
 | Glossy BSDF | Shader | 🟡 Partial | 3 | Fully metallic physical material with the same roughness; no parity test (lighting differs). Anisotropy in phase 8 |
@@ -181,7 +181,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Holdout | Shader | 🚧 Not yet | 10 | Alpha handling, scene-dependent |
 | Metallic BSDF | Shader | 🚧 Not yet | 8 | Blender 4.3+. Maps onto metalness/specular color |
 | Mix Shader | Shader | 🚧 Not yet | 8 | Principled+Principled → mix params; otherwise approximation |
-| Principled BSDF | Shader | 🟡 Partial | 2 | Base color, metallic, roughness, alpha and emission (base color parity-tested). Normal in phase 7; coat, sheen, transmission, IOR, thin film, anisotropy in phase 8 |
+| Principled BSDF | Shader | 🟡 Partial | 2 | Base color, metallic, roughness, alpha, emission (base color parity-tested) and Normal. Coat, sheen, transmission, IOR, thin film, anisotropy in phase 8 |
 | Principled Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
 | Principled Volume | Shader | ❌ Not planned | — | Volumes |
 | Ray Portal BSDF | Shader | ❌ Not planned | — | Path-tracing only |
@@ -231,7 +231,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
-| Bump | Vector | 🚧 Not yet | 7 | Screen-space derivatives |
+| Bump | Vector | ✅ Supported | 7 | Cycles' formula on screen-space derivatives of the height (parity-tested). The Filter Width input has no effect |
 | Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
 | Mapping | Vector | ✅ Supported | 2 | Point, Texture, Vector, Normal |
 | Normal | Vector | ✅ Supported | 3 | |

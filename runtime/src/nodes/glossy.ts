@@ -6,7 +6,6 @@ export const glossy: NodeImpl = (ctx) => {
   if (ctx.isLinked('Anisotropy') || Number(ctx.inputValue('Anisotropy') ?? 0) !== 0) {
     ctx.warn('anisotropy is not supported yet (Phase 8)');
   }
-  if (ctx.isLinked('Normal')) ctx.warn('the Normal input is not supported yet (Phase 7)');
   return {
     BSDF: {
       kind: 'principled',
@@ -16,6 +15,7 @@ export const glossy: NodeImpl = (ctx) => {
       alpha: float(1),
       transparent: false,
       emission: vec3(0),
+      ...(ctx.isLinked('Normal') ? { normal: ctx.vec3('Normal') } : {}),
     },
   };
 };

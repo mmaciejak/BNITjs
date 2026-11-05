@@ -31,7 +31,7 @@ STATUS = {
     "ShaderNodeBsdfToon": "planned",
     "ShaderNodeBsdfTranslucent": "planned",
     "ShaderNodeBsdfTransparent": "planned",
-    "ShaderNodeBump": "planned",
+    "ShaderNodeBump": "supported",
     "ShaderNodeCameraData": "supported",
     "ShaderNodeClamp": "supported",
     "ShaderNodeCombineColor": "supported",

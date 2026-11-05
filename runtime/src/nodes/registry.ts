@@ -2,6 +2,7 @@ import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { attribute } from './attribute.js';
 import { background } from './background.js';
 import { brick } from './brick.js';
+import { bump } from './bump.js';
 import { blackbody, wavelength } from './spectral.js';
 import { bswValue } from './bswValue.js';
 import { cameraData } from './cameraData.js';
@@ -119,6 +120,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeWavelength: wavelength,
   ShaderNodeNewGeometry: geometry,
   ShaderNodeTangent: tangent,
+  ShaderNodeBump: bump,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

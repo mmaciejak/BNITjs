@@ -1,4 +1,4 @@
-import { vec3 } from 'three/tsl';
+import { cameraViewMatrix, vec3, vec4 } from 'three/tsl';
 import { MeshBasicNodeMaterial, MeshPhysicalNodeMaterial, type NodeMaterial } from 'three/webgpu';
 import type { Closure } from './closures.js';
 
@@ -40,6 +40,11 @@ export function materialFromClosure(
   material.roughnessNode = surface.roughness;
   material.emissiveNode = surface.emission;
   if (surface.specular) material.specularIntensityNode = surface.specular;
+  if (surface.normal) {
+    // Blender world axes → three.js world (x, z, −y) → view space, which normalNode expects.
+    const n = surface.normal;
+    material.normalNode = cameraViewMatrix.mul(vec4(n.x, n.z, n.y.negate(), 0)).xyz.normalize();
+  }
   if (surface.transparent) {
     material.transparent = true;
     material.opacityNode = surface.alpha;
