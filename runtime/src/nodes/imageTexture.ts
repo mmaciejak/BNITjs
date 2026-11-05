@@ -1,5 +1,5 @@
 /*
- * Image Texture. Follows Cycles' svm_node_tex_image (Blender 5.2) for projections (Flat, Sphere,
+ * Image Texture. Follows Cycles' svm_node_tex_image (Blender 5.2) for projections (Flat, Box, Sphere,
  * Tube via map_to_sphere / map_to_tube on (co − 0.5)·2), extension modes and color spaces.
  *
  * 8-bit images are sampled like Cycles' byte images: texels are fetched by index with Cycles'
@@ -19,6 +19,7 @@ import {
   ivec2,
   max,
   mix,
+  normalLocal,
   pow,
   select,
   sqrt,
@@ -30,7 +31,7 @@ import {
 import { NearestFilter, NoColorSpace, type Node, type Texture } from 'three/webgpu';
 import type { FloatNode, Vec3Node } from '../graph/convert.js';
 import type { NodeContext, NodeImpl } from '../graph/evaluate.js';
-import { blenderUV } from './space.js';
+import { blenderUV, toBlender } from './space.js';
 
 type Vec2Node = Node<'vec2'>;
 
@@ -158,15 +159,6 @@ export const imageTexture: NodeImpl = (ctx) => {
     ? ctx.vec3('Vector')
     : blenderUV(ctx.graph.uvMaps?.activeRender ?? 0);
 
-  let uv: Vec2Node;
-  const projection = ctx.prop<string>('projection', 'FLAT');
-  if (projection === 'SPHERE') uv = mapToSphere(vector.sub(0.5).mul(2));
-  else if (projection === 'TUBE') uv = mapToTube(vector.sub(0.5).mul(2));
-  else {
-    if (projection === 'BOX') ctx.warn('Box projection is rendered as Flat for now');
-    uv = vec2(vector.x, vector.y);
-  }
-
   const colorspace = image?.colorspace ?? 'sRGB';
   const isData = /^(Non-Color|Raw)/.test(colorspace);
   const isLinear = colorspace.startsWith('Linear');
@@ -177,10 +169,71 @@ export const imageTexture: NodeImpl = (ctx) => {
     !isData &&
     !['CHANNEL_PACKED', 'NONE'].includes(image?.alphaMode ?? 'STRAIGHT') &&
     !ctx.isOutputLinked('Alpha');
-  const sample = sampleCycles(ctx, source, uv, associate);
-  const raw: Vec3Node = sample.xyz;
-  const alpha: FloatNode = sample.w;
-  const color: Vec3Node =
-    isData || isLinear ? raw : vec3(srgbToLinear(raw.x), srgbToLinear(raw.y), srgbToLinear(raw.z));
-  return { Color: color, Alpha: alpha };
+  /** One image lookup, decoded to linear like Cycles' svm_image_texture. */
+  const lookup = (uv: Vec2Node): Vec4Node => {
+    const sample = sampleCycles(ctx, source, uv, associate);
+    const raw: Vec3Node = sample.xyz;
+    const color: Vec3Node =
+      isData || isLinear
+        ? raw
+        : vec3(srgbToLinear(raw.x), srgbToLinear(raw.y), srgbToLinear(raw.z));
+    return vec4(color, sample.w);
+  };
+
+  const projection = ctx.prop<string>('projection', 'FLAT');
+  let result: Vec4Node;
+  if (projection === 'BOX') {
+    result = boxProjection(vector, ctx.prop<number>('projection_blend', 0), lookup);
+  } else {
+    const uv =
+      projection === 'SPHERE'
+        ? mapToSphere(vector.sub(0.5).mul(2))
+        : projection === 'TUBE'
+          ? mapToTube(vector.sub(0.5).mul(2))
+          : vec2(vector.x, vector.y);
+    result = lookup(uv);
+  }
+  return { Color: result.xyz, Alpha: result.w };
 };
+
+/**
+ * Box projection (Cycles' svm_node_tex_image_box): three planar lookups along the object-space
+ * normal's axes, blended by how much the normal faces each axis.
+ */
+function boxProjection(co: Vec3Node, blend: number, lookup: (uv: Vec2Node) => Vec4Node): Vec4Node {
+  const signed = toBlender(normalLocal).normalize().toVar() as Vec3Node;
+  const a = abs(signed);
+  const n = a.div(a.x.add(a.y).add(a.z)).toVar() as Vec3Node;
+  const limit = 0.5 + 0.5 * blend;
+  const divisor = Math.max(1e-8, blend);
+  const w0 = clamp(
+    n
+      .div(vec3(n.x, n.y, n.x).add(vec3(n.y, n.z, n.z)))
+      .sub(0.5 * (1 - blend))
+      .div(divisor),
+    0,
+    1,
+  ).toVar() as Vec3Node;
+  const k = 1 - limit;
+  const weight = select(
+    n.z.lessThan(n.y.add(n.x).mul(k)),
+    vec3(w0.x, float(1).sub(w0.x), 0),
+    select(
+      n.x.lessThan(n.y.add(n.z).mul(k)),
+      vec3(0, w0.y, float(1).sub(w0.y)),
+      select(
+        n.y.lessThan(n.x.add(n.z).mul(k)),
+        vec3(float(1).sub(w0.z), 0, w0.z),
+        n
+          .mul(2 - limit)
+          .add(limit - 1)
+          .div(divisor),
+      ),
+    ),
+  ).toVar() as Vec3Node;
+  const flip = (c: FloatNode, cond: Node<'bool'>) => select(cond, float(1).sub(c), c) as FloatNode;
+  const cx = lookup(vec2(flip(co.y, signed.x.lessThan(0)), co.z));
+  const cy = lookup(vec2(flip(co.x, signed.y.greaterThan(0)), co.z));
+  const cz = lookup(vec2(flip(co.y, signed.z.greaterThan(0)), co.x));
+  return cx.mul(weight.x).add(cy.mul(weight.y)).add(cz.mul(weight.z)) as Vec4Node;
+}

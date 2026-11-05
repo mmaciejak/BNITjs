@@ -190,7 +190,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Gabor Texture | Texture | ✅ Supported | 6 | 2D and 3D, all outputs. Blender 4.3+. Expensive (72 kernels per pixel in 2D, 216 in 3D): consider baking on phones |
 | Gradient Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
 | IES Texture | Texture | ❌ Not planned | — | Belongs to lights |
-| Image Texture | Texture | 🟡 Partial | 3 | Flat/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Box projection, Cubic/Smart (rendered Linear), float/HDR images, mipmaps |
+| Image Texture | Texture | 🟡 Partial | 3 | Flat/Box/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Cubic/Smart (rendered Linear), float/HDR images, mipmaps |
 | Magic Texture | Texture | ✅ Supported | 6 | |
 | Noise Texture | Texture | ✅ Supported | 4 | All types (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, distortion, normalize. Musgrave nodes from older files are converted to Noise by Blender |
 | Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |

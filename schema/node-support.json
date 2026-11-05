@@ -554,7 +554,7 @@
     "category": "Texture",
     "status": "partial",
     "phase": 3,
-    "notes": "Flat/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Box projection, Cubic/Smart (rendered Linear), float/HDR images, mipmaps"
+    "notes": "Flat/Box/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit images (parity-tested). Not yet: Cubic/Smart (rendered Linear), float/HDR images, mipmaps"
   },
   {
     "name": "Magic Texture",
