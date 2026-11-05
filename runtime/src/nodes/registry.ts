@@ -43,6 +43,7 @@ import { uvMap } from './uvMap.js';
 import { value } from './value.js';
 import { vectorMath } from './vectorMath.js';
 import { voronoi } from './voronoi.js';
+import { wave } from './wave.js';
 import { whiteNoise } from './whiteNoise.js';
 import { combineXYZ, separateXYZ } from './xyz.js';
 
@@ -85,6 +86,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexWhiteNoise: whiteNoise,
   ShaderNodeTexNoise: noise,
   ShaderNodeTexVoronoi: voronoi,
+  ShaderNodeTexWave: wave,
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,

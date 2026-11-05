@@ -79,6 +79,8 @@
     "voronoi_n_sphere_radius_4d": { "outliers": 0.006 },
     "voronoi_smooth_f1_1d": { "outliers": 0.006 },
     "voronoi_smooth_f1_2d_position": { "outliers": 0.006 },
+    "wave_bands_y_saw": { "outliers": 0.02 },
+    "wave_rings_spherical_saw": { "outliers": 0.02 },
     "white_noise_1d": { "outliers": 0.006 },
     "white_noise_2d": { "outliers": 0.006 },
     "white_noise_3d": { "outliers": 0.006 },
