@@ -240,7 +240,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Vector Curves | Vector | ✅ Supported | 3 | Cycles table incl. extrapolation |
 | Vector Displacement | Vector | 🚧 Not yet | 7 | Vertex stage, needs dense mesh |
 | Vector Rotate | Vector | ✅ Supported | 3 | |
-| Vector Transform | Vector | 🚧 Not yet | 7 | |
+| Vector Transform | Vector | ✅ Supported | 7 | |
 
 ### Converter
 

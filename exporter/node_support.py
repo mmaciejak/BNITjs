@@ -106,7 +106,7 @@ STATUS = {
     "ShaderNodeVectorDisplacement": "planned",
     "ShaderNodeVectorMath": "supported",
     "ShaderNodeVectorRotate": "supported",
-    "ShaderNodeVectorTransform": "planned",
+    "ShaderNodeVectorTransform": "supported",
     "ShaderNodeVertexColor": "partial",
     "ShaderNodeVolumeAbsorption": "not_planned",
     "ShaderNodeVolumeCoefficients": "not_planned",

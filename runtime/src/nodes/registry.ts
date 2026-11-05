@@ -41,6 +41,7 @@ import { squeeze } from './squeeze.js';
 import { tangent } from './tangent.js';
 import { mapRange } from './mapRange.js';
 import { vectorRotate } from './vectorRotate.js';
+import { vectorTransform } from './vectorTransform.js';
 import { diffuse } from './diffuse.js';
 import { emission } from './emission.js';
 import { environmentTexture } from './environmentTexture.js';
@@ -123,6 +124,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTangent: tangent,
   ShaderNodeBump: bump,
   ShaderNodeNormalMap: normalMap,
+  ShaderNodeVectorTransform: vectorTransform,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
