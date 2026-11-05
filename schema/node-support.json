@@ -280,7 +280,7 @@
     "category": "Shader",
     "status": "partial",
     "phase": 3,
-    "notes": "Fully metallic physical material with the same roughness; no parity test (lighting differs). Anisotropy in phase 8"
+    "notes": "Fully metallic physical material with the same roughness, Normal and anisotropy (needs mesh tangents; the Tangent input is ignored). No parity test (lighting differs)"
   },
   {
     "name": "Hair BSDF",

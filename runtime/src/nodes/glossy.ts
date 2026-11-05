@@ -3,8 +3,9 @@ import type { NodeImpl } from '../graph/evaluate.js';
 
 /** Glossy BSDF → fully metallic physical material (color = reflectance, same roughness). */
 export const glossy: NodeImpl = (ctx) => {
-  if (ctx.isLinked('Anisotropy') || Number(ctx.inputValue('Anisotropy') ?? 0) !== 0) {
-    ctx.warn('anisotropy is not supported yet (Phase 8)');
+  const anisotropic = ctx.isLinked('Anisotropy') || Number(ctx.inputValue('Anisotropy') ?? 0) !== 0;
+  if (anisotropic && ctx.isLinked('Tangent')) {
+    ctx.warn('the Tangent input is ignored (three.js uses mesh tangents)');
   }
   return {
     BSDF: {
@@ -16,6 +17,14 @@ export const glossy: NodeImpl = (ctx) => {
       transparent: false,
       emission: vec3(0),
       ...(ctx.isLinked('Normal') ? { normal: ctx.vec3('Normal') } : {}),
+      ...(anisotropic
+        ? {
+            anisotropy: {
+              strength: ctx.float('Anisotropy', 0),
+              rotation: ctx.float('Rotation', 0).mul(2 * Math.PI),
+            },
+          }
+        : {}),
     },
   };
 };
