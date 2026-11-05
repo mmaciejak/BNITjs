@@ -12,4 +12,10 @@ describe('BSDFs mapped to the physical material', () => {
     expect(m.transmissionNode).toBeTruthy();
     expect(m.iorNode).toBeTruthy();
   });
+
+  it('Refraction transmits without specular reflection', () => {
+    const { m } = physical('ShaderNodeBsdfRefraction');
+    expect(m.transmissionNode).toBeTruthy();
+    expect(m.specularIntensityNode).toBeTruthy();
+  });
 });

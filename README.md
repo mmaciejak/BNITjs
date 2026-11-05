@@ -185,7 +185,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Principled Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
 | Principled Volume | Shader | ❌ Not planned | — | Volumes |
 | Ray Portal BSDF | Shader | ❌ Not planned | — | Path-tracing only |
-| Refraction BSDF | Shader | 🚧 Not yet | 8 | Screen-space transmission |
+| Refraction BSDF | Shader | 🟡 Partial | 8 | Physical transmission without the specular reflection (close, not identical to Cycles) |
 | Sheen BSDF | Shader | 🚧 Not yet | 10 | Maps onto physical sheen |
 | Specular BSDF | Shader | 🚧 Not yet | 8 | Eevee-only node; maps onto physical params |
 | Subsurface Scattering | Shader | 🚧 Not yet | 10 | Thickness/translucency fake |

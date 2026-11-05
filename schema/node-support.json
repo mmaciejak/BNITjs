@@ -377,9 +377,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 8,
-    "notes": "Screen-space transmission"
+    "notes": "Physical transmission without the specular reflection (close, not identical to Cycles)"
   },
   {
     "name": "Sheen BSDF",
