@@ -1,5 +1,6 @@
 import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { attribute } from './attribute.js';
+import { brick } from './brick.js';
 import { bswValue } from './bswValue.js';
 import { cameraData } from './cameraData.js';
 import { checker } from './checker.js';
@@ -89,6 +90,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexVoronoi: voronoi,
   ShaderNodeTexWave: wave,
   ShaderNodeTexMagic: magic,
+  ShaderNodeTexBrick: brick,
   ShaderNodeFresnel: fresnel,
   ShaderNodeLayerWeight: layerWeight,
   ShaderNodeObjectInfo: objectInfo,

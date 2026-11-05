@@ -2,6 +2,7 @@
   "_comment": "Per-scene limits in 8-bit levels (0-255) on sRGB-encoded pixels. mae = mean absolute error over all pixels and channels. max = largest allowed single-channel error. outliers = fraction of pixels allowed above max (default 0); only for patterns with discontinuities or poles, where Cycles' random pixel samples and the browser's 4x4 grid cover edges differently. Tighten over time.",
   "default": { "mae": 0.5, "max": 3 },
   "scenes": {
+    "brick_sharp": { "outliers": 0.006 },
     "checker_default": { "max": 25 },
     "checker_object": { "max": 25 },
     "color_ramp_constant": { "outliers": 0.006 },

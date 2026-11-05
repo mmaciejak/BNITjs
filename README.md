@@ -184,7 +184,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
-| Brick Texture | Texture | 🚧 Not yet | 6 | |
+| Brick Texture | Texture | ✅ Supported | 6 | |
 | Checker Texture | Texture | ✅ Supported | 3 | Texture Mapping sidebar settings not supported |
 | Environment Texture | Texture | 🚧 Not yet | 6 | World/background |
 | Gabor Texture | Texture | 🚧 Not yet | 6 | Blender 4.3+. Expensive on mobile; recommend bake |
