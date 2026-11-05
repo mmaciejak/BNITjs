@@ -47,6 +47,14 @@ export function materialFromClosure(
   if (surface.kind === 'emission') {
     const material = new BlenderBasicNodeMaterial();
     material.colorNode = surface.color;
+    if (surface.alpha) {
+      // Radiance R with opacity a: straight alpha blending draws (R / a)·a + background·(1 − a).
+      // Exact when blending in linear space; approximate when blending onto an sRGB canvas.
+      const a = surface.alpha;
+      material.transparent = true;
+      material.opacityNode = a;
+      material.colorNode = select(a.greaterThan(1e-4), surface.color.div(a), surface.color);
+    }
     return material;
   }
 

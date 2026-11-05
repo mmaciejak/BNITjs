@@ -322,9 +322,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 8,
-    "notes": "Principled+Principled → mix params; otherwise approximation"
+    "notes": "Emission and Transparent mix exactly (parity-tested for emission). BSDFs are mixed by their parameters: exact for Principled pairs differing in colors, approximate otherwise. Transparency uses straight alpha blending, exact only when blending in linear space"
   },
   {
     "name": "Principled BSDF",

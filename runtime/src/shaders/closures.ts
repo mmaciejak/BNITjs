@@ -35,8 +35,10 @@ export interface PrincipledClosure {
 
 export interface EmissionClosure {
   kind: 'emission';
-  /** Color × strength. */
+  /** Color × strength (radiance). */
   color: Vec3Node;
+  /** Opacity (1 − transparency) when mixed with Transparent BSDF; absent means opaque. */
+  alpha?: FloatNode;
 }
 
 export function isClosure(value: unknown): value is Closure {

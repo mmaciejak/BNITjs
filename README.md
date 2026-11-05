@@ -180,7 +180,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
 | Holdout | Shader | 🚧 Not yet | 10 | Alpha handling, scene-dependent |
 | Metallic BSDF | Shader | 🚧 Not yet | 8 | Blender 4.3+. Maps onto metalness/specular color |
-| Mix Shader | Shader | 🚧 Not yet | 8 | Principled+Principled → mix params; otherwise approximation |
+| Mix Shader | Shader | 🟡 Partial | 8 | Emission and Transparent mix exactly (parity-tested for emission). BSDFs are mixed by their parameters: exact for Principled pairs differing in colors, approximate otherwise. Transparency uses straight alpha blending, exact only when blending in linear space |
 | Principled BSDF | Shader | 🟡 Partial | 2 | Base color, metallic, roughness, alpha, emission (base color parity-tested), Normal, and three.js physical equivalents of coat, sheen, transmission, IOR, specular level and tint, thin film and anisotropy (close, not identical to Cycles; see examples/materials). Not mapped: subsurface, coat IOR and tint |
 | Principled Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
 | Principled Volume | Shader | ❌ Not planned | — | Volumes |
