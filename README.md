@@ -154,7 +154,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Color Attribute | Input | 🟡 Partial | 3 | By name or render-active, via the exporter's COLOR_n layout; ambiguous when the standard material also uses a color attribute and the mesh has several |
 | Curves Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Fresnel | Input | ✅ Supported | 3 | Front faces |
-| Geometry | Input | 🚧 Not yet | 7 | Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute |
+| Geometry | Input | 🟡 Partial | 7 | Position, Normal, Tangent, True Normal, Incoming, Backfacing. Not yet (0): Parametric, Random Per Island (exported as an attribute), Pointiness (🧊 baked to a vertex attribute) |
 | Layer Weight | Input | ✅ Supported | 3 | Front faces |
 | Light Path | Input | 🚧 Not yet | 10 | Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1) |
 | Object Info | Input | ✅ Supported | 3 | Random matches Cycles for non-instanced objects (name hash) |

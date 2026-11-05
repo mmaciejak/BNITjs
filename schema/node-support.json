@@ -93,9 +93,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "planned",
+    "status": "partial",
     "phase": 7,
-    "notes": "Random per Island is exported as an attribute. Pointiness 🧊 is baked to a vertex attribute"
+    "notes": "Position, Normal, Tangent, True Normal, Incoming, Backfacing. Not yet (0): Parametric, Random Per Island (exported as an attribute), Pointiness (🧊 baked to a vertex attribute)"
   },
   {
     "name": "Layer Weight",

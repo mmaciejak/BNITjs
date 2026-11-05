@@ -12,6 +12,7 @@ import { colorRamp } from './colorRamp.js';
 import { floatCurve } from './floatCurve.js';
 import { fresnel } from './fresnel.js';
 import { gabor } from './gabor.js';
+import { geometry } from './geometry.js';
 import { glossy } from './glossy.js';
 import { gradient } from './gradient.js';
 import { rgbCurves } from './rgbCurves.js';
@@ -115,6 +116,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeTexSky: skyTexture,
   ShaderNodeBlackbody: blackbody,
   ShaderNodeWavelength: wavelength,
+  ShaderNodeNewGeometry: geometry,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,
