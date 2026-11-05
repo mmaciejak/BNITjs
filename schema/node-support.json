@@ -1059,7 +1059,7 @@
     "category": "Output",
     "status": "partial",
     "phase": 2,
-    "notes": "Surface only so far (Displacement in phase 7)"
+    "notes": "Surface and Displacement (see Displacement). Volume is not supported"
   },
   {
     "name": "Raycast",

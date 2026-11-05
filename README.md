@@ -8,7 +8,7 @@ Take a Blender material built from shader nodes, export it with a Blender add-on
 
 See [SPEC.md](SPEC.md) for the full design and roadmap.
 
-> **Status:** Phase 3 done. Every easy-tier node is live, and 244 parity scenes match Blender on WebGPU and WebGL2. Live parameters and a configurator example work. Phase 4 (Noise) is next.
+> **Status:** Phase 8 done. Every texture node except Radial Tiling is live (Noise, Voronoi, Wave, Gabor and the rest match Blender), as are bump, normal and displacement mapping, shader mixing and the physical Principled inputs. The World can be shown as the background. 463 parity scenes match Blender on WebGPU and WebGL2. Phase 9 (baking and the model-viewer fallback) is next.
 
 ## License
 
@@ -27,7 +27,7 @@ The AGPL also covers network use. If you serve a modified version of the runtime
 
 ## Development
 
-`tools/check.sh` runs every suite: Python lint, node-table sync, exporter tests on Blender 4.2 and 5.2, runtime lint, typecheck, tests and build, and the parity harness on WebGPU and WebGL2. Run it before every commit.
+`tools/check.sh` runs every suite: Python lint, node-table sync, exporter tests on Blender 4.2 and 5.2, runtime lint, typecheck, tests and build, the parity harness on WebGPU and WebGL2, and the configurator and materials examples on both backends. Run it before every commit; it keeps the Mac awake while it runs.
 
 ```sh
 # Runtime
@@ -275,7 +275,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Light Falloff | Light | ❌ Not planned | — | Belongs to lights |
 | Light Output | Output | ❌ Not planned | — | |
 | Line Style Output | Output | ❌ Not planned | — | Freestyle only |
-| Material Output | Output | 🟡 Partial | 2 | Surface only so far (Displacement in phase 7) |
+| Material Output | Output | 🟡 Partial | 2 | Surface and Displacement (see Displacement). Volume is not supported |
 | Raycast | Input | ❌ Not planned | — | Blender 5.x. Needs scene ray tracing |
 | UV Along Stroke | Input | ❌ Not planned | — | Freestyle only |
 | World Output | Output | 🟡 Partial | 6 | Surface only (no Volume). See Background |
