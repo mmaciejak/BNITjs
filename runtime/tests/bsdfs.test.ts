@@ -24,4 +24,10 @@ describe('BSDFs mapped to the physical material', () => {
     expect(m.metalnessNode).toBeTruthy();
     expect(m.transmissionNode).toBeNull();
   });
+
+  it('Specular (EEVEE) sets a specular color and says it is EEVEE-only', () => {
+    const { m, warnings } = physical('ShaderNodeEeveeSpecular');
+    expect(m.specularColorNode).toBeTruthy();
+    expect(warnings.join()).toContain('EEVEE');
+  });
 });

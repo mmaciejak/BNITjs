@@ -2,7 +2,7 @@ import type { NodeImpl, NodeRegistry } from '../graph/evaluate.js';
 import { attribute } from './attribute.js';
 import { background } from './background.js';
 import { brick } from './brick.js';
-import { glass, metallic, refraction } from './bsdfs.js';
+import { eeveeSpecular, glass, metallic, refraction } from './bsdfs.js';
 import { bump } from './bump.js';
 import { blackbody, wavelength } from './spectral.js';
 import { bswValue } from './bswValue.js';
@@ -136,6 +136,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeAddShader: addShader,
   ShaderNodeBsdfTransparent: transparent,
   ShaderNodeBsdfGlass: glass,
+  ShaderNodeEeveeSpecular: eeveeSpecular,
   ShaderNodeBsdfMetallic: metallic,
   ShaderNodeBsdfRefraction: refraction,
   ShaderNodeBsdfPrincipled: principled,

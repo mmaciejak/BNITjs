@@ -39,7 +39,7 @@ STATUS = {
     "ShaderNodeCombineRGB": "supported",
     "ShaderNodeCombineXYZ": "supported",
     "ShaderNodeDisplacement": "partial",
-    "ShaderNodeEeveeSpecular": "planned",
+    "ShaderNodeEeveeSpecular": "partial",
     "ShaderNodeEmission": "supported",
     "ShaderNodeFloatCurve": "supported",
     "ShaderNodeFresnel": "supported",

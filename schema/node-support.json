@@ -399,9 +399,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 8,
-    "notes": "Eevee-only node; maps onto physical params"
+    "notes": "EEVEE-only (Cycles renders it black): mapped like EEVEE onto the physical material (base color, specular color, roughness, emission, transparency, clear coat)"
   },
   {
     "name": "Subsurface Scattering",
