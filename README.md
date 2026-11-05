@@ -97,6 +97,8 @@ params.set('Wood/Color', [0.6, 0.3, 0.1]); // linear RGB, as in Blender
 
 `examples/configurator` builds sliders and color pickers from these parameters. To run it: `cd runtime && npm run example -- configurator`.
 
+`examples/materials` shows product materials (car paint with coat, glass, fabric with sheen, a soap film, brushed metal, Glass and Metallic BSDFs, a Mix Shader) under a baked Sky World: `cd runtime && npm run example -- materials`. three.js's BSDFs are not Cycles', so lit materials look close to Blender, not identical.
+
 ### Performance of procedural textures
 
 Procedural textures are evaluated for every pixel, every frame. Their cost grows with the number of octaves, which is ⌊Detail⌋ + 1, plus one more when Detail has a fractional part. `npm run perf` measures the shading cost in ms per megapixel per frame. Below is one run on an Apple M3 Pro (WebGPU; WebGL2 gives similar numbers). Absolute numbers varied up to 2× between sessions on the same machine (probably its thermal state), so compare rows rather than reading them as exact budgets.

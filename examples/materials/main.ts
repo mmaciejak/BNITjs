@@ -1,6 +1,7 @@
 /**
  * Product materials: Principled BSDF materials using the physical extras (coat, transmission,
- * sheen, thin film, anisotropy, specular level and tint) under the file's baked Sky World.
+ * sheen, thin film, anisotropy, specular level and tint), plus Glass BSDF, Metallic BSDF and a Mix
+ * Shader, under the file's baked Sky World.
  * window.__materials exposes the state for the automated check.
  */
 import { PMREMGenerator, PerspectiveCamera, Scene, WebGPURenderer } from "three/webgpu";
@@ -32,7 +33,7 @@ view.appendChild(renderer.domElement);
 const scene = new Scene();
 const camera = new PerspectiveCamera(30, 1, 0.1, 100);
 // glTF is Y-up: Blender's X stays X, Blender's Z is Y.
-camera.position.set(0, 1.2, 9);
+camera.position.set(0, 0.4, 10);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 function resize() {
