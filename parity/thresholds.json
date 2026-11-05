@@ -110,6 +110,8 @@
     "white_noise_3d": { "outliers": 0.006 },
     "white_noise_4d": { "outliers": 0.006 },
     "white_noise_value": { "outliers": 0.006 },
+    "wireframe_bumpy": { "mae": 3, "outliers": 0.09 },
+    "wireframe_grid": { "mae": 3, "outliers": 0.09 },
     "world_sky_multiple_scattering": { "outliers": 0.015 }
   }
 }

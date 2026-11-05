@@ -58,6 +58,7 @@ import { vectorMath } from './vectorMath.js';
 import { voronoi } from './voronoi.js';
 import { wave } from './wave.js';
 import { whiteNoise } from './whiteNoise.js';
+import { wireframe } from './wireframe.js';
 import { worldOutput } from './worldOutput.js';
 import { combineXYZ, separateXYZ } from './xyz.js';
 
@@ -128,6 +129,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeVectorTransform: vectorTransform,
   ShaderNodeDisplacement: displacement,
   ShaderNodeVectorDisplacement: vectorDisplacement,
+  ShaderNodeWireframe: wireframe,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

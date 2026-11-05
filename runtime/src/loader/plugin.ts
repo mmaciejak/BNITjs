@@ -1,4 +1,12 @@
-import { DoubleSide, type Material, type Object3D, type Texture } from 'three/webgpu';
+import {
+  BufferAttribute,
+  type BufferGeometry,
+  DoubleSide,
+  type Material,
+  type Mesh,
+  type Object3D,
+  type Texture,
+} from 'three/webgpu';
 import type {
   GLTF,
   GLTFLoader,
@@ -7,6 +15,7 @@ import type {
 } from 'three/addons/loaders/GLTFLoader.js';
 import { buildMaterial, type BuildOptions, textureIndices } from '../graph/build.js';
 import { restoreParams } from '../params/params.js';
+import { BARYCENTRIC_ATTRIBUTE } from '../nodes/wireframe.js';
 import { buildWorld, WORLD_KEY } from '../graph/world.js';
 import {
   type ColorAttributes,
@@ -137,8 +146,13 @@ export class BlenderShaderGraphPlugin implements GLTFLoaderPlugin {
     // GLTFLoader clones most materials; give the clones their params back.
     result.scene.traverse((object) => {
       const material = (object as { material?: Material | Material[] }).material;
-      for (const m of Array.isArray(material) ? material : material ? [material] : []) {
+      const materials = Array.isArray(material) ? material : material ? [material] : [];
+      for (const m of materials) {
         restoreParams(m as Parameters<typeof restoreParams>[0]);
+      }
+      const mesh = object as Mesh;
+      if (mesh.isMesh && materials.some((m) => m.userData?.blenderShaderGraph?.barycentric)) {
+        mesh.geometry = withBarycentrics(mesh.geometry);
       }
     });
     return this.buildWorld(result);
@@ -151,4 +165,19 @@ export function registerBlenderShaderGraph(
   options: LoaderOptions = {},
 ): GLTFLoader {
   return loader.register((parser) => new BlenderShaderGraphPlugin(parser, options));
+}
+
+const withBarycentricsCache = new WeakMap<BufferGeometry, BufferGeometry>();
+
+/** A non-indexed copy of the geometry with (1,0,0), (0,1,0), (0,0,1) per triangle (Wireframe). */
+function withBarycentrics(geometry: BufferGeometry): BufferGeometry {
+  const cached = withBarycentricsCache.get(geometry);
+  if (cached) return cached;
+  const flat = geometry.index ? geometry.toNonIndexed() : geometry.clone();
+  const count = flat.getAttribute('position').count;
+  const data = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) data[i * 3 + (i % 3)] = 1;
+  flat.setAttribute(BARYCENTRIC_ATTRIBUTE, new BufferAttribute(data, 3));
+  withBarycentricsCache.set(geometry, flat);
+  return flat;
 }

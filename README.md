@@ -165,7 +165,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | UV Map | Input | ✅ Supported | 3 | Resolves names via the exported UV map list; From Instancer not supported |
 | Value | Input | ✅ Supported | 2 | |
 | Volume Info | Input | ❌ Not planned | — | Volumes |
-| Wireframe | Input | 🚧 Not yet | 7 | Needs a barycentric attribute |
+| Wireframe | Input | 🟡 Partial | 7 | World size parity-tested (wire coverage matches; hard edges are anti-aliased differently). Pixel Size follows Cycles but is not parity-tested. Meshes that use it are de-indexed on load to get per-triangle barycentrics |
 
 ### Shader
 

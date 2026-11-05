@@ -89,6 +89,10 @@ export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): B
   material.params = params;
   material.userData.blenderShaderGraph = {
     warnings: evaluator.warnings,
+    // Wireframe needs per-triangle barycentrics; the loader adds them to the meshes.
+    ...(Object.values(graph.nodes).some((n) => n.type === 'ShaderNodeWireframe')
+      ? { barycentric: true }
+      : {}),
     ...(params.names().length ? { params: registerParams(params) } : {}),
   };
   return { material, params, warnings: evaluator.warnings };
