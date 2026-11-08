@@ -7,6 +7,7 @@ Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 - The project is now called **BNITjs** (repository <https://github.com/mmaciejak/BNITjs>): npm package `bnitjs`, Blender extension id `bnitjs`, panel "BNITjs (three.js)", graph generator name `bnitjs`, schema id `urn:bnitjs:graph:1`. The glTF extension keeps its name, `EXT_blender_shader_graph`, so existing exports still load.
 - Glossy BSDF maps Anisotropy and Rotation.
 - GitHub Actions no longer runs on every push. The lint and test workflow runs before releases and on demand, and the parity workflow runs only on demand (no GPU on the runners).
+- Release workflow: pushing a `vX.Y.Z` tag runs the checks, builds the Blender extension zip and the npm tarball, and attaches them to a GitHub Release. Nothing is published to npm or extensions.blender.org.
 
 ## phase-8: Shader combination and advanced Principled
 

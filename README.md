@@ -31,6 +31,8 @@ The AGPL also covers network use. If you serve a modified version of the runtime
 
 GitHub Actions doesn't run on every push. The `CI` workflow (lint, runtime and exporter tests) runs before each release and can be started from the Actions tab. The `Parity` workflow is manual only: the runners have no GPU, so it can only compare against WebGL2 rendered in software. The real parity check is `tools/check.sh`.
 
+To release, set the same version in `runtime/package.json` and `exporter/blender_manifest.toml`, then push a tag `vX.Y.Z`. The `Release` workflow runs the checks, builds the extension zip (`bnitjs-X.Y.Z.zip`) and the npm tarball (`bnitjs-X.Y.Z.tgz`), and attaches both to a GitHub Release (marked as a pre-release for 0.x). Starting it from the Actions tab builds the files without making a release. Nothing is published to npm or extensions.blender.org yet.
+
 ```sh
 # Runtime
 cd runtime && npm install
@@ -132,7 +134,7 @@ A full-screen 1080p view is about 2 megapixels. Rules of thumb:
 
 ### Using the exporter
 
-1. Install the extension zip: Edit › Preferences › Get Extensions › ⌄ › Install from Disk…
+1. Install the extension zip (from [GitHub Releases](https://github.com/mmaciejak/BNITjs/releases)): Edit › Preferences › Get Extensions › ⌄ › Install from Disk…
 2. Export with File › Export › glTF 2.0 as usual. Every material gets its node graph in the `EXT_blender_shader_graph` extension; the normal PBR material stays in the file as a fallback.
 3. Material Properties › **BNITjs (three.js)** lists the nodes that the runtime can't evaluate live yet.
 

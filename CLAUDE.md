@@ -8,6 +8,7 @@ The plan is in [SPEC.md](SPEC.md). Read it before starting a phase.
 - Commit only when the tests for that feature pass: unit tests, plus a parity test for texture and color nodes. Run `tools/check.sh` (every suite: Python lint, exporter tests on both Blender versions, runtime, parity on WebGPU and WebGL2) before each commit, not just the suite you touched.
 - A commit that adds or changes node support updates the README node table in the same commit. Edit `schema/node-support.json`, then run `python3 tools/sync_node_support.py`. The script regenerates the README table and `exporter/node_support.py`, and `tools/check.sh` (and the release checks) fail if they are out of sync.
 - GitHub Actions doesn't run on push. `ci.yml` runs from `release.yml` and by hand, and `parity.yml` runs only by hand. `tools/check.sh` is the gate before each commit.
+- Release = matching versions in `runtime/package.json` and `exporter/blender_manifest.toml`, then a `vX.Y.Z` tag. It makes a GitHub Release only: don't publish to npm or extensions.blender.org until the user says so.
 - Commit messages use the `type(scope): message` style, e.g. `feat(nodes): add Voronoi F1 with euclidean distance`.
 - When a phase ends, add a `CHANGELOG.md` entry and tag it `phase-N`.
 

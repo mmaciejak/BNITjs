@@ -1,0 +1,91 @@
+name: Release
+
+# Push a tag vX.Y.Z to run the checks, build the Blender extension zip and the npm tarball, and
+# attach both to a GitHub Release. Start it from the Actions tab to build the files without
+# releasing (they are uploaded as a workflow artifact).
+#
+# Nothing is published to npm or extensions.blender.org: runtime/package.json stays "private".
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check versions
+        id: version
+        run: |
+          pkg=$(node -p "require('./runtime/package.json').version")
+          manifest=$(python3 -c "import tomllib; print(tomllib.load(open('exporter/blender_manifest.toml', 'rb'))['version'])")
+          echo "package.json: $pkg, blender_manifest.toml: $manifest"
+          if [ "$pkg" != "$manifest" ]; then
+            echo "::error::runtime/package.json ($pkg) and exporter/blender_manifest.toml ($manifest) disagree"
+            exit 1
+          fi
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "$GITHUB_REF_NAME" != "v$pkg" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match version $pkg"
+            exit 1
+          fi
+          echo "version=$pkg" >> "$GITHUB_OUTPUT"
+
+      # AGPL: ship the license text in both packages.
+      - name: Add license and readme to the packages
+        run: |
+          cp LICENSE exporter/
+          cp LICENSE README.md runtime/
+
+      - name: Install Blender runtime libraries
+        run: sudo apt-get update && sudo apt-get install -y libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6 libgl1 libegl1
+      - name: Cache Blender
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: blender
+          key: blender-5.2.2-linux-x64
+      - name: Download Blender
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL "https://download.blender.org/release/Blender5.2/blender-5.2.2-linux-x64.tar.xz" -o blender.tar.xz
+          mkdir blender && tar -xf blender.tar.xz -C blender --strip-components=1
+      - name: Build the Blender extension
+        run: |
+          mkdir -p dist
+          ./blender/blender --command extension build --source-dir exporter --output-dir dist
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: runtime/package-lock.json
+      - name: Build the npm package
+        working-directory: runtime
+        run: |
+          npm ci
+          npm run build
+          npm pack --pack-destination ../dist
+
+      - run: ls -l dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bnitjs-${{ steps.version.outputs.version }}
+          path: dist/*
+
+      - name: Create the GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          prerelease=""
+          case "$VERSION" in 0.*) prerelease="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" dist/* --title "BNITjs $VERSION" --generate-notes $prerelease
