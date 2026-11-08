@@ -29,6 +29,8 @@ The AGPL also covers network use. If you serve a modified version of the runtime
 
 `tools/check.sh` runs every suite: Python lint, node-table sync, exporter tests on Blender 4.2 and 5.2, runtime lint, typecheck, tests and build, the parity harness on WebGPU and WebGL2, and the configurator and materials examples on both backends. Run it before every commit; it keeps the Mac awake while it runs.
 
+GitHub Actions doesn't run on every push. The `CI` workflow (lint, runtime and exporter tests) runs before each release and can be started from the Actions tab. The `Parity` workflow is manual only: the runners have no GPU, so it can only compare against WebGL2 rendered in software. The real parity check is `tools/check.sh`.
+
 ```sh
 # Runtime
 cd runtime && npm install
