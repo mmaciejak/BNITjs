@@ -8,7 +8,7 @@ Take a Blender material built from shader nodes, export it with a Blender add-on
 
 Repository: <https://github.com/mmaciejak/BNITjs>. See [SPEC.md](SPEC.md) for the full design and roadmap.
 
-> **Status:** Phase 9 done. Every texture node except Radial Tiling is live (Noise, Voronoi, Wave, Gabor and the rest match Blender), as are bump, normal and displacement mapping, shader mixing and the physical Principled inputs. The World can be shown as the background. Nodes that can't run live (Ambient Occlusion, Bevel …) are baked at export, a material can also be baked into the standard glTF material for model-viewer, and `bakeMaterial` bakes in the browser. 465 parity scenes match Blender on WebGPU and WebGL2. Phase 10 (hard-tier approximations) is next.
+> **Status:** Phase 10 done. Every texture node is live, Radial Tiling included (Noise, Voronoi, Wave, Gabor and the rest match Blender), as are bump, normal and displacement mapping, shader mixing, the physical Principled inputs and Light Path. Hard-to-render shaders (Toon, Translucent, Sheen, Subsurface Scattering, Holdout, Shader to RGB) are approximated, and their limits are listed in the table. Nodes that can't run live are baked at export, materials can be baked for model-viewer, and `bakeMaterial` bakes in the browser. 480 parity scenes match Blender on WebGPU and WebGL2. Phase 11 (release) is next.
 
 ## License
 

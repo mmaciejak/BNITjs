@@ -9,6 +9,21 @@ Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 - GitHub Actions no longer runs on every push. The lint and test workflow runs before releases and on demand, and the parity workflow runs only on demand (no GPU on the runners).
 - Release workflow: pushing a `vX.Y.Z` tag runs the checks, builds the Blender extension zip and the npm tarball, and attaches them to a GitHub Release. Nothing is published to npm or extensions.blender.org.
 
+## phase-10: Hard-tier approximations
+
+- Light Path (🟡): everything a rasterizer shades is seen by a camera ray. Is Camera Ray is 1, the other ray types and depths are 0, and Ray Length is the camera ray's length measured from the near clip plane, where Cycles starts camera rays. Parity-tested with both cameras.
+- Radial Tiling (✅): ported from Blender 5.2's GLSL, which Cycles shares. Covers every output, integer and fractional sides, roundness and Normalize. Ten parity scenes; pixels on segment borders may differ.
+- Shaders (🟡, no parity test because lighting differs from Cycles):
+  - Sheen BSDF: three.js's sheen over a black, non-specular base.
+  - Translucent BSDF: a diffuse surface with the normal reversed, which is exact for three.js's lights.
+  - Subsurface Scattering: a diffuse surface of its Color.
+  - Toon BSDF: three.js's toon material, with a gradient that reproduces Cycles' toon lobe for direct light. It is lit by lights only, not by `scene.environment`.
+  - Holdout: writes transparent black without blending, so it cuts a hole in the frame (parity-tested against Cycles' black). Inside Mix or Add Shader it is rendered as Transparent.
+  - Shader to RGB (EEVEE only): exact for Emission and Transparent. A BSDF gives its three.js-lit color when the result reaches the output through an Emission shader (the material's `outputNode`); otherwise its base color stands in.
+- Hair BSDF and Principled Hair BSDF are ❌: they shade strands, which glTF meshes don't have.
+- The materials example gets a key light, a Toon sphere and a Shader to RGB cel shader. Its check catches shader errors on both backends.
+- Found along the way: a node marked 🚧 is baked at export (phase 9), so a node's status must change before its parity references are rendered.
+
 ## phase-9: Baking and model-viewer fallback
 
 - Export-time bake: every linked non-shader output of a node the runtime can't evaluate live (Ambient Occlusion, Bevel, Point Density, and nodes not supported yet) is baked with Cycles into a texture on the object's UV map. In the graph, the node is replaced by an Image Texture, so everything downstream stays live. The bake runs on copies (a temporary scene with a copy of the object, linking the scene's other visible objects so AO sees them) and leaves the user's data alone. Values are stored as RGBE PNGs, with a per-channel offset when they are negative (`offset` in the image reference; nodes carry `baked`). Parity-tested: Bevel normal and AO on a self-occluding heightfield.
