@@ -189,7 +189,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Fresnel | Input | ✅ Supported | 3 | Front faces |
 | Geometry | Input | 🟡 Partial | 7 | Position, Normal, Tangent, True Normal, Incoming, Backfacing. Not yet (0): Parametric, Random Per Island (exported as an attribute), Pointiness (🧊 baked to a vertex attribute) |
 | Layer Weight | Input | ✅ Supported | 3 | Front faces |
-| Light Path | Input | 🚧 Not yet | 10 | Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1) |
+| Light Path | Input | 🟡 Partial | 10 | Seen by a camera ray, as everything a rasterizer shades: Is Camera Ray 1, the other ray types and depths 0 (parity-tested). Ray Length is the camera ray's length from the near clip plane, as in Cycles (parity-tested, both cameras). Effects that depend on other ray types (hiding from shadows or reflections) do not apply |
 | Object Info | Input | ✅ Supported | 3 | Random matches Cycles for non-instanced objects (name hash) |
 | Particle Info | Input | ❌ Not planned | — | Out of scope for mesh materials |
 | Point Info | Input | ❌ Not planned | — | Out of scope for mesh materials |

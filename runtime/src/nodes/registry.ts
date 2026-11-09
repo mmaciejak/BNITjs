@@ -48,6 +48,7 @@ import { diffuse } from './diffuse.js';
 import { displacement, vectorDisplacement } from './displacement.js';
 import { emission } from './emission.js';
 import { environmentTexture } from './environmentTexture.js';
+import { lightPath } from './lightPath.js';
 import { mapping } from './mapping.js';
 import { math } from './math.js';
 import { materialOutput } from './output.js';
@@ -114,6 +115,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeObjectInfo: objectInfo,
   ShaderNodeNormal: normal,
   ShaderNodeCameraData: cameraData,
+  ShaderNodeLightPath: lightPath,
   ShaderNodeUVMap: uvMap,
   ShaderNodeVertexColor: colorAttribute,
   ShaderNodeAttribute: attribute,

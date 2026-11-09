@@ -115,9 +115,9 @@
     ],
     "section": "Input",
     "category": "Input",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Only rasterizer-meaningful outputs (e.g. Is Camera Ray = 1)"
+    "notes": "Seen by a camera ray, as everything a rasterizer shades: Is Camera Ray 1, the other ray types and depths 0 (parity-tested). Ray Length is the camera ray's length from the near clip plane, as in Cycles (parity-tested, both cameras). Effects that depend on other ray types (hiding from shadows or reflections) do not apply"
   },
   {
     "name": "Object Info",

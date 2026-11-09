@@ -51,7 +51,7 @@ STATUS = {
     "ShaderNodeInvert": "supported",
     "ShaderNodeLayerWeight": "supported",
     "ShaderNodeLightFalloff": "not_planned",
-    "ShaderNodeLightPath": "planned",
+    "ShaderNodeLightPath": "partial",
     "ShaderNodeMapRange": "supported",
     "ShaderNodeMapping": "supported",
     "ShaderNodeMath": "supported",
