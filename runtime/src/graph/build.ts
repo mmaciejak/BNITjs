@@ -67,18 +67,38 @@ function applyDisplacement(
 export function buildMaterial(graphJson: unknown, options: BuildOptions = {}): BuildResult {
   const graph = parseGraph(graphJson);
   const params = new MaterialParams(graph);
-  const evaluator = new GraphEvaluator(graph, {
-    registry: createRegistry(options.nodes),
-    textures: options.textures,
-    params,
-    onWarning: options.onWarning,
-  });
-  const outputs = evaluator.outputs(graph.output);
-  const surface = outputs.Surface ?? null;
-  const material = materialFromClosure(
-    isClosure(surface) ? surface : null,
-    options,
-  ) as BlenderShaderMaterial;
+  const evaluate = (litOutput: boolean) => {
+    const evaluator = new GraphEvaluator(graph, {
+      registry: createRegistry(options.nodes),
+      textures: options.textures,
+      params,
+      onWarning: options.onWarning,
+      litOutput,
+    });
+    return { evaluator, outputs: evaluator.outputs(graph.output) };
+  };
+  let { evaluator, outputs } = evaluate(!options.unlit);
+  let surface = outputs.Surface ?? null;
+  let material: BlenderShaderMaterial;
+  const lit = evaluator.litSource;
+  if (lit && isClosure(surface) && surface.kind === 'emission') {
+    // Shader to RGB: light the BSDF, then replace the material's output by the Surface's emission,
+    // which reads the lit color through `output`.
+    material = materialFromClosure(lit, options) as BlenderShaderMaterial;
+    const alpha = surface.alpha;
+    material.outputNode = vec4(surface.color, alpha ?? 1);
+    if (alpha) material.transparent = true;
+  } else {
+    if (lit) {
+      // The lit color would feed the material's own lighting: use base colors instead.
+      ({ evaluator, outputs } = evaluate(false));
+      surface = outputs.Surface ?? null;
+    }
+    material = materialFromClosure(
+      isClosure(surface) ? surface : null,
+      options,
+    ) as BlenderShaderMaterial;
+  }
   const offset = outputs.Displacement;
   if (offset && !isClosure(offset)) {
     applyDisplacement(material, offset as Vec3Node, graph.displacementMethod ?? 'BUMP', (m) =>

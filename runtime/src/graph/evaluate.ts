@@ -1,4 +1,4 @@
-import { float, vec3 } from 'three/tsl';
+import { float, output, vec3 } from 'three/tsl';
 import type { Texture } from 'three/webgpu';
 import type { MaterialParams } from '../params/params.js';
 import { type Closure, isClosure } from '../shaders/closures.js';
@@ -38,6 +38,12 @@ export interface NodeContext {
   /** A glTF texture the loader resolved (by index into the glTF textures array). */
   texture(index: number): Texture | undefined;
   warn(message: string): void;
+  /**
+   * The lit color of a BSDF (Shader to RGB): three.js's lighting result, valid only in the
+   * material's outputNode. Null when lit output is off (unlit, or the fallback pass of
+   * buildMaterial) or another BSDF already claimed it.
+   */
+  litOutput(closure: Closure): { color: Vec3Node; alpha: FloatNode } | null;
 }
 
 /** Builds the outputs of one Blender node type, keyed by output socket identifier. */
@@ -50,11 +56,15 @@ export interface EvaluateOptions {
   textures?: ReadonlyMap<number, Texture>;
   params?: MaterialParams;
   onWarning?: (message: string) => void;
+  /** Whether Shader to RGB may use the lit output of a BSDF (default true). */
+  litOutput?: boolean;
 }
 
 /** Walks a graph from its output and builds TSL for every node it reaches (memoized). */
 export class GraphEvaluator {
   readonly warnings: string[] = [];
+  /** The BSDF whose lit color Shader to RGB uses, if any. */
+  litSource: Closure | null = null;
   private readonly links: Map<string, GraphLink>;
   private readonly cache = new Map<string, Record<string, NodeOutput>>();
   private readonly building = new Set<string>();
@@ -154,6 +164,12 @@ export class GraphEvaluator {
       param: () => this.options.params?.nodeFor(id),
       texture: (index) => this.options.textures?.get(index),
       warn: (message) => this.warn(`${node.type} ("${id}"): ${message}`),
+      litOutput: (closure) => {
+        if (this.options.litOutput === false) return null;
+        if (this.litSource && this.litSource !== closure) return null;
+        this.litSource = closure;
+        return { color: output.rgb as Vec3Node, alpha: output.a as FloatNode };
+      },
     };
   }
 }

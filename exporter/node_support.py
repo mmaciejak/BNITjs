@@ -79,7 +79,7 @@ STATUS = {
     "ShaderNodeSeparateHSV": "supported",
     "ShaderNodeSeparateRGB": "supported",
     "ShaderNodeSeparateXYZ": "supported",
-    "ShaderNodeShaderToRGB": "planned",
+    "ShaderNodeShaderToRGB": "partial",
     "ShaderNodeSqueeze": "partial",
     "ShaderNodeSubsurfaceScattering": "partial",
     "ShaderNodeTangent": "partial",

@@ -4,8 +4,8 @@
 
 Writes examples/materials/materials.glb: a row of spheres with Principled BSDF materials that use
 the physical extras (coat, transmission, sheen, thin film, anisotropy, specular level and tint), a
-second row with other shader nodes (Glass BSDF, Metallic BSDF, Mix Shader, Toon BSDF), and a Sky Texture
-World (baked by the exporter).
+second row with other shader nodes (Glass BSDF, Metallic BSDF, Mix Shader, Toon BSDF, a Shader to
+RGB cel shader), and a Sky Texture World (baked by the exporter).
 """
 
 import os
@@ -129,7 +129,32 @@ def toon(nodes, links):
     return node.outputs[0]
 
 
-second_row = [("Glass BSDF", glass), ("Gold", gold), ("Worn Paint", worn_paint), ("Toon", toon)]
+def cel(nodes, links):
+    """Diffuse → Shader to RGB → a constant Color Ramp → Emission: three bands of light."""
+    diffuse = nodes.new("ShaderNodeBsdfDiffuse")
+    diffuse.inputs["Color"].default_value = (0.2, 0.6, 0.3, 1)
+    to_rgb = nodes.new("ShaderNodeShaderToRGB")
+    ramp = nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.interpolation = "CONSTANT"
+    ramp.color_ramp.elements[0].color = (0.02, 0.06, 0.04, 1)
+    ramp.color_ramp.elements[1].position = 0.15
+    ramp.color_ramp.elements[1].color = (0.1, 0.35, 0.2, 1)
+    band = ramp.color_ramp.elements.new(0.45)
+    band.color = (0.4, 0.9, 0.55, 1)
+    emission = nodes.new("ShaderNodeEmission")
+    links.new(diffuse.outputs[0], to_rgb.inputs["Shader"])
+    links.new(to_rgb.outputs["Color"], ramp.inputs["Fac"])
+    links.new(ramp.outputs["Color"], emission.inputs["Color"])
+    return emission.outputs[0]
+
+
+second_row = [
+    ("Glass BSDF", glass),
+    ("Gold", gold),
+    ("Worn Paint", worn_paint),
+    ("Toon", toon),
+    ("Cel (Shader to RGB)", cel),
+]
 for index, (name, build) in enumerate(second_row):
     x = (index - (len(second_row) - 1) / 2) * 1.25
     bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=0.5, location=(x, 0, -0.65))

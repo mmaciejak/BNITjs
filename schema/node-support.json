@@ -971,9 +971,9 @@
     ],
     "section": "Converter",
     "category": "Converter",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Needs custom lighting inside the material"
+    "notes": "EEVEE only (Cycles does not support it). Emission and Transparent inputs are exact. A BSDF gives its color lit by three.js when the result reaches the Material Output through an Emission shader (the usual toon setup); otherwise, in unlit mode, or for a second BSDF in one material, its base color stands in"
   },
   {
     "name": "Squeeze Value (Legacy)",

@@ -293,7 +293,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Separate Color | Converter | ✅ Supported | 3 | RGB, HSV, HSL |
 | Separate HSV / Separate RGB | Converter | ✅ Supported | 3 | Legacy, Blender 4.2 only; same code as Separate Color |
 | Separate XYZ | Converter | ✅ Supported | 3 | |
-| Shader to RGB | Converter | 🚧 Not yet | 10 | Needs custom lighting inside the material |
+| Shader to RGB | Converter | 🟡 Partial | 10 | EEVEE only (Cycles does not support it). Emission and Transparent inputs are exact. A BSDF gives its color lit by three.js when the result reaches the Material Output through an Emission shader (the usual toon setup); otherwise, in unlit mode, or for a second BSDF in one material, its base color stands in |
 | Squeeze Value (Legacy) | Converter | 🟡 Partial | 3 | EEVEE formula. Cycles doesn't implement this node, so there is no parity test |
 | Vector Math | Converter | ✅ Supported | 3 | All operations (Power, Sign, Round need Blender 4.3+/5.x); Cycles semantics |
 | Wavelength | Converter | ✅ Supported | 7 | Interpolates a table measured from Cycles (tools/measure_spectra.py), including Cycles' extension down to 375 nm |

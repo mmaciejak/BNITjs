@@ -55,6 +55,7 @@ import { math } from './math.js';
 import { materialOutput } from './output.js';
 import { principled } from './principled.js';
 import { rgb } from './rgb.js';
+import { shaderToRGB } from './shaderToRGB.js';
 import { texCoord } from './texCoord.js';
 import { toon } from './toon.js';
 import { uvMap } from './uvMap.js';
@@ -146,6 +147,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBsdfSheen: sheen,
   ShaderNodeBsdfToon: toon,
   ShaderNodeHoldout: holdout,
+  ShaderNodeShaderToRGB: shaderToRGB,
   ShaderNodeBsdfTranslucent: translucent,
   ShaderNodeSubsurfaceScattering: subsurface,
   ShaderNodeBsdfPrincipled: principled,
