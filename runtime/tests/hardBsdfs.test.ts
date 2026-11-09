@@ -14,4 +14,12 @@ describe('hard-tier BSDFs (Phase 10)', () => {
     expect(m.sheenRoughnessNode).toBeTruthy();
     expect(m.specularIntensityNode).toBeTruthy();
   });
+
+  it('Translucent BSDF is a diffuse surface with the normal reversed', () => {
+    const { m, warnings } = physical('ShaderNodeBsdfTranslucent');
+    expect(warnings).toEqual([]);
+    expect(m.normalNode).toBeTruthy();
+    expect(m.specularIntensityNode).toBeTruthy();
+    expect(m.sheenNode).toBeNull();
+  });
 });

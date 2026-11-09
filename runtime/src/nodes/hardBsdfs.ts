@@ -3,7 +3,11 @@
  * parity-tested: lighting differs between three.js and Cycles.
  */
 import { float, vec3 } from 'three/tsl';
-import type { NodeImpl } from '../graph/evaluate.js';
+import type { NodeContext, NodeImpl } from '../graph/evaluate.js';
+import { shadingNormalBlender } from './space.js';
+
+const normalOf = (ctx: NodeContext) =>
+  ctx.isLinked('Normal') ? ctx.vec3('Normal') : shadingNormalBlender();
 
 /** Sheen BSDF: three.js's sheen layer (Charlie) over a black, non-specular base. */
 export const sheen: NodeImpl = (ctx) => {
@@ -25,3 +29,22 @@ export const sheen: NodeImpl = (ctx) => {
     },
   };
 };
+
+/**
+ * Translucent BSDF: Lambertian reflection on the side opposite the normal, which is a diffuse
+ * surface with the normal reversed. Exact for three.js's lights; light is not attenuated through
+ * the object.
+ */
+export const translucent: NodeImpl = (ctx) => ({
+  BSDF: {
+    kind: 'principled',
+    baseColor: ctx.vec3('Color', [0.8, 0.8, 0.8]),
+    metallic: float(0),
+    roughness: float(1),
+    alpha: float(1),
+    transparent: false,
+    emission: vec3(0),
+    specular: float(0),
+    normal: normalOf(ctx).negate(),
+  },
+});

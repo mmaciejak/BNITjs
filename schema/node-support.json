@@ -432,9 +432,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Fake"
+    "notes": "Lambertian reflection on the side opposite the normal, which is a diffuse physical material with the normal reversed (exact for three.js's lights). Light is not attenuated through the object. No parity test (lighting differs)"
   },
   {
     "name": "Transparent BSDF",

@@ -29,7 +29,7 @@ STATUS = {
     "ShaderNodeBsdfRefraction": "partial",
     "ShaderNodeBsdfSheen": "partial",
     "ShaderNodeBsdfToon": "planned",
-    "ShaderNodeBsdfTranslucent": "planned",
+    "ShaderNodeBsdfTranslucent": "partial",
     "ShaderNodeBsdfTransparent": "partial",
     "ShaderNodeBump": "supported",
     "ShaderNodeCameraData": "supported",

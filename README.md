@@ -223,7 +223,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Specular BSDF | Shader | 🟡 Partial | 8 | EEVEE-only (Cycles renders it black): mapped like EEVEE onto the physical material (base color, specular color, roughness, emission, transparency, clear coat) |
 | Subsurface Scattering | Shader | 🚧 Not yet | 10 | Thickness/translucency fake |
 | Toon BSDF | Shader | 🚧 Not yet | 10 | Custom lighting |
-| Translucent BSDF | Shader | 🚧 Not yet | 10 | Fake |
+| Translucent BSDF | Shader | 🟡 Partial | 10 | Lambertian reflection on the side opposite the normal, which is a diffuse physical material with the normal reversed (exact for three.js's lights). Light is not attenuated through the object. No parity test (lighting differs) |
 | Transparent BSDF | Shader | 🟡 Partial | 8 | Opacity for Mix/Add Shader (straight alpha blending, exact only when blending in linear space). A tinted Color is rendered untinted |
 | Volume Absorption | Shader | ❌ Not planned | — | Volumes |
 | Volume Coefficients | Shader | ❌ Not planned | — | Volumes. Blender 5.x |
