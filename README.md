@@ -269,7 +269,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Mapping | Vector | ✅ Supported | 2 | Point, Texture, Vector, Normal |
 | Normal | Vector | ✅ Supported | 3 | |
 | Normal Map | Vector | 🟡 Partial | 7 | Every space and Strength (parity-tested). Tangent space builds its frame from screen-space derivatives of the UV map instead of MikkTSpace tangents: exact on flat, uniformly mapped surfaces, close on curved ones |
-| Radial Tiling | Vector | 🚧 Not yet | 10 | New in Blender 5. Deferred to phase 10: a large port (≈900 lines of Blender's GLSL) |
+| Radial Tiling | Vector | ✅ Supported | 10 | New in Blender 5. Ported from Blender's GLSL (shared with Cycles): every output, integer and fractional sides, roundness and Normalize (parity-tested; pixels on segment borders may differ) |
 | Vector Curves | Vector | ✅ Supported | 3 | Cycles table incl. extrapolation |
 | Vector Displacement | Vector | 🟡 Partial | 7 | Object and World space (parity-tested), as Displacement. Not yet: Tangent space (treated as Object) |
 | Vector Rotate | Vector | ✅ Supported | 3 | |

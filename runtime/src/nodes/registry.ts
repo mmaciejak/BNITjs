@@ -54,6 +54,7 @@ import { mapping } from './mapping.js';
 import { math } from './math.js';
 import { materialOutput } from './output.js';
 import { principled } from './principled.js';
+import { radialTiling } from './radialTiling.js';
 import { rgb } from './rgb.js';
 import { shaderToRGB } from './shaderToRGB.js';
 import { texCoord } from './texCoord.js';
@@ -147,6 +148,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBsdfSheen: sheen,
   ShaderNodeBsdfToon: toon,
   ShaderNodeHoldout: holdout,
+  ShaderNodeRadialTiling: radialTiling,
   ShaderNodeShaderToRGB: shaderToRGB,
   ShaderNodeBsdfTranslucent: translucent,
   ShaderNodeSubsurfaceScattering: subsurface,

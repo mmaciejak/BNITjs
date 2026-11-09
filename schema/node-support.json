@@ -765,9 +765,9 @@
     ],
     "section": "Vector",
     "category": "Vector",
-    "status": "planned",
+    "status": "supported",
     "phase": 10,
-    "notes": "New in Blender 5. Deferred to phase 10: a large port (≈900 lines of Blender's GLSL)"
+    "notes": "New in Blender 5. Ported from Blender's GLSL (shared with Cycles): every output, integer and fractional sides, roundness and Normalize (parity-tested; pixels on segment borders may differ)"
   },
   {
     "name": "Vector Curves",

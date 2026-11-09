@@ -72,7 +72,7 @@ STATUS = {
     "ShaderNodeRGB": "supported",
     "ShaderNodeRGBCurve": "supported",
     "ShaderNodeRGBToBW": "supported",
-    "ShaderNodeRadialTiling": "planned",
+    "ShaderNodeRadialTiling": "supported",
     "ShaderNodeRaycast": "not_planned",
     "ShaderNodeScript": "not_planned",
     "ShaderNodeSeparateColor": "supported",
