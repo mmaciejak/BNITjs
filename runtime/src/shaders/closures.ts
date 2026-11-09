@@ -1,10 +1,11 @@
+import type { Texture } from 'three/webgpu';
 import type { FloatNode, Vec3Node } from '../graph/convert.js';
 
 /**
  * A shader-socket value. Blender shaders become closures; the material builder maps the
  * closure that reaches the Material Output onto a three.js node material.
  */
-export type Closure = PrincipledClosure | EmissionClosure;
+export type Closure = PrincipledClosure | EmissionClosure | ToonClosure;
 
 export interface PrincipledClosure {
   kind: 'principled';
@@ -39,6 +40,16 @@ export interface EmissionClosure {
   color: Vec3Node;
   /** Opacity (1 − transparency) when mixed with Transparent BSDF; absent means opaque. */
   alpha?: FloatNode;
+}
+
+/** Toon BSDF (diffuse): three.js's toon material with a gradient made from Size and Smooth. */
+export interface ToonClosure {
+  kind: 'toon';
+  color: Vec3Node;
+  /** Light intensity by N·L · 0.5 + 0.5 (three.js's gradientMap). */
+  gradient: Texture;
+  /** Shading normal in Blender's world axes, when the Normal input is linked. */
+  normal?: Vec3Node;
 }
 
 export function isClosure(value: unknown): value is Closure {

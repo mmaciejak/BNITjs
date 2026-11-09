@@ -56,6 +56,7 @@ import { materialOutput } from './output.js';
 import { principled } from './principled.js';
 import { rgb } from './rgb.js';
 import { texCoord } from './texCoord.js';
+import { toon } from './toon.js';
 import { uvMap } from './uvMap.js';
 import { value } from './value.js';
 import { vectorMath } from './vectorMath.js';
@@ -143,6 +144,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBsdfMetallic: metallic,
   ShaderNodeBsdfRefraction: refraction,
   ShaderNodeBsdfSheen: sheen,
+  ShaderNodeBsdfToon: toon,
   ShaderNodeBsdfTranslucent: translucent,
   ShaderNodeSubsurfaceScattering: subsurface,
   ShaderNodeBsdfPrincipled: principled,

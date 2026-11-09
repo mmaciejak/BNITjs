@@ -4,7 +4,7 @@
 
 Writes examples/materials/materials.glb: a row of spheres with Principled BSDF materials that use
 the physical extras (coat, transmission, sheen, thin film, anisotropy, specular level and tint), a
-second row with other shader nodes (Glass BSDF, Metallic BSDF, Mix Shader), and a Sky Texture
+second row with other shader nodes (Glass BSDF, Metallic BSDF, Mix Shader, Toon BSDF), and a Sky Texture
 World (baked by the exporter).
 """
 
@@ -121,8 +121,17 @@ def worn_paint(nodes, links):
     return mix.outputs[0]
 
 
-for index, (name, build) in enumerate([("Glass BSDF", glass), ("Gold", gold), ("Worn Paint", worn_paint)]):
-    x = (index - 1) * 1.25
+def toon(nodes, links):
+    node = nodes.new("ShaderNodeBsdfToon")
+    node.inputs["Color"].default_value = (0.9, 0.35, 0.1, 1)
+    node.inputs["Size"].default_value = 0.6
+    node.inputs["Smooth"].default_value = 0.05
+    return node.outputs[0]
+
+
+second_row = [("Glass BSDF", glass), ("Gold", gold), ("Worn Paint", worn_paint), ("Toon", toon)]
+for index, (name, build) in enumerate(second_row):
+    x = (index - (len(second_row) - 1) / 2) * 1.25
     bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=0.5, location=(x, 0, -0.65))
     sphere = bpy.context.active_object
     sphere.name = name

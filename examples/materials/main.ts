@@ -4,7 +4,7 @@
  * Shader, under the file's baked Sky World.
  * window.__materials exposes the state for the automated check.
  */
-import { PMREMGenerator, PerspectiveCamera, Scene, WebGPURenderer } from "three/webgpu";
+import { DirectionalLight, PMREMGenerator, PerspectiveCamera, Scene, WebGPURenderer } from "three/webgpu";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
@@ -51,6 +51,10 @@ async function main() {
   // generic studio environment.
   const pmrem = new PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  // A key light: three.js's toon material (Toon BSDF) is lit by lights only, not the environment.
+  const key = new DirectionalLight(0xffffff, 1.5);
+  key.position.set(-3, 4, 5);
+  scene.add(key);
   const loader = registerBlenderShaderGraph(new GLTFLoader(), {
     onWarning: (w) => state.warnings.push(w),
   });

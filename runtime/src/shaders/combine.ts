@@ -23,6 +23,20 @@ const opacity = (c: EmissionClosure): FloatNode => c.alpha ?? float(1);
 /** A closure as Principled parameters (emission → black BSDF + emission; alpha → opacity). */
 function asPrincipled(c: Closure): PrincipledClosure {
   if (c.kind === 'principled') return c;
+  if (c.kind === 'toon') {
+    // A toon shader mixed with others: approximated by a diffuse surface of its color.
+    return {
+      kind: 'principled',
+      baseColor: c.color,
+      metallic: float(0),
+      roughness: float(1),
+      alpha: float(1),
+      transparent: false,
+      emission: vec3(0),
+      specular: float(0),
+      ...(c.normal ? { normal: c.normal } : {}),
+    };
+  }
   return {
     kind: 'principled',
     baseColor: vec3(0),

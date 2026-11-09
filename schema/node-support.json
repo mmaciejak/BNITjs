@@ -421,9 +421,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Custom lighting"
+    "notes": "Diffuse component on three.js's toon material, with a gradient that reproduces Cycles' toon lobe for direct light (Size and Smooth must be constant). Lit by three.js lights and ambient light only: like three.js's toon material, it ignores scene.environment. The Glossy component is rendered as Diffuse. Mixed with other shaders, it is approximated by a diffuse surface. No parity test (lighting differs)"
   },
   {
     "name": "Translucent BSDF",

@@ -3,6 +3,7 @@ import type { Vec3Node } from '../graph/convert.js';
 import {
   MeshBasicNodeMaterial,
   MeshPhysicalNodeMaterial,
+  MeshToonNodeMaterial,
   type Node,
   type NodeMaterial,
 } from 'three/webgpu';
@@ -55,6 +56,19 @@ export function materialFromClosure(
       material.opacityNode = a;
       material.colorNode = select(a.greaterThan(1e-4), surface.color.div(a), surface.color);
     }
+    return material;
+  }
+
+  if (surface.kind === 'toon') {
+    if (options.unlit) {
+      const material = new BlenderBasicNodeMaterial();
+      material.colorNode = surface.color;
+      return material;
+    }
+    const material = new MeshToonNodeMaterial();
+    material.colorNode = surface.color;
+    material.gradientMap = surface.gradient;
+    if (surface.normal) material.normalNode = toViewNormal(surface.normal);
     return material;
   }
 
