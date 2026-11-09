@@ -9,6 +9,15 @@ Each phase from [SPEC.md](SPEC.md) gets an entry when it is tagged (`phase-N`).
 - GitHub Actions no longer runs on every push. The lint and test workflow runs before releases and on demand, and the parity workflow runs only on demand (no GPU on the runners).
 - Release workflow: pushing a `vX.Y.Z` tag runs the checks, builds the Blender extension zip and the npm tarball, and attaches them to a GitHub Release. Nothing is published to npm or extensions.blender.org.
 
+## phase-9: Baking and model-viewer fallback
+
+- Export-time bake: every linked non-shader output of a node the runtime can't evaluate live (Ambient Occlusion, Bevel, Point Density, and nodes not supported yet) is baked with Cycles into a texture on the object's UV map. In the graph, the node is replaced by an Image Texture, so everything downstream stays live. The bake runs on copies (a temporary scene with a copy of the object, linking the scene's other visible objects so AO sees them) and leaves the user's data alone. Values are stored as RGBE PNGs, with a per-channel offset when they are negative (`offset` in the image reference; nodes carry `baked`). Parity-tested: Bevel normal and AO on a self-occluding heightfield.
+- Settings in the glTF export dialog (BNITjs panel): Node Graphs, Bake Unsupported Nodes, Bake PBR Fallback, and resolution, samples and margin. The Material panel says which nodes will be baked.
+- Bake PBR Fallback bakes each material into the standard glTF material: base color with alpha, metallic and roughness, a tangent-space normal map, and emission (with `KHR_materials_emissive_strength` above 1). Principled inputs are baked one at a time; the Emission shader becomes emission; other shaders use Cycles' Diffuse Color, Roughness and Emit passes (an approximation). Turn Node Graphs off for a plain glTF file.
+- `examples/model-viewer-fallback`: one file shown in model-viewer 4.4.0 (baked) and in three.js with BNITjs (live). Its check runs on both backends. When the CDN is unreachable, three.js's plain GLTFLoader stands in for model-viewer.
+- In-browser bake: `bakeMaterial(renderer, mesh, { size, updateOnParamChange })` renders base color, opacity, roughness, metalness, emission and the normal (object space) into textures in UV space. `MaterialParams.onChange` was added for it. `npm run parity -- --bake` renders scenes through the bake; 412 of 465 pass as they are. The failures are view-dependent inputs, meshes without UVs, and sharp edges finer than the bake's resolution. check.sh runs 28 representative scenes in bake mode. In the example, the bake is 0.26 levels from the live render.
+- During this phase, the PBR fallback commit also fixed a bug from the first bake commit: when a material had several outputs to bake, each bake after the first baked a placeholder material.
+
 ## phase-8: Shader combination and advanced Principled
 
 - Principled BSDF maps its advanced inputs onto three.js's physical material: coat (weight, roughness, normal), sheen, transmission, IOR, specular IOR level and tint, thin film and anisotropy. Subsurface, Coat IOR and Coat Tint are reported and ignored.
