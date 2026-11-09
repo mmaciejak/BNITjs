@@ -27,7 +27,7 @@ STATUS = {
     "ShaderNodeBsdfPrincipled": "partial",
     "ShaderNodeBsdfRayPortal": "not_planned",
     "ShaderNodeBsdfRefraction": "partial",
-    "ShaderNodeBsdfSheen": "planned",
+    "ShaderNodeBsdfSheen": "partial",
     "ShaderNodeBsdfToon": "planned",
     "ShaderNodeBsdfTranslucent": "planned",
     "ShaderNodeBsdfTransparent": "partial",

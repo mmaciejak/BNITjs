@@ -388,9 +388,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Maps onto physical sheen"
+    "notes": "three.js physical sheen (Charlie) over a black, non-specular base: Color, Roughness, Normal. Ashikhmin is rendered as Charlie. Lighting differs from Cycles, so no parity test"
   },
   {
     "name": "Specular BSDF",

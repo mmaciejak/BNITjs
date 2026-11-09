@@ -48,6 +48,7 @@ import { diffuse } from './diffuse.js';
 import { displacement, vectorDisplacement } from './displacement.js';
 import { emission } from './emission.js';
 import { environmentTexture } from './environmentTexture.js';
+import { sheen } from './hardBsdfs.js';
 import { lightPath } from './lightPath.js';
 import { mapping } from './mapping.js';
 import { math } from './math.js';
@@ -141,6 +142,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeEeveeSpecular: eeveeSpecular,
   ShaderNodeBsdfMetallic: metallic,
   ShaderNodeBsdfRefraction: refraction,
+  ShaderNodeBsdfSheen: sheen,
   ShaderNodeBsdfPrincipled: principled,
   ShaderNodeRGB: rgb,
   ShaderNodeTexCoord: texCoord,

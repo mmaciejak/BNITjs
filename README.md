@@ -219,7 +219,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Principled Volume | Shader | ❌ Not planned | — | Volumes |
 | Ray Portal BSDF | Shader | ❌ Not planned | — | Path-tracing only |
 | Refraction BSDF | Shader | 🟡 Partial | 8 | Physical transmission without the specular reflection (close, not identical to Cycles) |
-| Sheen BSDF | Shader | 🚧 Not yet | 10 | Maps onto physical sheen |
+| Sheen BSDF | Shader | 🟡 Partial | 10 | three.js physical sheen (Charlie) over a black, non-specular base: Color, Roughness, Normal. Ashikhmin is rendered as Charlie. Lighting differs from Cycles, so no parity test |
 | Specular BSDF | Shader | 🟡 Partial | 8 | EEVEE-only (Cycles renders it black): mapped like EEVEE onto the physical material (base color, specular color, roughness, emission, transparency, clear coat) |
 | Subsurface Scattering | Shader | 🚧 Not yet | 10 | Thickness/translucency fake |
 | Toon BSDF | Shader | 🚧 Not yet | 10 | Custom lighting |
