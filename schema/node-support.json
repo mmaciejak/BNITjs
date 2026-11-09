@@ -289,9 +289,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
-    "phase": 10,
-    "notes": "Likely ❌"
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Shades hair strands around the curve direction; only Curves and particle hair use it, and glTF meshes have no strands. Use a mesh BSDF for hair cards"
   },
   {
     "name": "Holdout",
@@ -344,9 +344,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
-    "phase": 10,
-    "notes": "Likely ❌"
+    "status": "not_planned",
+    "phase": null,
+    "notes": "Shades hair strands around the curve direction; only Curves and particle hair use it, and glTF meshes have no strands. Use a mesh BSDF for hair cards"
   },
   {
     "name": "Principled Volume",

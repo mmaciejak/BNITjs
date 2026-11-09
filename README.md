@@ -210,12 +210,12 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Emission | Shader | ✅ Supported | 2 | |
 | Glass BSDF | Shader | 🟡 Partial | 8 | three.js physical transmission with IOR, roughness, Color tint and thin film (screen-space transmission; close, not identical to Cycles) |
 | Glossy BSDF | Shader | 🟡 Partial | 3 | Fully metallic physical material with the same roughness, Normal and anisotropy (needs mesh tangents; the Tangent input is ignored). No parity test (lighting differs) |
-| Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
+| Hair BSDF | Shader | ❌ Not planned | — | Shades hair strands around the curve direction; only Curves and particle hair use it, and glTF meshes have no strands. Use a mesh BSDF for hair cards |
 | Holdout | Shader | 🟡 Partial | 10 | Writes transparent black without blending and still writes depth: a hole in the frame that shows the page behind a transparent canvas and hides objects behind it, like a holdout with a transparent film (parity-tested against Cycles' black). Mixed or added to other shaders it is rendered as Transparent |
 | Metallic BSDF | Shader | 🟡 Partial | 8 | Metal with Base Color reflectance, roughness, anisotropy and thin film. Not mapped: Edge Tint, Physical Conductor (IOR, Extinction) |
 | Mix Shader | Shader | 🟡 Partial | 8 | Emission and Transparent mix exactly (parity-tested for emission). BSDFs are mixed by their parameters: exact for Principled pairs differing in colors, approximate otherwise. Transparency uses straight alpha blending, exact only when blending in linear space |
 | Principled BSDF | Shader | 🟡 Partial | 2 | Base color, metallic, roughness, alpha, emission (base color parity-tested), Normal, and three.js physical equivalents of coat, sheen, transmission, IOR, specular level and tint, thin film and anisotropy (close, not identical to Cycles; see examples/materials). Not mapped: subsurface, coat IOR and tint |
-| Principled Hair BSDF | Shader | 🚧 Not yet | 10 | Likely ❌ |
+| Principled Hair BSDF | Shader | ❌ Not planned | — | Shades hair strands around the curve direction; only Curves and particle hair use it, and glTF meshes have no strands. Use a mesh BSDF for hair cards |
 | Principled Volume | Shader | ❌ Not planned | — | Volumes |
 | Ray Portal BSDF | Shader | ❌ Not planned | — | Path-tracing only |
 | Refraction BSDF | Shader | 🟡 Partial | 8 | Physical transmission without the specular reflection (close, not identical to Cycles) |
