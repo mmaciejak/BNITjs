@@ -46,5 +46,7 @@ if [[ -z "${SKIP_PARITY:-}" ]]; then
   (cd runtime && npm run example:check --silent 2>&1 | grep -E '^(PASS|FAIL)' && npm run example:check --silent -- --webgl 2>&1 | grep -E '^(PASS|FAIL)')
   step "materials example"
   (cd runtime && npm run example:materials --silent && npm run example:materials --silent -- --webgl)
+  step "model-viewer fallback example"
+  (cd runtime && npm run example:fallback --silent && npm run example:fallback --silent -- --webgl)
 fi
 printf '\nAll checks passed.\n'

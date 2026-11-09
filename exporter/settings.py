@@ -11,6 +11,8 @@ import bpy
 
 @dataclass
 class Settings:
+    write_graphs: bool = True
+    bake_pbr: bool = False
     bake_unsupported: bool = True
     bake_resolution: int = 1024
     bake_samples: int = 32
@@ -18,6 +20,22 @@ class Settings:
 
 
 class BSW_ExportSettings(bpy.types.PropertyGroup):  # noqa: N801 (Blender naming convention)
+    write_graphs: bpy.props.BoolProperty(
+        name="Node Graphs",
+        description=(
+            "Write each material's node graph (EXT_blender_shader_graph) for the BNITjs three.js runtime. "
+            "Off: a plain glTF file"
+        ),
+        default=Settings.write_graphs,
+    )
+    bake_pbr: bpy.props.BoolProperty(
+        name="Bake PBR Fallback",
+        description=(
+            "Bake each material's base color, alpha, metallic, roughness, normal and emission with Cycles "
+            "into the standard glTF material, for viewers without the BNITjs runtime (model-viewer …)"
+        ),
+        default=Settings.bake_pbr,
+    )
     bake_unsupported: bpy.props.BoolProperty(
         name="Bake Unsupported Nodes",
         description=(
@@ -67,9 +85,13 @@ def draw_export(context, layout):
     header.label(text="BNITjs (three.js)")
     if body is None:
         return
-    body.prop(props, "bake_unsupported")
+    body.prop(props, "write_graphs")
+    row = body.row()
+    row.active = props.write_graphs
+    row.prop(props, "bake_unsupported")
+    body.prop(props, "bake_pbr")
     col = body.column(align=True)
-    col.active = props.bake_unsupported
+    col.active = props.bake_pbr or (props.write_graphs and props.bake_unsupported)
     col.prop(props, "bake_resolution")
     col.prop(props, "bake_samples")
     col.prop(props, "bake_margin")

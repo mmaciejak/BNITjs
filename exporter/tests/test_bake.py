@@ -148,6 +148,21 @@ class BakeTest(unittest.TestCase):
         for got, want in zip(decode_rgbe(pixels, center, ref["offset"]), (0.0, 0.0, -1.0), strict=True):
             self.assertAlmostEqual(got, want, delta=0.02)
 
+    def test_each_output_gets_its_own_bake(self):
+        mat = ao_material((0.2, 0.5, 0.8, 1.0))
+        nodes, links = mat.node_tree.nodes, mat.node_tree.links
+        links.new(nodes["Ambient Occlusion"].outputs["AO"], nodes["Emission"].inputs["Strength"])
+        plane_with(mat)
+        path, gltf = self.export("two.gltf")
+        graph = gltf["materials"][0]["extensions"][EXTENSION_NAME]
+        baked = {n["baked"]["output"]: n for n in graph["nodes"].values() if "baked" in n}
+        self.assertEqual(set(baked), {"Color", "AO"})
+        for output, want in (("Color", (0.2, 0.5, 0.8)), ("AO", (1.0, 1.0, 1.0))):
+            (w, h), pixels = image_pixels(gltf, path, baked[output]["properties"]["image"]["texture"])
+            center = ((h // 2) * w + w // 2) * 4
+            for got, value in zip(decode_rgbe(pixels, center), want, strict=True):
+                self.assertAlmostEqual(got, value, delta=0.01, msg=output)
+
     def test_bake_can_be_turned_off(self):
         self.props.bake_unsupported = False
         plane_with(ao_material((0.2, 0.5, 0.8, 1.0)))

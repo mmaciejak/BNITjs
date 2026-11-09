@@ -140,6 +140,16 @@ A full-screen 1080p view is about 2 megapixels. Rules of thumb:
 
 Nodes the runtime can't evaluate live (Ambient Occlusion, Bevel, and nodes that aren't supported yet) are baked at export. Cycles bakes each of their linked outputs into a texture on the object's UV map, and the exported graph samples that texture instead. Everything downstream of the baked node stays live, but its inputs can no longer change live, and live parameters that only fed it are dropped. Baking needs a mesh with a UV map. When several objects share the material, it is baked on one of them, and the others reuse that texture through their own UV maps. Ambient Occlusion sees the scene's other visible objects. The settings (on/off, resolution, samples, margin) are in the glTF export dialog under **BNITjs (three.js)**. Shader outputs (BSDFs) can't be baked this way.
 
+#### Viewers without the runtime (model-viewer)
+
+**Bake PBR Fallback** (off by default) also bakes each material into the standard glTF material that viewers without BNITjs show, such as model-viewer, Babylon.js or the glTF viewers in game engines. The baked channels are base color with alpha, metallic and roughness, a tangent-space normal map, and emission (with `KHR_materials_emissive_strength` above 1):
+
+- **Principled BSDF:** every linked input is baked on its own. Unlinked inputs become factors.
+- **Emission shader:** its color × strength becomes the emission, over a black base color.
+- **Other shaders** (Mix Shader, Diffuse, Glass …): Cycles' Diffuse Color, Roughness and Emit passes, with metallic 0. This is an approximation.
+
+A normal map is baked when a Normal input or the Displacement output is linked. With **Node Graphs** on (the default), the same file carries the live graph for three.js and the baked material for everything else. Turn Node Graphs off for a plain glTF file. `examples/model-viewer-fallback` shows one file in both.
+
 Workflow rules (SPEC §4): one commit per feature, using the `type(scope): message` style. Every commit that changes node support also updates the table below. Each phase ends with a `phase-N` tag and a `CHANGELOG.md` entry.
 
 ## Node support

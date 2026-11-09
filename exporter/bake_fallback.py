@@ -11,6 +11,8 @@ the scene are linked into the temporary scene, so Ambient Occlusion sees them. T
 not changed.
 """
 
+from dataclasses import dataclass
+
 import bpy
 import numpy as np
 
@@ -97,23 +99,65 @@ def _route_to_top(tree, groups, node_name, output_id):
     return socket
 
 
-def _bake_material(material, image):
-    """A copy of ``material`` whose only output is Emission(input), with ``image`` as the active
-    Image Texture (Cycles bakes into it). Returns (copy, emission node)."""
+@dataclass
+class BakeJob:
+    """One bake into one image.
+
+    ``kind`` "ROUTE" bakes ``Emission(color, strength)`` made from the sources ``color`` and
+    ``strength``: ("socket", node id, output identifier) of the exported graph, or ("value", v).
+    Any other kind is a Cycles bake pass of the material as it is: "EMIT", "NORMAL" (tangent space),
+    "DIFFUSE" (color only) or "ROUGHNESS".
+    """
+
+    key: object
+    kind: str = "ROUTE"
+    color: tuple = None
+    strength: tuple = ("value", 1.0)
+
+
+def _set_input(tree, socket, source, sources):
+    """Feed ``socket`` from a job source; False if the source cannot be found."""
+    if source[0] == "value":
+        value = source[1]
+        if socket.type == "RGBA" and not isinstance(value, list | tuple):
+            value = (value, value, value, 1.0)
+        elif socket.type == "RGBA" and len(value) == 3:
+            value = (*value, 1.0)
+        elif socket.type == "VALUE" and isinstance(value, list | tuple):
+            value = sum(value[:3]) / 3
+        socket.default_value = value
+        return True
+    _, node_id, output = source
+    if node_id not in sources:
+        return False
+    groups, name = sources[node_id]
+    routed = _route_to_top(tree, groups, name, output)
+    if routed is None:
+        return False
+    tree.links.new(routed, socket)
+    return True
+
+
+def _job_material(material, image, job, sources):
+    """A copy of ``material`` set up for ``job``, with ``image`` as the active Image Texture
+    (Cycles bakes into it); None if a source cannot be found."""
     copy = material.copy()
     nodes, links = copy.node_tree.nodes, copy.node_tree.links
-    for node in list(nodes):
-        if node.bl_idname == "ShaderNodeOutputMaterial":
-            nodes.remove(node)
-    emission = nodes.new("ShaderNodeEmission")
-    emission.inputs["Strength"].default_value = 1.0
-    output = nodes.new("ShaderNodeOutputMaterial")
-    output.target = "ALL"
-    links.new(emission.outputs["Emission"], output.inputs["Surface"])
+    if job.kind == "ROUTE":
+        for node in list(nodes):
+            if node.bl_idname == "ShaderNodeOutputMaterial":
+                nodes.remove(node)
+        emission = nodes.new("ShaderNodeEmission")
+        output = nodes.new("ShaderNodeOutputMaterial")
+        output.target = "ALL"
+        links.new(emission.outputs["Emission"], output.inputs["Surface"])
+        for name, source in (("Color", job.color), ("Strength", job.strength)):
+            if not _set_input(copy.node_tree, emission.inputs[name], source, sources):
+                return copy, False
     target = nodes.new("ShaderNodeTexImage")
     target.image = image
     nodes.active = target
-    return copy, emission
+    return copy, True
 
 
 def _placeholder_material(image):
@@ -158,20 +202,28 @@ class _BakeScene:
         self.obj.animation_data_clear()
         self.obj.matrix_world = obj.matrix_world.copy()
         scene.collection.objects.link(self.obj)
+        self.mesh_materials = list(self.mesh.materials)
+        self.slot_materials = [slot.material for slot in self.obj.material_slots]
         self.view_layer = scene.view_layers[0]
         for other in scene.objects:
             other.select_set(other is self.obj, view_layer=self.view_layer)
         self.view_layer.objects.active = self.obj
 
     def assign(self, material, replacement, placeholder):
-        """Put ``replacement`` in every slot that holds ``material``, ``placeholder`` in the others."""
-        for i, mat in enumerate(self.mesh.materials):
+        """Put ``replacement`` in every slot that held ``material`` originally, ``placeholder`` in the
+        others."""
+        for i, mat in enumerate(self.mesh_materials):
             self.mesh.materials[i] = replacement if mat == material else placeholder
-        for slot in self.obj.material_slots:
+        for slot, mat in zip(self.obj.material_slots, self.slot_materials, strict=True):
             if slot.link == "OBJECT":
-                slot.material = replacement if slot.material == material else placeholder
+                slot.material = replacement if mat == material else placeholder
 
-    def bake(self):
+    def bake(self, kind):
+        options = {"type": kind, "margin_type": "EXTEND", "use_clear": True, "target": "IMAGE_TEXTURES"}
+        if kind == "DIFFUSE":
+            options["pass_filter"] = {"COLOR"}
+        elif kind == "NORMAL":
+            options["normal_space"] = "TANGENT"
         with bpy.context.temp_override(
             scene=self.scene,
             view_layer=self.view_layer,
@@ -180,7 +232,7 @@ class _BakeScene:
             selected_objects=[self.obj],
             selected_editable_objects=[self.obj],
         ):
-            bpy.ops.object.bake(type="EMIT", margin_type="EXTEND", use_clear=True, target="IMAGE_TEXTURES")
+            bpy.ops.object.bake(**options)
 
     def own(self, block):
         self.ids.append(block)
@@ -200,11 +252,11 @@ class _BakeScene:
                 collection.remove(block)
 
 
-def bake_sockets(material, obj, source_scene, targets, sources, settings):
-    """Bake each (node id, output identifier) of ``targets`` on ``obj``.
+def run_bakes(material, obj, source_scene, jobs, sources, settings):
+    """Run each BakeJob of ``jobs`` on ``obj``.
 
-    Returns ``(results, uv_map, warnings)``: ``results`` maps each target that could be baked to a
-    float32 array of shape (height, width, 4), bottom row first.
+    Returns ``(results, uv_map, warnings)``: ``results`` maps the key of each job that could be
+    baked to a float32 array of shape (height, width, 4), bottom row first.
     """
     results, warnings = {}, []
     size = settings.bake_resolution
@@ -214,23 +266,20 @@ def bake_sockets(material, obj, source_scene, targets, sources, settings):
         image.colorspace_settings.name = "Non-Color"
         scratch = bake.own(bpy.data.images.new("bnitjs_bake_other", 4, 4, alpha=True, float_buffer=True))
         placeholder = bake.own(_placeholder_material(scratch))
-        for node_id, output in targets:
-            groups, name = sources[node_id]
-            copy, emission = _bake_material(material, image)
-            bake.own(copy)
+        for job in jobs:
             groups_before = set(bpy.data.node_groups)
-            socket = _route_to_top(copy.node_tree, groups, name, output)
+            copy, found = _job_material(material, image, job, sources)
+            bake.own(copy)
             for group in set(bpy.data.node_groups) - groups_before:
                 bake.own(group)
-            if socket is None:
-                warnings.append(f"cannot find '{node_id}' to bake it")
+            if not found:
+                warnings.append(f"cannot find the source of {job.key} to bake it")
                 continue
-            copy.node_tree.links.new(socket, emission.inputs["Color"])
             bake.assign(material, copy, placeholder)
-            bake.bake()
+            bake.bake("EMIT" if job.kind == "ROUTE" else job.kind)
             pixels = np.empty(size * size * 4, dtype=np.float32)
             image.pixels.foreach_get(pixels)
-            results[(node_id, output)] = pixels.reshape(size, size, 4)
+            results[job.key] = pixels.reshape(size, size, 4)
         return results, bake.uv_map, warnings
     finally:
         bake.close()
@@ -328,7 +377,8 @@ def bake_unsupported(material, graph, report, scene, settings, embed):
             f"Material '{material.name}' is baked on '{obj.name}'; "
             f"{len(others)} other object(s) reuse that texture through their own UV maps"
         )
-    baked, uv_map, bake_warnings = bake_sockets(material, obj, scene, targets, report["sources"], settings)
+    jobs = [BakeJob(key=target, color=("socket", *target)) for target in targets]
+    baked, uv_map, bake_warnings = run_bakes(material, obj, scene, jobs, report["sources"], settings)
     warnings += [f"Material '{material.name}': {w}" for w in bake_warnings]
     params_before = {p["name"] for p in graph.get("params", [])}
     replace_with_images(graph, baked, uv_map, embed)

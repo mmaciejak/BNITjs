@@ -19,6 +19,7 @@ import bpy
 from . import settings as export_settings_module
 from .bake_fallback import bake_unsupported
 from .graph_export import export_material_graph, export_world_graph, unsupported_nodes
+from .pbr_bake import bake_pbr
 from .sky_bake import bake_sky
 from .values import f32
 
@@ -130,13 +131,22 @@ def rgbe_png_pixels(pixels, offset=None):
     out = np.zeros((w * h, 4), dtype=np.float32)
     out[:, :3] = np.minimum(np.floor(rgb * scale[:, None]), 255.0)
     out[:, 3] = np.where(visible, exponent + 128, 0)
+    return png_pixels((out / 255.0).reshape(h, w, 4))
+
+
+def png_pixels(pixels):
+    """8-bit PNG bytes of float pixels in 0–1 (height × width × 4, bottom row first), written as they
+    are (no color management)."""
+    import numpy as np
+
+    h, w = pixels.shape[:2]
     with tempfile.TemporaryDirectory() as tmp:
         path = os.path.join(tmp, "image.png")
-        copy = bpy.data.images.new("bsw_rgbe", w, h, alpha=True)
+        copy = bpy.data.images.new("bsw_png", w, h, alpha=True)
         try:
             copy.colorspace_settings.name = "Non-Color"
             copy.alpha_mode = "CHANNEL_PACKED"
-            copy.pixels.foreach_set((out / 255.0).ravel())
+            copy.pixels.foreach_set(np.ascontiguousarray(pixels, dtype=np.float32).ravel())
             copy.filepath_raw = path
             copy.file_format = "PNG"
             copy.save()
@@ -202,6 +212,7 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
         self.gltf2_io = gltf2_io
         self.BinaryData = BinaryData
         self._graphs = {}
+        self._pbr = {}
         self._textures = {}
         self._skies = {}
 
@@ -313,15 +324,19 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
     def gather_material_hook(self, gltf2_material, blender_material, export_settings):
         if blender_material is None:
             return
+        options = export_settings_module.get()
         key = blender_material.name_full
         if key not in self._graphs:
             graph, report = export_material_graph(blender_material)
             self._graphs[key] = graph
             for warning in report["warnings"]:
                 self._log(export_settings, "warning", warning)
-            if graph is not None and report["unsupported"]:
+            # The PBR bake routes sockets of the original graph, so it runs before the graph is rewritten.
+            if graph is not None and options.bake_pbr:
+                self._pbr[key] = self._bake_pbr(blender_material, graph, report, export_settings)
+            if graph is not None and options.write_graphs and report["unsupported"]:
                 self._bake(blender_material, graph, report, export_settings)
-            unsupported = unsupported_nodes(graph) if graph is not None else []
+            unsupported = unsupported_nodes(graph) if graph is not None and options.write_graphs else []
             if unsupported:
                 names = ", ".join(sorted({u["name"] for u in unsupported}))
                 self._log(
@@ -330,18 +345,88 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
                     f"{EXTENSION_NAME}: material '{blender_material.name}' uses nodes the three.js "
                     f"runtime does not evaluate live yet: {names}",
                 )
+        if self._pbr.get(key) is not None:
+            self._apply_pbr(gltf2_material, self._pbr[key])
         graph = self._graphs[key]
-        if graph is None:
+        if graph is None or not options.write_graphs:
             return
         self._embed_images(graph, blender_material, export_settings)
         if gltf2_material.extensions is None:
             gltf2_material.extensions = {}
         gltf2_material.extensions[EXTENSION_NAME] = self.Extension(name=EXTENSION_NAME, extension=graph, required=False)
 
+    def _bake_pbr(self, material, graph, report, export_settings):
+        """The material baked to glTF PBR fields (a dict of gltf2_io values), or None."""
+        try:
+            result, warnings = bake_pbr(material, graph, report, bpy.context.scene, export_settings_module.get())
+        except Exception as error:  # noqa: BLE001  (report and continue the export)
+            self._log(export_settings, "warning", f"{EXTENSION_NAME}: cannot bake '{material.name}' to PBR: {error}")
+            return None
+        for warning in warnings:
+            self._log(export_settings, "warning", f"{EXTENSION_NAME}: {warning}")
+        if result is None:
+            return None
+        io = self.gltf2_io
+        uv_index = 0
+        if result["uvMap"] is not None:
+            users = [o for o in bpy.context.scene.objects if o.type == "MESH" and o.data.uv_layers]
+            for obj in users:
+                index = obj.data.uv_layers.find(result["uvMap"])
+                if index >= 0 and any(slot.material == material for slot in obj.material_slots):
+                    uv_index = index
+                    break
+
+        def info(name, pixels, normal=False):
+            texture = self._gltf_texture(f"{material.name} {name}", png_pixels(pixels), "image/png")
+            if normal:
+                return io.MaterialNormalTextureInfoClass(
+                    extensions=None, extras=None, index=texture, scale=None, tex_coord=uv_index or None
+                )
+            return io.TextureInfo(extensions=None, extras=None, index=texture, tex_coord=uv_index or None)
+
+        fields = {
+            "pbr": io.MaterialPBRMetallicRoughness(
+                base_color_factor=result.get("baseFactor"),
+                base_color_texture=info("base color", result["base"]) if "base" in result else None,
+                extensions=None,
+                extras=None,
+                metallic_factor=result.get("metallicFactor"),
+                metallic_roughness_texture=(
+                    info("metallic roughness", result["metallicRoughness"]) if "metallicRoughness" in result else None
+                ),
+                roughness_factor=result.get("roughnessFactor"),
+            ),
+            "normal": info("normal", result["normal"], normal=True) if "normal" in result else None,
+            "emissive": info("emission", result["emissive"]) if "emissive" in result else None,
+            "emissiveFactor": result.get("emissiveFactor"),
+            "emissiveStrength": result.get("emissiveStrength"),
+            "blend": result.get("blend", False),
+        }
+        self._log(export_settings, "info", f"{EXTENSION_NAME}: material '{material.name}' baked to PBR")
+        return fields
+
+    def _apply_pbr(self, gltf2_material, fields):
+        """Replace the standard material's PBR values by the baked ones."""
+        gltf2_material.pbr_metallic_roughness = fields["pbr"]
+        gltf2_material.normal_texture = fields["normal"]
+        gltf2_material.occlusion_texture = None
+        gltf2_material.emissive_texture = fields["emissive"]
+        gltf2_material.emissive_factor = fields["emissiveFactor"]
+        gltf2_material.alpha_mode = "BLEND" if fields["blend"] else None
+        gltf2_material.alpha_cutoff = None
+        extensions = dict(gltf2_material.extensions or {})
+        extensions.pop("KHR_materials_emissive_strength", None)
+        strength = fields["emissiveStrength"]
+        if strength is not None and strength > 1.0:
+            extensions["KHR_materials_emissive_strength"] = self.Extension(
+                name="KHR_materials_emissive_strength", extension={"emissiveStrength": strength}, required=False
+            )
+        gltf2_material.extensions = extensions or None
+
     def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
         """The scene's World node tree, as {"world": graph} on the glTF scene."""
         world = getattr(blender_scene, "world", None)
-        if world is None:
+        if world is None or not export_settings_module.get().write_graphs:
             return
         graph, report = export_world_graph(world)
         for warning in report["warnings"]:
@@ -367,6 +452,8 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
         if blender_object is None or not isinstance(blender_object, bpy.types.Object):
             return
         if blender_object.type not in {"MESH", "CURVE", "SURFACE", "META", "FONT"}:
+            return
+        if not export_settings_module.get().write_graphs:
             return
         data = object_data(blender_object)
         colors = self._color_attributes(gltf2_node, blender_object, export_settings)
