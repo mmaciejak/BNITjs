@@ -6,6 +6,13 @@
  *   const gltf = await loader.loadAsync('model.glb');
  */
 
+export {
+  BAKE_SLOTS,
+  type BakedMaterial,
+  bakeMaterial,
+  type BakeOptions,
+  type BakeSlot,
+} from './bake/bake.js';
 export { buildMaterial, type BuildOptions, type BuildResult } from './graph/build.js';
 export type { NodeContext, NodeImpl, NodeOutput, NodeRegistry } from './graph/evaluate.js';
 export { GraphFormatError, parseGraph } from './graph/parse.js';

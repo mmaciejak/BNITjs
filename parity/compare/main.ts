@@ -1,8 +1,10 @@
 /**
  * Browser side of the parity harness: renders out/<scene>/scene.gltf unlit with the runtime and
- * reports through window.__parity. Query: ?scene=<name>&size=512&ss=4[&webgl]
+ * reports through window.__parity. Query: ?scene=<name>&size=512&ss=4[&webgl][&bake=<size>]
+ * (bake: render each material through bakeMaterial() at that texture size).
  */
 import {
+  Mesh,
   NoToneMapping,
   SRGBColorSpace,
   Scene,
@@ -12,6 +14,7 @@ import {
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   applyBlenderWorld,
+  bakeMaterial,
   registerBlenderShaderGraph,
 } from "../../runtime/src/index.js";
 
@@ -63,6 +66,16 @@ async function main() {
   root.add(gltf.scene);
   applyBlenderWorld(root, gltf);
   root.updateMatrixWorld(true);
+  const bake = params.get("bake");
+  if (bake) {
+    const meshes: Mesh[] = [];
+    root.traverse((o) => {
+      if (o instanceof Mesh) meshes.push(o);
+    });
+    for (const mesh of meshes) {
+      mesh.material = bakeMaterial(renderer, mesh, { size: Number(bake) }).material;
+    }
+  }
   renderer.render(root, camera);
   // Let the frame reach the canvas before the harness captures it.
   await new Promise((resolve) =>

@@ -130,7 +130,22 @@ A full-screen 1080p view is about 2 megapixels. Rules of thumb:
 - Voronoi **Smooth F1** searches 5^dims cells instead of 3^dims: about 5× F1 in 3D and about 10× in 4D. Avoid 4D Smooth F1 in real time. **Distance to Edge** makes two passes, about 2.5× F1.
 - Recommended limits on desktop GPUs: Noise Detail ≤ 8, and Voronoi 3D Detail ≤ 2 (Smooth F1: Detail 0).
 - On phones: Noise 3D Fac Detail ≤ 2, Noise Color or 4D Detail 0, and Voronoi only in 2D or at 3D F1 Detail 0. These are estimates: they assume a mid-range phone GPU is 5–10× slower than the M3 Pro. They have not been measured on phones.
-- Above these limits, bake the texture (planned for Phase 9).
+- Above these limits, bake the material in the browser (below), or in Blender.
+
+### In-browser bake
+
+`bakeMaterial` renders a material's procedural inputs into textures once, so a slow device samples a few textures per pixel instead of running the node graph:
+
+```js
+import { bakeMaterial, getParams } from 'bnitjs';
+
+const baked = bakeMaterial(renderer, mesh, { size: 1024, updateOnParamChange: true });
+mesh.material = baked.material;      // a copy whose inputs sample the textures
+getParams(baked.material)?.set('Wood/Color', [0.6, 0.3, 0.1]); // bakes again
+baked.dispose();                     // frees the textures
+```
+
+It bakes base color, opacity, roughness, metalness, emission and the normal, in the UV space of the mesh's first UV map (`uv`). Other inputs (coat, sheen, transmission …) stay live. The UV layout must not overlap. Inputs that depend on the view (Incoming, Fresnel, Layer Weight, Camera Data, Window) are baked as seen from the world origin. The normal is baked in object space, so it follows the mesh as it moves but not as it deforms (skinning, morph targets). Call `baked.update()` after anything else the bake depends on changes. Without `updateOnParamChange`, that includes live parameters.
 
 ### Using the exporter
 

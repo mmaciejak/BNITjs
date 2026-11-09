@@ -19,7 +19,12 @@ import {
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { getParams, registerBlenderShaderGraph } from "../../runtime/src/index.js";
+import {
+  type BakedMaterial,
+  bakeMaterial,
+  getParams,
+  registerBlenderShaderGraph,
+} from "../../runtime/src/index.js";
 
 // Pinned: model-viewer bundles its own three.js.
 const MODEL_VIEWER = "https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js";
@@ -33,6 +38,10 @@ interface FallbackState {
   baked?: "model-viewer" | "gltfloader";
   /** Base color textures of the baked materials, by material name. */
   bakedTextures: Record<string, boolean>;
+  /** Show the live pane through the in-browser bake (bakeMaterial) or live. */
+  setInBrowserBake?: (on: boolean) => void;
+  /** Set a live parameter of the box's material. */
+  setParam?: (name: string, value: number | number[]) => void;
 }
 
 declare global {
@@ -69,7 +78,7 @@ async function threeView(pane: HTMLElement) {
     controls.update();
     renderer.render(scene, camera);
   });
-  return scene;
+  return { scene, renderer };
 }
 
 function meshes(root: Object3D): Mesh[] {
@@ -115,7 +124,7 @@ async function modelViewer(pane: HTMLElement): Promise<boolean> {
 /** Without model-viewer: the standard glTF materials through three.js's own loader. */
 async function plainLoader(pane: HTMLElement) {
   document.getElementById("baked-title")!.textContent = "three.js GLTFLoader without BNITjs (baked)";
-  const scene = await threeView(pane);
+  const { scene } = await threeView(pane);
   const gltf = await new GLTFLoader().loadAsync(ASSET);
   scene.add(gltf.scene);
   for (const mesh of meshes(gltf.scene)) {
@@ -125,13 +134,37 @@ async function plainLoader(pane: HTMLElement) {
 }
 
 async function live(pane: HTMLElement) {
-  const scene = await threeView(pane);
+  const { scene, renderer } = await threeView(pane);
   const loader = registerBlenderShaderGraph(new GLTFLoader(), {
     onWarning: (w) => state.warnings.push(w),
   });
   const gltf = await loader.loadAsync(ASSET);
   scene.add(gltf.scene);
   const controls = document.getElementById("controls")!;
+  // In-browser bake: render each material into textures once (and again when a parameter
+  // changes), for devices too slow for the procedural shaders.
+  const live = new Map<Mesh, Mesh["material"]>();
+  const baked = new Map<Mesh, BakedMaterial>();
+  state.setInBrowserBake = (on) => {
+    for (const mesh of meshes(gltf.scene)) {
+      if (on && !baked.has(mesh)) {
+        const result = bakeMaterial(renderer, mesh, { size: 1024, updateOnParamChange: true });
+        live.set(mesh, mesh.material);
+        baked.set(mesh, result);
+        mesh.material = result.material;
+      } else if (!on && baked.has(mesh)) {
+        mesh.material = live.get(mesh)!;
+        baked.get(mesh)!.dispose();
+        baked.delete(mesh);
+      }
+    }
+  };
+  const toggle = document.createElement("label");
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  box.addEventListener("change", () => state.setInBrowserBake!(box.checked));
+  toggle.append(box, "Bake in browser");
+  controls.appendChild(toggle);
   for (const mesh of meshes(gltf.scene)) {
     const params = getParams(mesh.material as never);
     for (const name of params?.names() ?? []) {
@@ -159,6 +192,7 @@ async function live(pane: HTMLElement) {
       label.appendChild(input);
       controls.appendChild(label);
     }
+    if (params?.names().length) state.setParam = (name, value) => params.set(name, value);
   }
 }
 

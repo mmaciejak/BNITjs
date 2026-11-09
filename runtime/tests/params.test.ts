@@ -28,6 +28,16 @@ describe('live parameters', () => {
     expect(getParams(clone)).toBe(params);
   });
 
+  it('notifies listeners of each change until they unsubscribe', () => {
+    const { params } = build();
+    const seen: string[] = [];
+    const stop = params.onChange((name) => seen.push(name));
+    params.set('Scale', 4).set('Tint', [0.1, 0.2, 0.3]);
+    stop();
+    params.set('Scale', 5);
+    expect(seen).toEqual(['Scale', 'Tint']);
+  });
+
   it('sets numbers and colors, and resets to the defaults', () => {
     const { params } = build();
     params

@@ -42,6 +42,16 @@ if [[ -z "${SKIP_PARITY:-}" ]]; then
   (cd runtime && npm run parity --silent | grep -E '^(RETRY|FAIL)|passed')
   step "parity (WebGL2)"
   (cd runtime && npm run parity --silent -- --webgl | grep -E '^(RETRY|FAIL)|passed')
+  # The in-browser bake (bakeMaterial) on scenes that cover each kind of input; the full set is
+  # `npm run parity -- --bake` (view-dependent scenes and meshes without UVs are expected to fail).
+  BAKE_SCENES="principled_uv_mapping texcoord_uv texcoord_generated texcoord_object object_info_location
+    vector_transform_point_object_world noise_fbm_3d noise_distort_4d voronoi_f1_3d_detail
+    voronoi_distance_to_edge_2d gabor_3d magic_depth5 brick_default image_texture_linear
+    color_ramp_b_spline mix_rgb_overlay bump_noise normal_map_tangent params baked_ao"
+  step "in-browser bake (WebGPU)"
+  (cd runtime && npm run parity --silent -- $BAKE_SCENES --bake | grep -E '^(RETRY|FAIL)|passed')
+  step "in-browser bake (WebGL2)"
+  (cd runtime && npm run parity --silent -- $BAKE_SCENES --bake --webgl | grep -E '^(RETRY|FAIL)|passed')
   step "configurator example"
   (cd runtime && npm run example:check --silent 2>&1 | grep -E '^(PASS|FAIL)' && npm run example:check --silent -- --webgl 2>&1 | grep -E '^(PASS|FAIL)')
   step "materials example"

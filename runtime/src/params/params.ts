@@ -30,6 +30,7 @@ interface Entry {
  */
 export class MaterialParams {
   private readonly entries = new Map<string, Entry>();
+  private readonly listeners = new Set<(name: string) => void>();
 
   /** Parameters declared by the graph ("$" labels in Blender). */
   constructor(graph: ShaderGraph) {
@@ -83,7 +84,14 @@ export class MaterialParams {
     } else {
       throw new TypeError(`parameter "${name}" takes [r, g, b]`);
     }
+    for (const listener of this.listeners) listener(name);
     return this;
+  }
+
+  /** Call `listener(name)` after each set(); returns a function that stops it. */
+  onChange(listener: (name: string) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
   }
 
   reset(): this {

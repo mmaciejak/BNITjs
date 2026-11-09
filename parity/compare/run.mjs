@@ -1,7 +1,7 @@
 /**
  * Parity harness, browser side (SPEC §6).
  *
- *   cd runtime && npm run parity -- [scene ...] [--webgl] [--headed]
+ *   cd runtime && npm run parity -- [scene ...] [--webgl] [--headed] [--bake[=2048]]
  *
  * For every scene that has a reference in parity/references/ (made by parity/render_refs.py),
  * renders parity/compare/out/<scene>/scene.gltf in headless Chromium at SS× resolution,
@@ -10,6 +10,9 @@
  * scene exceeds its thresholds (parity/thresholds.json): the mean error must be ≤ mae, and at
  * most a fraction `outliers` (default 0) of pixels may have a channel error above max. A scene that
  * fails is run once more (printed as RETRY) before it counts as failed.
+ *
+ * --bake renders each material through the runtime's in-browser bake (bakeMaterial) at the given
+ * texture size; the limits of thresholds.json's "bake" section apply on top of the scene's.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -27,9 +30,17 @@ const PNG = await load('pngjs', 'PNG');
 const args = process.argv.slice(2);
 const useWebGL = args.includes('--webgl');
 const headed = args.includes('--headed');
+const bakeArg = args.find((a) => a === '--bake' || a.startsWith('--bake='));
+const bakeSize = bakeArg ? Number(bakeArg.split('=')[1] ?? 2048) : 0;
 const wanted = args.filter((a) => !a.startsWith('--'));
 
 const thresholds = JSON.parse(readFileSync(join(PARITY, 'thresholds.json'), 'utf8'));
+/** The limits of one scene (with the "bake" section's when baking). */
+function limitFor(name) {
+  const limit = { ...thresholds.default, ...(thresholds.scenes[name] ?? {}) };
+  if (!bakeSize) return limit;
+  return { ...limit, ...thresholds.bake.default, ...(thresholds.bake.scenes[name] ?? {}) };
+}
 const scenes = readdirSync(REFS)
   .filter((f) => f.endsWith('.png'))
   .map((f) => f.slice(0, -4))
@@ -117,7 +128,7 @@ let failed = 0;
 /** Render and compare one scene. */
 async function runScene(name) {
   const dir = join(OUT, name);
-  const limit = { ...thresholds.default, ...(thresholds.scenes[name] ?? {}) };
+  const limit = limitFor(name);
   const result = { scene: name, limit };
   try {
     if (!existsSync(join(dir, 'scene.gltf'))) throw new Error('missing out/<scene>/scene.gltf; rerun render_refs.py');
@@ -128,7 +139,7 @@ async function runScene(name) {
     for (let attempt = 1; ; attempt++) {
       try {
         consoleLines.length = 0;
-        await page.goto(`${base}index.html?scene=${encodeURIComponent(name)}&size=${ref.width}&ss=${SS}${useWebGL ? '&webgl' : ''}`);
+        await page.goto(`${base}index.html?scene=${encodeURIComponent(name)}&size=${ref.width}&ss=${SS}${useWebGL ? '&webgl' : ''}${bakeSize ? `&bake=${bakeSize}` : ''}`);
         await page.waitForFunction(() => window.__parity?.done, null, { timeout: 60_000 });
         state = await page.evaluate(() => window.__parity);
         if (state.error) throw new Error(state.error);
@@ -163,7 +174,7 @@ async function runScene(name) {
 }
 
 for (const name of scenes) {
-  const limit = { ...thresholds.default, ...(thresholds.scenes[name] ?? {}) };
+  const limit = limitFor(name);
   let result = await runScene(name);
   // A bad capture (rare, e.g. a frame not fully drawn) fails a scene that passes on a rerun: retry
   // a failed comparison once and keep the first attempt in the report.
