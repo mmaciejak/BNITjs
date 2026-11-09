@@ -43,13 +43,19 @@ interface ImageRef {
   alphaMode?: string;
   /** "rgbe": a float image stored as Radiance RGBE in an 8-bit PNG. */
   encoding?: string;
+  /** With "rgbe": added to each decoded rgb value (the exporter's bakes can be negative). */
+  offset?: [number, number, number];
 }
 
-/** Radiance RGBE texel → linear rgb (alpha 1): (byte + 0.5) · 2^(e − 136), 0 when e = 0. */
-function decodeRGBE(raw: Vec4Node): Vec4Node {
+/**
+ * Radiance RGBE texel → linear rgb (alpha 1): (byte + 0.5) · 2^(e − 136), 0 when e = 0, plus
+ * the image's offset.
+ */
+function decodeRGBE(raw: Vec4Node, offset?: [number, number, number]): Vec4Node {
   const e = raw.w.mul(255).round();
   const scale = select(e.equal(0), float(0), exp2(e.sub(136)));
-  return vec4(raw.xyz.mul(255).round().add(0.5).mul(scale), 1);
+  const rgb = raw.xyz.mul(255).round().add(0.5).mul(scale);
+  return vec4(offset ? rgb.add(vec3(...offset)) : rgb, 1);
 }
 
 function mapToTube(co: Vec3Node): Vec2Node {
@@ -122,6 +128,7 @@ function sampleCycles(
   associate: boolean,
   extension?: string,
   rgbe = false,
+  offset?: [number, number, number],
 ): Vec4Node {
   const { width, height } = source.image as { width: number; height: number };
   const tex = source.clone();
@@ -139,7 +146,11 @@ function sampleCycles(
       tex,
       ivec2(x.index, int(height - 1).sub(y.index)),
     ) as unknown as Vec4Node;
-    const value = rgbe ? decodeRGBE(raw) : associate ? vec4(raw.xyz.mul(raw.w), raw.w) : raw;
+    const value = rgbe
+      ? decodeRGBE(raw, offset)
+      : associate
+        ? vec4(raw.xyz.mul(raw.w), raw.w)
+        : raw;
     const valid = x.valid && y.valid ? x.valid.and(y.valid) : (x.valid ?? y.valid);
     return valid ? select(valid, value, vec4(0)) : value;
   };
@@ -189,7 +200,7 @@ export function makeImageLookup(
     !ctx.isOutputLinked('Alpha');
   /** One image lookup, decoded to linear like Cycles' svm_image_texture. */
   return (uv: Vec2Node): Vec4Node => {
-    const sample = sampleCycles(ctx, source, uv, associate, extension, rgbe);
+    const sample = sampleCycles(ctx, source, uv, associate, extension, rgbe, image?.offset);
     const raw: Vec3Node = sample.xyz;
     const color: Vec3Node =
       isData || isLinear

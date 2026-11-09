@@ -2,11 +2,14 @@
 
 import bpy
 
+from . import settings
+from .bake_fallback import bake_targets
 from .graph_export import export_material_graph
 
 STATUS_TEXT = {
     "planned": ("Not yet", "TIME"),
     "baked": ("Baked at export", "TEXTURE"),
+    "bake_off": ("Not baked (baking is off)", "CANCEL"),
     "not_planned": ("Not supported", "CANCEL"),
     "unknown": ("Unknown node", "QUESTION"),
 }
@@ -20,9 +23,16 @@ def summarize(material):
     graph, report = export_material_graph(material, include_data=False)
     if graph is None:
         return None, [], report["warnings"]
+    baking = settings.get().bake_unsupported
+    baked = {node_id for node_id, _ in bake_targets(graph)} if baking else set()
     counts = {}
     for item in report["unsupported"]:
-        key = (item["name"], item["status"])
+        status = item["status"]
+        if item["id"] in baked:
+            status = "baked"
+        elif status == "baked":
+            status = "bake_off"
+        key = (item["name"], status)
         counts[key] = counts.get(key, 0) + 1
     rows = sorted(((name, n, status) for (name, status), n in counts.items()), key=lambda r: (r[2], r[0]))
     real_nodes = [n for n in graph["nodes"].values() if not n["type"].startswith("BSW_")]

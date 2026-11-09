@@ -277,6 +277,8 @@ class GraphBuilder:
         self.links = []
         self.warnings = []
         self.params = []
+        # node id -> (names of the group nodes it sits in, outermost first; its own name)
+        self.sources = {}
         self._emitted = set()
 
     def _add_param(self, name, node_id, socket_type, value, lo=None, hi=None):
@@ -396,6 +398,11 @@ class GraphBuilder:
         if node_id in self._emitted:
             return node_id
         self._emitted.add(node_id)
+        groups, level = [], ctx
+        while level is not None and level.group_node is not None:
+            groups.insert(0, level.group_node.name)
+            level = level.parent
+        self.sources[node_id] = (tuple(groups), node.name)
 
         entry = {"type": node.bl_idname, "name": node.name}
         if node.label:
@@ -500,7 +507,8 @@ def export_material_graph(material, include_data=True):
 
     Returns ``(graph, report)``. ``graph`` is None when the material has no node tree or no
     active Material Output. ``report`` is a dict with ``unsupported`` (node id, Blender type,
-    display name and status for every node the runtime cannot evaluate live) and ``warnings``.
+    display name and status for every node the runtime cannot evaluate live), ``warnings`` and
+    ``sources`` (node id → (group node names, node name): where each node is in the tree).
     """
     return _export_tree_graph(material, "material", include_data)
 
@@ -513,7 +521,7 @@ def export_world_graph(world, include_data=True):
 
 
 def _export_tree_graph(owner, kind, include_data):
-    report = {"unsupported": [], "warnings": []}
+    report = {"unsupported": [], "warnings": [], "sources": {}}
     tree = owner.node_tree if owner is not None else None
     if tree is None:
         return None, report
@@ -554,13 +562,23 @@ def _export_tree_graph(owner, kind, include_data):
     if uv_maps:
         graph["uvMaps"] = uv_maps
 
-    for node_id, entry in builder.nodes.items():
+    report["unsupported"] = unsupported_nodes(graph)
+    report["sources"] = builder.sources
+    report["warnings"].extend(builder.warnings)
+    return graph, report
+
+
+def unsupported_nodes(graph):
+    """Node id, Blender type, display name and status of every node of ``graph`` the runtime
+    cannot evaluate live."""
+    result = []
+    for node_id, entry in graph["nodes"].items():
         node_type = entry["type"]
         if node_type == VALUE_NODE or node_type in _LAYOUT_TYPES:
             continue
         status = node_support.STATUS.get(node_type, "unknown")
         if status not in node_support.LIVE:
-            report["unsupported"].append(
+            result.append(
                 {
                     "id": node_id,
                     "type": node_type,
@@ -568,5 +586,4 @@ def _export_tree_graph(owner, kind, include_data):
                     "status": status,
                 }
             )
-    report["warnings"].extend(builder.warnings)
-    return graph, report
+    return result

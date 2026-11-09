@@ -8,7 +8,7 @@
     "category": "Input",
     "status": "baked",
     "phase": 9,
-    "notes": "Bake in exporter or rely on scene SSAO"
+    "notes": "Baked by the exporter with Cycles into a texture on the UV map (needs a UV map); the scene's other visible objects occlude it. Or leave it out and use the scene's SSAO"
   },
   {
     "name": "Attribute",
@@ -30,7 +30,7 @@
     "category": "Input",
     "status": "baked",
     "phase": 9,
-    "notes": "Bake to normal map"
+    "notes": "Baked by the exporter with Cycles into a texture on the UV map (needs a UV map). The baked Normal is in world space"
   },
   {
     "name": "Camera Data",
@@ -586,7 +586,7 @@
     "category": "Texture",
     "status": "baked",
     "phase": 9,
-    "notes": "Blender 4.2 only (removed in 5.x)"
+    "notes": "Blender 4.2 only (removed in 5.x). Baked by the exporter like Ambient Occlusion"
   },
   {
     "name": "Sky Texture",

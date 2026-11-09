@@ -65,6 +65,8 @@ export interface GraphNode {
   name: string;
   label?: string;
   group?: string;
+  /** Set on an Image Texture the exporter baked from a node the runtime cannot evaluate live. */
+  baked?: { node: string; type: string; output: string };
   properties?: Record<string, unknown>;
   data?: { colorRamp?: ColorRampData; curveMapping?: CurveMappingData };
   inputs?: Record<string, GraphSocket>;

@@ -172,6 +172,17 @@
           "type": "string",
           "description": "Path of the group node(s) this node was inlined from."
         },
+        "baked": {
+          "type": "object",
+          "required": ["node", "type", "output"],
+          "additionalProperties": false,
+          "description": "Set on an Image Texture that the exporter made by baking an output of a node the runtime cannot evaluate live. The original node is not in the graph.",
+          "properties": {
+            "node": { "type": "string", "description": "Id of the baked node." },
+            "type": { "type": "string", "description": "Its Blender node type." },
+            "output": { "type": "string", "description": "Identifier of the baked output." }
+          }
+        },
         "properties": {
           "type": "object",
           "description": "Node settings by RNA identifier (operation, noise_type, …). Special keys: image, textureMapping, colorMapping. For BSW_Value: value.",
@@ -301,6 +312,13 @@
         "encoding": {
           "const": "rgbe",
           "description": "The embedded PNG holds a float image as Radiance RGBE: value = (byte + 0.5) · 2^(A − 136) per channel, 0 when A = 0."
+        },
+        "offset": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "With encoding rgbe: added to each decoded rgb value (baked data can be negative)."
         }
       }
     },

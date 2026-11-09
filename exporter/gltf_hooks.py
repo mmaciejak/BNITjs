@@ -16,7 +16,9 @@ import tempfile
 
 import bpy
 
-from .graph_export import export_material_graph, export_world_graph
+from . import settings as export_settings_module
+from .bake_fallback import bake_unsupported
+from .graph_export import export_material_graph, export_world_graph, unsupported_nodes
 from .sky_bake import bake_sky
 from .values import f32
 
@@ -108,7 +110,19 @@ def rgbe_png(image):
     w, h = image.size
     px = np.empty(w * h * 4, dtype=np.float32)
     image.pixels.foreach_get(px)
-    rgb = np.maximum(px.reshape(-1, 4)[:, :3], 0.0)
+    return rgbe_png_pixels(px.reshape(h, w, 4))
+
+
+def rgbe_png_pixels(pixels, offset=None):
+    """PNG bytes of float pixels (height × width × 4, bottom row first) in Radiance RGBE, after
+    subtracting ``offset`` (per rgb channel) when it is given. See rgbe_png."""
+    import numpy as np
+
+    h, w = pixels.shape[:2]
+    rgb = pixels.reshape(-1, 4)[:, :3].astype(np.float32)
+    if offset is not None:
+        rgb = rgb - np.asarray(offset, dtype=np.float32)
+    rgb = np.maximum(rgb, 0.0)
     peak = rgb.max(axis=1)
     mantissa, exponent = np.frexp(peak)  # peak = mantissa · 2^exponent, mantissa in [0.5, 1)
     visible = peak > 1e-32
@@ -130,6 +144,16 @@ def rgbe_png(image):
                 return f.read()
         finally:
             bpy.data.images.remove(copy)
+
+
+def rgbe_offset(pixels):
+    """Per-channel offset that makes baked pixels non-negative for RGBE, or None if they are."""
+    import numpy as np
+
+    low = pixels.reshape(-1, 4)[:, :3].min(axis=0)
+    if (low >= 0).all():
+        return None
+    return [f32(min(0.0, float(np.floor(v * 256.0) / 256.0))) for v in low]
 
 
 def image_bytes(image):
@@ -229,6 +253,34 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
             "encoding": "rgbe",
         }
 
+    def _bake(self, material, graph, report, export_settings):
+        """Bake the material's unsupported node outputs into embedded textures (when enabled)."""
+        options = export_settings_module.get()
+        if not options.bake_unsupported:
+            return
+
+        def embed(name, pixels):
+            offset = rgbe_offset(pixels)
+            texture = self._gltf_texture(name, rgbe_png_pixels(pixels, offset), "image/png")
+            ref = {"texture": texture, "encoding": "rgbe"}
+            if offset is not None:
+                ref["offset"] = offset
+            return ref
+
+        try:
+            baked, warnings = bake_unsupported(material, graph, report, bpy.context.scene, options, embed)
+        except Exception as error:  # noqa: BLE001  (report and continue the export)
+            self._log(export_settings, "warning", f"{EXTENSION_NAME}: cannot bake '{material.name}': {error}")
+            return
+        for warning in warnings:
+            self._log(export_settings, "warning", f"{EXTENSION_NAME}: {warning}")
+        if baked:
+            self._log(
+                export_settings,
+                "info",
+                f"{EXTENSION_NAME}: material '{material.name}': baked {', '.join(baked)}",
+            )
+
     def _embed_images(self, graph, owner, export_settings):
         """Point every Image / Environment Texture node at an embedded glTF texture, and bake Sky
         Textures to embedded equirectangular images."""
@@ -243,7 +295,7 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
                     node.setdefault("properties", {})["image"] = sky
                 continue
             ref = node.get("properties", {}).get("image")
-            if node["type"] not in _IMAGE_NODES or not ref or ref["name"] not in images:
+            if node["type"] not in _IMAGE_NODES or not ref or "baked" in node or ref["name"] not in images:
                 continue
             embedded = self._texture(images[ref["name"]], export_settings)
             if embedded is not None:
@@ -268,7 +320,10 @@ class glTF2ExportUserExtension:  # noqa: N801 (name required by io_scene_gltf2)
             for warning in report["warnings"]:
                 self._log(export_settings, "warning", warning)
             if graph is not None and report["unsupported"]:
-                names = ", ".join(sorted({u["name"] for u in report["unsupported"]}))
+                self._bake(blender_material, graph, report, export_settings)
+            unsupported = unsupported_nodes(graph) if graph is not None else []
+            if unsupported:
+                names = ", ".join(sorted({u["name"] for u in unsupported}))
                 self._log(
                     export_settings,
                     "warning",

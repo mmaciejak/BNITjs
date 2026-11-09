@@ -138,6 +138,8 @@ A full-screen 1080p view is about 2 megapixels. Rules of thumb:
 2. Export with File › Export › glTF 2.0 as usual. Every material gets its node graph in the `EXT_blender_shader_graph` extension; the normal PBR material stays in the file as a fallback.
 3. Material Properties › **BNITjs (three.js)** lists the nodes that the runtime can't evaluate live yet.
 
+Nodes the runtime can't evaluate live (Ambient Occlusion, Bevel, and nodes that aren't supported yet) are baked at export. Cycles bakes each of their linked outputs into a texture on the object's UV map, and the exported graph samples that texture instead. Everything downstream of the baked node stays live, but its inputs can no longer change live, and live parameters that only fed it are dropped. Baking needs a mesh with a UV map. When several objects share the material, it is baked on one of them, and the others reuse that texture through their own UV maps. Ambient Occlusion sees the scene's other visible objects. The settings (on/off, resolution, samples, margin) are in the glTF export dialog under **BNITjs (three.js)**. Shader outputs (BSDFs) can't be baked this way.
+
 Workflow rules (SPEC §4): one commit per feature, using the `type(scope): message` style. Every commit that changes node support also updates the table below. Each phase ends with a `phase-N` tag and a `CHANGELOG.md` entry.
 
 ## Node support
@@ -152,9 +154,9 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 
 | Node | Category | Status | Phase | Notes |
 |---|---|---|---|---|
-| Ambient Occlusion | Input | 🧊 Baked | 9 | Bake in exporter or rely on scene SSAO |
+| Ambient Occlusion | Input | 🧊 Baked | 9 | Baked by the exporter with Cycles into a texture on the UV map (needs a UV map); the scene's other visible objects occlude it. Or leave it out and use the scene's SSAO |
 | Attribute | Input | 🟡 Partial | 3 | Geometry type: color attributes, UV maps and "_" custom attributes (glTF Attributes option). Instancer/Object/View Layer types not supported |
-| Bevel | Input | 🧊 Baked | 9 | Bake to normal map |
+| Bevel | Input | 🧊 Baked | 9 | Baked by the exporter with Cycles into a texture on the UV map (needs a UV map). The baked Normal is in world space |
 | Camera Data | Input | ✅ Supported | 3 | |
 | Color | Input | ✅ Supported | 2 | Named "RGB" in 4.2 |
 | Color Attribute | Input | 🟡 Partial | 3 | By name or render-active, via the exporter's COLOR_n layout; ambiguous when the standard material also uses a color attribute and the mesh has several |
@@ -215,7 +217,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Image Texture | Texture | 🟡 Partial | 3 | Flat/Box/Sphere/Tube, Linear/Closest, all extensions, Cycles' alpha association, 8-bit and float images (float as RGBE: about 1% precision, no alpha). Not yet: Cubic/Smart (rendered Linear), mipmaps |
 | Magic Texture | Texture | ✅ Supported | 6 | |
 | Noise Texture | Texture | ✅ Supported | 4 | All types (fBm, multifractal, ridged, hybrid, hetero terrain), 1D–4D, distortion, normalize. Musgrave nodes from older files are converted to Noise by Blender |
-| Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x) |
+| Point Density | Texture | 🧊 Baked | 9 | Blender 4.2 only (removed in 5.x). Baked by the exporter like Ambient Occlusion |
 | Sky Texture | Texture | 🟡 Partial | 6 | Every model of Blender 4.2 and 5.x, baked by the exporter with Cycles to a 1024×512 equirectangular RGBE image (the sky models run in Blender's C++ code). Sharp features such as the sun disc and the multiple-scattering horizon are blurred to the bake's resolution; sky settings cannot change live |
 | Voronoi Texture | Texture | ✅ Supported | 5 | Every feature and distance metric, 1D–4D, fractal Detail, Normalize. Files from Blender 4.x use 4.x's cell hashing, which gives a different pattern |
 | Wave Texture | Texture | ✅ Supported | 6 | |

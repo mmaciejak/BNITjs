@@ -302,32 +302,44 @@
 								}
 							}
 						},
-						"Ambient Occlusion":{
-							"type":"ShaderNodeAmbientOcclusion",
-							"name":"Ambient Occlusion",
+						"Ambient Occlusion:baked:Color:uv":{
+							"type":"ShaderNodeUVMap",
+							"name":"Ambient Occlusion (Color, baked) UV",
 							"properties":{
-								"samples":16,
-								"inside":false,
-								"only_local":false
+								"uv_map":"UVMap",
+								"from_instancer":false
+							},
+							"outputs":{
+								"UV":{
+									"name":"UV",
+									"type":"VECTOR"
+								}
+							}
+						},
+						"Ambient Occlusion:baked:Color":{
+							"type":"ShaderNodeTexImage",
+							"name":"Ambient Occlusion (Color, baked)",
+							"baked":{
+								"node":"Ambient Occlusion",
+								"type":"ShaderNodeAmbientOcclusion",
+								"output":"Color"
+							},
+							"properties":{
+								"image":{
+									"name":"Ambient Occlusion (Color, baked)",
+									"source":"GENERATED",
+									"colorspace":"Non-Color",
+									"alphaMode":"NONE",
+									"texture":0,
+									"encoding":"rgbe"
+								},
+								"interpolation":"Linear",
+								"projection":"FLAT",
+								"extension":"EXTEND"
 							},
 							"inputs":{
-								"Color":{
-									"name":"Color",
-									"type":"RGBA",
-									"value":[
-										1,
-										1,
-										1,
-										1
-									]
-								},
-								"Distance":{
-									"name":"Distance",
-									"type":"VALUE",
-									"value":1
-								},
-								"Normal":{
-									"name":"Normal",
+								"Vector":{
+									"name":"Vector",
 									"type":"VECTOR",
 									"value":[
 										0,
@@ -341,8 +353,8 @@
 									"name":"Color",
 									"type":"RGBA"
 								},
-								"AO":{
-									"name":"AO",
+								"Alpha":{
+									"name":"Alpha",
 									"type":"VALUE"
 								}
 							}
@@ -351,7 +363,7 @@
 					"links":[
 						{
 							"from":[
-								"Ambient Occlusion",
+								"Ambient Occlusion:baked:Color",
 								"Color"
 							],
 							"to":[
@@ -367,6 +379,16 @@
 							"to":[
 								"Material Output",
 								"Surface"
+							]
+						},
+						{
+							"from":[
+								"Ambient Occlusion:baked:Color:uv",
+								"UV"
+							],
+							"to":[
+								"Ambient Occlusion:baked:Color",
+								"Vector"
 							]
 						}
 					],
@@ -399,6 +421,19 @@
 					"material":0
 				}
 			]
+		}
+	],
+	"textures":[
+		{
+			"name":"Ambient Occlusion (Color, baked)",
+			"source":0
+		}
+	],
+	"images":[
+		{
+			"bufferView":4,
+			"mimeType":"image/png",
+			"name":"Ambient Occlusion (Color, baked)"
 		}
 	],
 	"accessors":[
@@ -461,11 +496,16 @@
 			"byteLength":12,
 			"byteOffset":128,
 			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":21950,
+			"byteOffset":140
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":140,
+			"byteLength":22092,
 			"uri":"baked_node.bin"
 		}
 	]
