@@ -46,7 +46,7 @@ STATUS = {
     "ShaderNodeGamma": "supported",
     "ShaderNodeGroup": "supported",
     "ShaderNodeHairInfo": "not_planned",
-    "ShaderNodeHoldout": "planned",
+    "ShaderNodeHoldout": "partial",
     "ShaderNodeHueSaturation": "supported",
     "ShaderNodeInvert": "supported",
     "ShaderNodeLayerWeight": "supported",

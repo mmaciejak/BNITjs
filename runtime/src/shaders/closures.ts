@@ -5,7 +5,7 @@ import type { FloatNode, Vec3Node } from '../graph/convert.js';
  * A shader-socket value. Blender shaders become closures; the material builder maps the
  * closure that reaches the Material Output onto a three.js node material.
  */
-export type Closure = PrincipledClosure | EmissionClosure | ToonClosure;
+export type Closure = PrincipledClosure | EmissionClosure | ToonClosure | HoldoutClosure;
 
 export interface PrincipledClosure {
   kind: 'principled';
@@ -50,6 +50,11 @@ export interface ToonClosure {
   gradient: Texture;
   /** Shading normal in Blender's world axes, when the Normal input is linked. */
   normal?: Vec3Node;
+}
+
+/** Holdout: the surface is cut out of the image (transparent black, occluding what is behind). */
+export interface HoldoutClosure {
+  kind: 'holdout';
 }
 
 export function isClosure(value: unknown): value is Closure {

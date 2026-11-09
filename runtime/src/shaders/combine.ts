@@ -13,15 +13,28 @@
 import { float, min, mix, vec3 } from 'three/tsl';
 import type { FloatNode, Vec3Node } from '../graph/convert.js';
 import { shadingNormalBlender } from '../nodes/space.js';
-import type { Closure, EmissionClosure, PrincipledClosure } from './closures.js';
+import type { Closure, EmissionClosure, HoldoutClosure, PrincipledClosure } from './closures.js';
 
 const isEmissive = (c: Closure): c is EmissionClosure => c.kind === 'emission';
+
+/**
+ * Inside Mix or Add Shader a Holdout can't cut a partial hole: it is treated as Transparent
+ * (which shows what is behind instead of cutting it out).
+ */
+function withoutHoldout(
+  c: Closure | null,
+  warn?: (message: string) => void,
+): Exclude<Closure, HoldoutClosure> | null {
+  if (c?.kind !== 'holdout') return c;
+  warn?.('a Holdout mixed with other shaders is rendered as Transparent');
+  return { kind: 'emission', color: vec3(0), alpha: float(0) };
+}
 
 /** Opacity of an emission closure (1 unless it carries transparency). */
 const opacity = (c: EmissionClosure): FloatNode => c.alpha ?? float(1);
 
 /** A closure as Principled parameters (emission → black BSDF + emission; alpha → opacity). */
-function asPrincipled(c: Closure): PrincipledClosure {
+function asPrincipled(c: Exclude<Closure, HoldoutClosure>): PrincipledClosure {
   if (c.kind === 'principled') return c;
   if (c.kind === 'toon') {
     // A toon shader mixed with others: approximated by a diffuse surface of its color.
@@ -107,10 +120,15 @@ function mixPrincipled(
 }
 
 /** Mix Shader: (1 − fac)·a + fac·b. A missing shader counts as black (no light, opaque). */
-export function mixClosures(a: Closure | null, b: Closure | null, fac: FloatNode): Closure | null {
+export function mixClosures(
+  a: Closure | null,
+  b: Closure | null,
+  fac: FloatNode,
+  warn?: (message: string) => void,
+): Closure | null {
   const black: EmissionClosure = { kind: 'emission', color: vec3(0) };
-  const x = a ?? black;
-  const y = b ?? black;
+  const x = withoutHoldout(a, warn) ?? black;
+  const y = withoutHoldout(b, warn) ?? black;
   if (isEmissive(x) && isEmissive(y)) {
     const out: EmissionClosure = { kind: 'emission', color: lerp(x.color, y.color, fac) };
     if (x.alpha || y.alpha) out.alpha = lerp(opacity(x), opacity(y), fac);
@@ -126,6 +144,8 @@ export function addClosures(
   warn: (message: string) => void,
 ): Closure | null {
   if (!a || !b) return a ?? b;
+  a = withoutHoldout(a, warn)!;
+  b = withoutHoldout(b, warn)!;
   if (isEmissive(a) && isEmissive(b)) {
     const out: EmissionClosure = { kind: 'emission', color: a.color.add(b.color) as Vec3Node };
     if (a.alpha || b.alpha) {

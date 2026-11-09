@@ -32,7 +32,7 @@ import { normal } from './normal.js';
 import { normalMap } from './normalMap.js';
 import { objectInfo } from './objectInfo.js';
 import { separateColor } from './separateColor.js';
-import { addShader, mixShader, transparent } from './shaderNodes.js';
+import { addShader, holdout, mixShader, transparent } from './shaderNodes.js';
 import { skyTexture } from './skyTexture.js';
 import { separateHSV, separateRGB } from './separateLegacy.js';
 import { brightContrast } from './brightContrast.js';
@@ -145,6 +145,7 @@ export const builtinNodes: Record<string, NodeImpl> = {
   ShaderNodeBsdfRefraction: refraction,
   ShaderNodeBsdfSheen: sheen,
   ShaderNodeBsdfToon: toon,
+  ShaderNodeHoldout: holdout,
   ShaderNodeBsdfTranslucent: translucent,
   ShaderNodeSubsurfaceScattering: subsurface,
   ShaderNodeBsdfPrincipled: principled,

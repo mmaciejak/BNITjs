@@ -1,6 +1,7 @@
 import { cameraViewMatrix, cos, float, select, sin, vec2, vec3, vec4 } from 'three/tsl';
 import type { Vec3Node } from '../graph/convert.js';
 import {
+  NoBlending,
   MeshBasicNodeMaterial,
   MeshPhysicalNodeMaterial,
   MeshToonNodeMaterial,
@@ -42,6 +43,16 @@ export function materialFromClosure(
     // Nothing linked to Surface: Blender renders black.
     const material = new BlenderBasicNodeMaterial();
     material.colorNode = vec3(0);
+    return material;
+  }
+
+  if (surface.kind === 'holdout') {
+    // Transparent black written without blending: a hole in the frame (alpha 0) that still writes
+    // depth, so it hides what is behind it, as Cycles' holdout does with a transparent film.
+    const material = new BlenderBasicNodeMaterial();
+    material.colorNode = vec3(0);
+    material.opacityNode = float(0);
+    material.blending = NoBlending;
     return material;
   }
 

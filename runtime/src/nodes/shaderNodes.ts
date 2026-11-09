@@ -4,7 +4,9 @@ import { addClosures, mixClosures } from '../shaders/combine.js';
 
 /** Mix Shader: Fac blends the first Shader input into the second. */
 export const mixShader: NodeImpl = (ctx) => ({
-  Shader: mixClosures(ctx.shader('Shader'), ctx.shader('Shader_001'), ctx.float('Fac', 0.5)),
+  Shader: mixClosures(ctx.shader('Shader'), ctx.shader('Shader_001'), ctx.float('Fac', 0.5), (m) =>
+    ctx.warn(m),
+  ),
 });
 
 /** Add Shader. */
@@ -20,3 +22,6 @@ export const transparent: NodeImpl = (ctx) => {
   }
   return { BSDF: { kind: 'emission', color: vec3(0), alpha: float(0) } };
 };
+
+/** Holdout: cuts the surface out of the image (see materialFromClosure). */
+export const holdout: NodeImpl = () => ({ Holdout: { kind: 'holdout' } });

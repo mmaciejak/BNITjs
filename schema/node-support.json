@@ -300,9 +300,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Alpha handling, scene-dependent"
+    "notes": "Writes transparent black without blending and still writes depth: a hole in the frame that shows the page behind a transparent canvas and hides objects behind it, like a holdout with a transparent film (parity-tested against Cycles' black). Mixed or added to other shaders it is rendered as Transparent"
   },
   {
     "name": "Metallic BSDF",
