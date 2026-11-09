@@ -81,7 +81,7 @@ STATUS = {
     "ShaderNodeSeparateXYZ": "supported",
     "ShaderNodeShaderToRGB": "planned",
     "ShaderNodeSqueeze": "partial",
-    "ShaderNodeSubsurfaceScattering": "planned",
+    "ShaderNodeSubsurfaceScattering": "partial",
     "ShaderNodeTangent": "partial",
     "ShaderNodeTexBrick": "supported",
     "ShaderNodeTexChecker": "supported",

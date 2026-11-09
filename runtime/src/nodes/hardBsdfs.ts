@@ -48,3 +48,24 @@ export const translucent: NodeImpl = (ctx) => ({
     normal: normalOf(ctx).negate(),
   },
 });
+
+/**
+ * Subsurface Scattering: rendered as a diffuse surface of its Color. The scattering radius, scale,
+ * IOR, roughness and anisotropy are reported and ignored.
+ */
+export const subsurface: NodeImpl = (ctx) => {
+  ctx.warn('subsurface scattering is rendered as a diffuse surface (radius and scale are ignored)');
+  return {
+    BSSRDF: {
+      kind: 'principled',
+      baseColor: ctx.vec3('Color', [0.8, 0.8, 0.8]),
+      metallic: float(0),
+      roughness: float(1),
+      alpha: float(1),
+      transparent: false,
+      emission: vec3(0),
+      specular: float(0),
+      ...(ctx.isLinked('Normal') ? { normal: ctx.vec3('Normal') } : {}),
+    },
+  };
+};

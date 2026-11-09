@@ -221,7 +221,7 @@ This table lists every shader node in Blender 4.2 LTS and 5.2 LTS. Nodes that ex
 | Refraction BSDF | Shader | 🟡 Partial | 8 | Physical transmission without the specular reflection (close, not identical to Cycles) |
 | Sheen BSDF | Shader | 🟡 Partial | 10 | three.js physical sheen (Charlie) over a black, non-specular base: Color, Roughness, Normal. Ashikhmin is rendered as Charlie. Lighting differs from Cycles, so no parity test |
 | Specular BSDF | Shader | 🟡 Partial | 8 | EEVEE-only (Cycles renders it black): mapped like EEVEE onto the physical material (base color, specular color, roughness, emission, transparency, clear coat) |
-| Subsurface Scattering | Shader | 🚧 Not yet | 10 | Thickness/translucency fake |
+| Subsurface Scattering | Shader | 🟡 Partial | 10 | Rendered as a diffuse surface of its Color (with Normal). Radius, Scale, IOR, Roughness and Anisotropy are reported and ignored: three.js has no subsurface scattering. No parity test (lighting differs) |
 | Toon BSDF | Shader | 🚧 Not yet | 10 | Custom lighting |
 | Translucent BSDF | Shader | 🟡 Partial | 10 | Lambertian reflection on the side opposite the normal, which is a diffuse physical material with the normal reversed (exact for three.js's lights). Light is not attenuated through the object. No parity test (lighting differs) |
 | Transparent BSDF | Shader | 🟡 Partial | 8 | Opacity for Mix/Add Shader (straight alpha blending, exact only when blending in linear space). A tinted Color is rendered untinted |

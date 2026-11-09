@@ -410,9 +410,9 @@
     ],
     "section": "Shader",
     "category": "Shader",
-    "status": "planned",
+    "status": "partial",
     "phase": 10,
-    "notes": "Thickness/translucency fake"
+    "notes": "Rendered as a diffuse surface of its Color (with Normal). Radius, Scale, IOR, Roughness and Anisotropy are reported and ignored: three.js has no subsurface scattering. No parity test (lighting differs)"
   },
   {
     "name": "Toon BSDF",

@@ -22,4 +22,14 @@ describe('hard-tier BSDFs (Phase 10)', () => {
     expect(m.specularIntensityNode).toBeTruthy();
     expect(m.sheenNode).toBeNull();
   });
+
+  it('Subsurface Scattering is a diffuse surface and says so', () => {
+    const graph = bsdfGraph('ShaderNodeSubsurfaceScattering');
+    graph.nodes.B!.outputs = { BSSRDF: { name: 'BSSRDF', type: 'SHADER' } };
+    graph.links = [{ from: ['B', 'BSSRDF'], to: ['Out', 'Surface'] }];
+    const { material, warnings } = buildMaterial(graph);
+    const m = material as unknown as MeshPhysicalNodeMaterial;
+    expect(m.specularIntensityNode).toBeTruthy();
+    expect(warnings.join()).toContain('diffuse');
+  });
 });
